@@ -14,6 +14,7 @@
         "php": ">=5.5.0"
     },
     "autoload": {
+        "classmap": ["src"],
         "psr-4": {"Phwoolcon\\": "src"}
     }
 }
