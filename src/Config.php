@@ -46,10 +46,10 @@ class Config
 
     public static function register(Di $di)
     {
-        $defaultPath = $di['ROOT_PATH'] . '/app/config/*.php';
+        $defaultPath = $di['ROOT_PATH'] . '/config/*.php';
         $defaultFiles = glob($defaultPath);
         $environment = isset($_SERVER['PHALCON_ENV']) ? $_SERVER['PHALCON_ENV'] : 'production';
-        $environmentPath = $di['ROOT_PATH'] . '/app/config/' . $environment . '/*.php';
+        $environmentPath = $di['ROOT_PATH'] . '/config/' . $environment . '/*.php';
         $environmentFiles = glob($environmentPath);
 
         $config = new PhalconConfig(static::loadFiles($defaultFiles));
