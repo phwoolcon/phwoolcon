@@ -1,7 +1,9 @@
 <?php
 namespace Phwoolcon;
 
+use Closure;
 use Phalcon\Di;
+use Phalcon\Http\Response;
 use Phalcon\Mvc\Router as PhalconRouter;
 
 class Router extends PhalconRouter
@@ -23,6 +25,8 @@ class Router extends PhalconRouter
                 if (is_string($handler)) {
                     list($controller, $action) = explode('::', $handler);
                     $handler = compact('controller', 'action');
+                } else if ($handler instanceof Closure) {
+                    $handler = ['controller' => $handler];
                 }
                 $this->add($uri, $handler, $method);
             }
@@ -35,12 +39,18 @@ class Router extends PhalconRouter
         $router = static::$router;
         $router->handle($uri);
         if ($router->getMatchedRoute()) {
-            $controllerClass = $router->getControllerName();
-            $controller = new $controllerClass;
-            method_exists($controller, 'initialize') and $controller->initialize();
-            method_exists($controller, $method = $router->getActionName()) or throw404Exception();
-            $controller->{$method}();
-            $response = $controller->response;
+            if (($controllerClass = $router->getControllerName()) instanceof Closure) {
+                $response = $controllerClass();
+                if (!$response instanceof Response) {
+                    $response = new Response($response);
+                }
+            } else {
+                $controller = new $controllerClass;
+                method_exists($controller, 'initialize') and $controller->initialize();
+                method_exists($controller, $method = $router->getActionName()) or throw404Exception();
+                $controller->{$method}();
+                $response = $controller->response;
+            }
             /* @var $response \Phalcon\Http\Response */
             $response->send();
         } else {
@@ -52,6 +62,7 @@ class Router extends PhalconRouter
     {
         $di->setShared('router', function () use ($di) {
             $router = new Router(false, $di);
+            $router->removeExtraSlashes(true);
             return $router;
         });
     }
