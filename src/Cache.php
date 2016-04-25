@@ -25,6 +25,12 @@ class Cache
         return static::$cache->delete($key);
     }
 
+    public static function flush()
+    {
+        static::$cache === null and static::$cache = Di::getDefault()->getShared('cache');
+        return static::$cache->flush();
+    }
+
     public static function get($key, $default = null)
     {
         static::$cache === null and static::$cache = Di::getDefault()->getShared('cache');
