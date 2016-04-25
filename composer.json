@@ -1,6 +1,7 @@
 {
     "name": "phwoolcon/phwoolcon",
     "description": "Phalcon + Swoole",
+    "keywords": ["phwoolcon", "phalcon", "swoole"],
     "type": "library",
     "license": "Apache-2.0",
     "authors": [
