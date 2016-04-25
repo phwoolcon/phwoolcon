@@ -71,7 +71,7 @@ function throw404Exception()
     throw new NotFoundException(json_encode([
         'error_code' => 404,
         'error_msg' => '404 Not Found',
-    ]), 404, ['content-type' => 'application/json']);
+    ]), ['content-type' => 'application/json']);
 }
 
 function url($path, $queries = [], $secure = null)
