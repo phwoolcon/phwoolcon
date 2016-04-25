@@ -2,7 +2,7 @@
 Phalcon + Swoole
 
 The purpose of this library is to create a high performance web application,
-which can both run in traditional php-fpm mode and service mode.
+which can run in traditional php-fpm mode and service mode.
 
 In service mode, you gain extreme speed for your application.
 
