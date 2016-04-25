@@ -1,5 +1,11 @@
-# phwoolcon
+# Phwoolcon
 Phalcon + Swoole
+
+***
+
+**WARNING**: This library is in very early stage of development, use at your own risk!
+
+***
 
 The purpose of this library is to create a high performance web application,
 which can run in traditional php-fpm mode and service mode.
@@ -14,5 +20,5 @@ This is the Phwoolcon library, you may use [Phwoolcon Bootstrap](https://github.
 Or add this library to your project by composer:
 
 ```
-composer require phwoolcon/phwoolcon
+composer require "phwoolcon/phwoolcon":"dev-master"
 ```
