@@ -60,6 +60,6 @@ class Config
 
         $di->setShared('config', $config);
         static::$config = $config->toArray();
-        Config::get('app.load_config_from_db') and static::loadDb($config);
+        Config::get('database.default') and static::loadDb($config);
     }
 }
