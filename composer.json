@@ -13,6 +13,13 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mcrypt": "*",
+        "ext-openssl": "*",
+        "ext-PDO": "*",
+        "ext-phalcon": "*",
+        "ext-swoole": "*",
         "symfony/console": "3.0.*"
     },
     "autoload": {
