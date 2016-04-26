@@ -1,6 +1,20 @@
 <?php
-use Phwoolcon\Exception\NotFoundException;
 use Phalcon\Di;
+use Phwoolcon\I18n;
+
+/**
+ * Translate
+ *
+ * @param string     $string
+ * @param array|null $params
+ * @param string     $package
+ *
+ * @return string
+ */
+function __($string, array $params = null, $package = null)
+{
+    return I18n::translate($string, $params, $package);
+}
 
 /**
  * Safely get child value from an array or an object
@@ -64,14 +78,6 @@ function showTrace($exit = true, $print = true)
 function storagePath($path = null)
 {
     return Di::getDefault()['ROOT_PATH'] . '/storage' . ($path ? '/' . $path : '');
-}
-
-function throw404Exception()
-{
-    throw new NotFoundException(json_encode([
-        'error_code' => 404,
-        'error_msg' => '404 Not Found',
-    ]), ['content-type' => 'application/json']);
 }
 
 function url($path, $queries = [], $secure = null)

@@ -46,11 +46,9 @@ class Config
 
     public static function register(Di $di)
     {
-        $defaultPath = $di['ROOT_PATH'] . '/config/*.php';
-        $defaultFiles = glob($defaultPath);
+        $defaultFiles = glob($di['CONFIG_PATH'] . '/*.php');
         $environment = isset($_SERVER['PHALCON_ENV']) ? $_SERVER['PHALCON_ENV'] : 'production';
-        $environmentPath = $di['ROOT_PATH'] . '/config/' . $environment . '/*.php';
-        $environmentFiles = glob($environmentPath);
+        $environmentFiles = glob($di['CONFIG_PATH'] . '/' . $environment . '/*.php');
 
         $config = new PhalconConfig(static::loadFiles($defaultFiles));
         $environmentSettings = static::loadFiles($environmentFiles);

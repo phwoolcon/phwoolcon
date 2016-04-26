@@ -3,8 +3,37 @@ namespace Phwoolcon;
 
 use Phalcon\Mvc\Controller as PhalconController;
 
+/**
+ * Class Controller
+ * @package Phwoolcon
+ *
+ * @property View $view
+ */
 abstract class Controller extends PhalconController
 {
+    protected $pageTitles = [];
+
+    public function addPageTitle($title)
+    {
+        $this->pageTitles[] = $title;
+    }
+
+    public function getPageTitle()
+    {
+        return implode(Config::get('view.title_separator'), array_reverse($this->pageTitles));
+    }
+
+    public function initialize()
+    {
+        $this->pageTitles = [__(Config::get('view.title_suffix'))];
+        $this->view->reset();
+    }
+
+    public function render($path, $view, array $params = [])
+    {
+        $params['page_title'] = $this->getPageTitle();
+        $this->view->render($path, $view, $params);
+    }
 
     /**
      * response json content
@@ -104,19 +133,6 @@ abstract class Controller extends PhalconController
         } else {
             return $this->view->setVar($name, $value);
         }
-    }
-
-    /**
-     * render template to client
-     *
-     * @link https://docs.phalconphp.com/zh/latest/reference/volt.html
-     * @param      $template
-     * @param null $params
-     * @return bool|View
-     */
-    protected function view($template, $params = null)
-    {
-        return $this->view->render('', $template, $params);
     }
 
     /**
