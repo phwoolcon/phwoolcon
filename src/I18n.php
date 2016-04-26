@@ -56,7 +56,7 @@ class I18n extends Adapter
         if (strpos($locale, '..') || !is_dir($this->localePath . '/' . $locale)) {
             $locale = $this->defaultLocale;
         }
-        Session::set('current_locale', $locale);
+        Session::set('current_locale', $this->currentLocale = $locale);
     }
 
     public function loadLocale($locale)
