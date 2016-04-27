@@ -32,8 +32,8 @@ class I18n extends Adapter
         $this->detectClientLocale = Config::get('i18n.detect_client_locale');
         $this->defaultLocale = $this->currentLocale = Config::get('i18n.default_locale');
         $this->localePath = Config::get('i18n.locale_path');
-        $this->_reset();
         $this->loadLocale($this->defaultLocale);
+        $this->_reset();
     }
 
     protected function _reset()
@@ -42,7 +42,7 @@ class I18n extends Adapter
             return;
         }
         if ($locale = Session::get('current_locale')) {
-            $this->currentLocale = $locale;
+            $this->loadLocale($this->currentLocale = $locale);
             return;
         }
         if ($this->detectClientLocale) {
@@ -57,21 +57,26 @@ class I18n extends Adapter
             $locale = $this->defaultLocale;
         }
         Session::set('current_locale', $this->currentLocale = $locale);
+        $this->loadLocale($locale);
     }
 
-    public function loadLocale($locale)
+    public function loadLocale($locale, $force = false)
     {
-        empty($this->locale[$locale]) and $this->locale[$locale] = [
-            'combined' => [],
-            'packages' => [],
-        ];
+        if (($useCache = !$force) && isset($this->locale[$locale])) {
+            return $this;
+        }
+        if (($cached = Cache::get($cacheKey = 'locale.' . $locale)) && $useCache) {
+            $this->locale[$locale] = $cached;
+            return $this;
+        }
         $packages = [];
         $combined = [];
         foreach (glob($this->localePath . '/' . $this->defaultLocale . '/*.php') as $file) {
             $package = pathinfo($file, PATHINFO_FILENAME);
             $combined = array_merge($combined, $packages[$package] = include $file);
         }
-        $this->locale[$locale] = array_merge_recursive($this->locale[$locale], compact('combined', 'packages'));
+        Cache::set($cacheKey, $this->locale[$locale] = compact('combined', 'packages'));
+        return $this;
     }
 
     public function query($string, $params = null, $package = null)

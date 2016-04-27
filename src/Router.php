@@ -26,7 +26,9 @@ class Router extends PhalconRouter
         $routes = is_file($file = static::$di['ROOT_PATH'] . '/app/routes.php') ? include $file : [];
         foreach ($routes as $method => $methodRoutes) {
             $method == 'ANY' and $method = null;
+            $method == 'GET' and $method = ['GET', 'HEAD'];
             foreach ($methodRoutes as $uri => $handler) {
+                $uri{0} == '/' or $uri = '/' . $uri;
                 if (is_string($handler)) {
                     list($controller, $action) = explode('::', $handler);
                     $handler = compact('controller', 'action');
@@ -57,6 +59,7 @@ class Router extends PhalconRouter
                 $controller->{$method}();
                 $response = $controller->response;
             }
+            Session::end();
             return $response;
         }
         static::throw404Exception();

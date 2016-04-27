@@ -8,6 +8,11 @@ class Config
 {
     protected static $config;
 
+    public static function clearCache()
+    {
+        is_file($cacheFile = storagePath('cache/config.php')) and unlink($cacheFile);
+    }
+
     public static function environment()
     {
         return static::get('environment');
@@ -46,6 +51,11 @@ class Config
 
     public static function register(Di $di)
     {
+        if (is_file($cacheFile = storagePath('cache/config.php'))) {
+            static::$config = include $cacheFile;
+            Config::get('app.cache_config') or static::clearCache();
+            return;
+        }
         $defaultFiles = glob($di['CONFIG_PATH'] . '/*.php');
         $environment = isset($_SERVER['PHALCON_ENV']) ? $_SERVER['PHALCON_ENV'] : 'production';
         $environmentFiles = glob($di['CONFIG_PATH'] . '/' . $environment . '/*.php');
@@ -59,5 +69,9 @@ class Config
         $di->setShared('config', $config);
         static::$config = $config->toArray();
         Config::get('database.default') and static::loadDb($config);
+        if (Config::get('app.cache_config')) {
+            is_dir($cacheDir = dirname($cacheFile)) or mkdir($cacheDir, 0777, true);
+            file_put_contents($cacheFile, sprintf('<?php return %s;', var_export(static::$config, true)));
+        }
     }
 }

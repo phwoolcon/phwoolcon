@@ -16,6 +16,64 @@ function __($string, array $params = null, $package = null)
     return I18n::translate($string, $params, $package);
 }
 
+if (!function_exists('array_forget')) {
+    /**
+     * Remove an array item from a given array using "dot" notation.
+     *
+     * @param array  $array
+     * @param string $key
+     * @param string $separator
+     * @return void
+     */
+    function array_forget(&$array, $key, $separator = '.')
+    {
+        $keys = explode($separator, $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                return;
+            }
+            $array = &$array[$key];
+        }
+        unset($array[array_shift($keys)]);
+    }
+}
+
+if (!function_exists('array_set')) {
+    /**
+     * Set an array item to a given value using "dot" notation.
+     *
+     * If no key is given to the method, the entire array will be replaced.
+     *
+     * @param array  $array
+     * @param string $key
+     * @param mixed  $value
+     * @param string $separator
+     * @return array
+     */
+    function array_set(&$array, $key, $value, $separator = '.')
+    {
+        if (is_null($key)) {
+            return $array = $value;
+        }
+        $keys = explode($separator, $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+
+            // If the key doesn't exist at this depth, we will just create an empty array
+            // to hold the next value, allowing us to create the arrays to hold final
+            // values at the correct depth. Then we'll keep digging into the array.
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                $array[$key] = [];
+            }
+
+            $array = &$array[$key];
+        }
+        $array[array_shift($keys)] = $value;
+        return $array;
+    }
+}
+
 /**
  * Safely get child value from an array or an object
  *
@@ -50,6 +108,9 @@ function fnGet(&$array, $key, $default = null, $separator = '/')
             $tmp = property_exists($array, $firstKey) ? $array->$firstKey : null;
         } else {
             $tmp = isset($array[$firstKey]) ? $array[$firstKey] : null;
+        }
+        if ($tmp === null) {
+            return $default;
         }
         return fnGet($tmp, substr($key, $subKeyPos + 1), $default, $separator);
     }

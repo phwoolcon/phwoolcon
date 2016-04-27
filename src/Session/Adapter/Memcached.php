@@ -4,11 +4,12 @@ namespace Phwoolcon\Session\Adapter;
 
 use Phalcon\Session\Adapter\Libmemcached;
 use Phwoolcon\Config;
-use Phwoolcon\Session\StartTrait;
+use Phwoolcon\Session\AdapterInterface;
+use Phwoolcon\Session\AdapterTrait;
 
-class Memcached extends Libmemcached
+class Memcached extends Libmemcached implements AdapterInterface
 {
-    use StartTrait;
+    use AdapterTrait;
 
     public function __construct(array $options = [])
     {
