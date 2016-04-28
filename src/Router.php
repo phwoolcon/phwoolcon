@@ -5,14 +5,22 @@ use Closure;
 use Phalcon\Di;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Router as PhalconRouter;
+use Phalcon\Mvc\Router\Route;
 use Phwoolcon\Exception\NotFoundException;
 
+/**
+ * Class Router
+ * @package Phwoolcon
+ *
+ * @method Route add($pattern, $paths = null, $httpMethods = null, $position = Router::POSITION_LAST)
+ */
 class Router extends PhalconRouter
 {
     /**
      * @var Di
      */
     protected static $di;
+    protected static $disableSession;
     /**
      * @var static
      */
@@ -24,20 +32,28 @@ class Router extends PhalconRouter
         parent::__construct(false);
         $this->removeExtraSlashes(true);
         $routes = is_file($file = static::$di['ROOT_PATH'] . '/app/routes.php') ? include $file : [];
+        is_array($routes) and $this->addRoutes($routes);
+    }
+
+    public function addRoutes(array $routes, $prefix = null, $filter = null) {
+        if ($filter) {
+            is_callable($filter) or $filter = [$filter, 'run'];
+            is_callable($filter) or $filter = null;
+        }
+        $prefix and $prefix = rtrim($prefix, '/');
         foreach ($routes as $method => $methodRoutes) {
-            $method == 'ANY' and $method = null;
-            $method == 'GET' and $method = ['GET', 'HEAD'];
             foreach ($methodRoutes as $uri => $handler) {
                 $uri{0} == '/' or $uri = '/' . $uri;
-                if (is_string($handler)) {
-                    list($controller, $action) = explode('::', $handler);
-                    $handler = compact('controller', 'action');
-                } else if ($handler instanceof Closure) {
-                    $handler = ['controller' => $handler];
-                }
-                $this->add($uri, $handler, $method);
+                $prefix and $uri = $prefix . $uri;
+                $uri == '/' or $uri = rtrim($uri, '/');
+                $this->quickAdd($method, $uri, $handler, $filter);
             }
         }
+    }
+
+    public static function disableSession()
+    {
+        static::$disableSession = true;
     }
 
     public static function dispatch($uri = null)
@@ -45,7 +61,8 @@ class Router extends PhalconRouter
         static::$router === null and static::$router = static::$di->getShared('router');
         $router = static::$router;
         $router->handle($uri);
-        if ($router->getMatchedRoute()) {
+        if ($route = $router->getMatchedRoute()) {
+            static::$disableSession or Session::start();
             if (($controllerClass = $router->getControllerName()) instanceof Closure) {
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
@@ -69,6 +86,38 @@ class Router extends PhalconRouter
     public static function generate404Page()
     {
         return View::make('errors', '404', ['page_title' => '404 NOT FOUND']);
+    }
+
+    public function prefix($prefix, array $routes, $filter = null)
+    {
+        $this->addRoutes($routes, $prefix, $filter);
+        return $this;
+    }
+
+    public function quickAdd($method, $uri, $handler, $filter = null)
+    {
+        $uri{0} == '/' or $uri = '/' . $uri;
+        if (is_array($handler)) {
+            if (!$filter && isset($handler['filter'])) {
+                $filter = $handler['filter'];
+                unset($handler['filter']);
+                is_callable($filter) or $filter = [$filter, 'run'];
+                is_callable($filter) or $filter = null;
+            }
+            $handler = reset($handler);
+            return $this->quickAdd($method, $uri, $handler, $filter);
+        }
+        if (is_string($handler)) {
+            list($controller, $action) = explode('::', $handler);
+            $handler = compact('controller', 'action');
+        } else if ($handler instanceof Closure) {
+            $handler = ['controller' => $handler];
+        }
+        $method == 'ANY' and $method = null;
+        $method == 'GET' and $method = ['GET', 'HEAD'];
+        $route = $this->add($uri, $handler, $method);
+        $filter and $route->beforeMatch($filter);
+        return $route;
     }
 
     public static function register(Di $di)
