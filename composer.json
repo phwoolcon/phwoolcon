@@ -23,6 +23,7 @@
         "symfony/console": "3.0.*"
     },
     "autoload": {
-        "psr-4": {"Phwoolcon\\": "src"}
+        "psr-4": {"Phwoolcon\\": "src"},
+        "files": ["functions.php"]
     }
 }
