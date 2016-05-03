@@ -14,5 +14,5 @@ interface FilterInterface
      * @param Router $router
      * @return bool
      */
-    public static function run($uri, $route, $router);
+    public function __invoke($uri, $route, $router);
 }

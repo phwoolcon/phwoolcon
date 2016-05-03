@@ -26,9 +26,15 @@ trait FilterTrait
      * @param Router $router
      * @return bool
      */
-    public static function run($uri, $route, $router)
+    public function __invoke($uri, $route, $router)
+    {
+        static::$instance or static::instance();
+        return static::$instance->filter($uri, $route, $router);
+    }
+
+    public static function instance()
     {
         static::$instance or static::$instance = new static;
-        return static::$instance->filter($uri, $route, $router);
+        return static::$instance;
     }
 }

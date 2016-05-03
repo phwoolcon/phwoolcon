@@ -36,10 +36,6 @@ class Router extends PhalconRouter
     }
 
     public function addRoutes(array $routes, $prefix = null, $filter = null) {
-        if ($filter) {
-            is_callable($filter) or $filter = [$filter, 'run'];
-            is_callable($filter) or $filter = null;
-        }
         $prefix and $prefix = rtrim($prefix, '/');
         foreach ($routes as $method => $methodRoutes) {
             foreach ($methodRoutes as $uri => $handler) {
@@ -66,7 +62,10 @@ class Router extends PhalconRouter
             if (($controllerClass = $router->getControllerName()) instanceof Closure) {
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
-                    $response = new Response($response);
+                    /* @var Response $realResponse */
+                    $realResponse = static::$di->getShared('response');
+                    $realResponse->setContent($response);
+                    $response = $realResponse;
                 }
             } else {
                 /* @var Controller $controller */
@@ -101,11 +100,8 @@ class Router extends PhalconRouter
             if (!$filter && isset($handler['filter'])) {
                 $filter = $handler['filter'];
                 unset($handler['filter']);
-                is_callable($filter) or $filter = [$filter, 'run'];
-                is_callable($filter) or $filter = null;
             }
-            $handler = reset($handler);
-            return $this->quickAdd($method, $uri, $handler, $filter);
+            empty($handler['controller']) and $handler = reset($handler);
         }
         if (is_string($handler)) {
             list($controller, $action) = explode('::', $handler);
@@ -116,6 +112,7 @@ class Router extends PhalconRouter
         $method == 'ANY' and $method = null;
         $method == 'GET' and $method = ['GET', 'HEAD'];
         $route = $this->add($uri, $handler, $method);
+        is_callable($filter) or $filter = null;
         $filter and $route->beforeMatch($filter);
         return $route;
     }
