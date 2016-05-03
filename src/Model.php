@@ -125,22 +125,27 @@ abstract class Model extends PhalconModel
     /**
      * @param array | string | int $conditions
      * @param array                $bind
+     * @param string               $order
+     * @param string               $columns
      * @return $this
      */
-    public static function findFirstSimple($conditions, $bind = [])
+    public static function findFirstSimple($conditions, $bind = [], $order = null, $columns = null)
     {
-        $params = static::buildParams($conditions, $bind);
+        $params = static::buildParams($conditions, $bind, $order, $columns);
         return static::findFirst($params);
     }
 
     /**
-     * @param       $conditions
-     * @param array $bind
+     * @param            $conditions
+     * @param array      $bind
+     * @param string     $order
+     * @param string     $columns
+     * @param string|int $limit
      * @return $this
      */
-    public static function findSimple($conditions = [], $bind = [])
+    public static function findSimple($conditions = [], $bind = [], $order = null, $columns = null, $limit = null)
     {
-        $params = static::buildParams($conditions, $bind);
+        $params = static::buildParams($conditions, $bind, $order, $columns, $limit);
         return static::find($params);
     }
 
@@ -156,11 +161,14 @@ abstract class Model extends PhalconModel
     }
 
     /**
-     * @param       $conditions
+     * @param $conditions
      * @param array $bind
+     * @param string $order
+     * @param string $columns
+     * @param string|int $limit
      * @return array
      */
-    public static function buildParams($conditions = [], $bind = [])
+    public static function buildParams($conditions = [], $bind = [], $order = null, $columns = null, $limit = null)
     {
         $params = [];
         if (empty($conditions)) {
@@ -189,7 +197,21 @@ abstract class Model extends PhalconModel
             $params['conditions'] = $conditions;
             $params['bind'] = $bind;
         }
+        if (!is_null($order) && is_string($order)) {
+            $params['order'] = $order;
+        }
+        if (!is_null($columns)) {
+            $params['columns'] = is_array($columns) ? explode(',', $columns) : $columns;
+        }
+        if (!is_null($limit)) {
+            if (is_int($limit)) {
+                $params['limit'] = $limit;
+            } elseif (is_string($limit) && strpos($limit, ',') && count($limitOffset = explode(',', $limit)) == 2) {
+                list($limit, $offset) = $limitOffset;
+                $params['limit'] = intval(trim($limit));
+                $params['offset'] = intval(trim($offset));
+            }
+        }
         return $params;
     }
-
 }

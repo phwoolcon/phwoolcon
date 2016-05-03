@@ -116,6 +116,11 @@ function fnGet(&$array, $key, $default = null, $separator = '/')
     }
 }
 
+function migrationPath($path = null)
+{
+    return Di::getDefault()['MIGRATION_PATH'] . ($path ? '/' . $path : '');
+}
+
 /**
  * Show execution trace for debugging
  *
@@ -153,6 +158,7 @@ function url($path, $queries = [], $secure = null)
     $base = trim(dirname($base), '/');
     $base and $base .= '/';
     $url = $protocol . $host . '/' . $base;
+    $path{0} == '/' and $path = substr($path, 1);
     $url .= $path;
     if ($queries && is_array($queries)) {
         $queries = http_build_query($queries);
