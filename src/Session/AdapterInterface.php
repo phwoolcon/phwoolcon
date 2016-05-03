@@ -9,5 +9,5 @@ interface AdapterInterface
 
     public function readCookieAndStart();
 
-    public function regenerateIdAndSetCookie();
+    public function setCookie();
 }
