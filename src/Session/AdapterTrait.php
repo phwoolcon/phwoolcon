@@ -2,7 +2,6 @@
 
 namespace Phwoolcon\Session;
 
-use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 
 /**
@@ -37,6 +36,25 @@ trait AdapterTrait
         return $value;
     }
 
+    public function generateCsrfToken()
+    {
+        $this->set('csrf_token', $token = $this->generateRandomString());
+        $this->set('csrf_token_expire', time() + $this->_options['csrf_token_lifetime']);
+        return $token;
+    }
+
+    public function generateRandomString()
+    {
+        return md5(openssl_random_pseudo_bytes(32));
+    }
+
+    public function getCsrfToken()
+    {
+        return ($this->get('csrf_token_expire') > time() && $token = $this->get('csrf_token')) ?
+            $token :
+            $this->generateCsrfToken();
+    }
+
     protected function isValidSid($value)
     {
         return isset($value{31}) && !isset($value{32}) && ctype_xdigit($value);
@@ -58,7 +76,7 @@ trait AdapterTrait
     public function regenerateId($deleteOldSession = true)
     {
         session_regenerate_id($deleteOldSession);
-        $this->setId(md5(openssl_random_pseudo_bytes(32)));
+        $this->setId($this->generateRandomString());
         $this->cookieRenewedAt = 0;
         return $this;
     }
