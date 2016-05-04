@@ -19,8 +19,10 @@
         "ext-openssl": "*",
         "ext-PDO": "*",
         "ext-phalcon": "*",
-        "ext-swoole": "*",
         "symfony/console": "3.0.*"
+    },
+    "suggest": {
+        "ext-swoole": "*"
     },
     "autoload": {
         "psr-4": {"Phwoolcon\\": "src"},
