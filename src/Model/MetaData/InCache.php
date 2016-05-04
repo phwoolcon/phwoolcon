@@ -18,11 +18,7 @@ use Phalcon\Mvc\Model\Exception;
 class InCache extends MetaData
 {
     protected $_metaData = [];
-
-    protected function prepareVirtualPath($key, $separator = '_')
-    {
-        return strtr($key, ['/' => $separator, '\\' => $separator, ':' => $separator]);
-    }
+    protected $_cachedData = [];
 
     /**
      * Reads meta-data from files
@@ -32,7 +28,8 @@ class InCache extends MetaData
      */
     public function read($key)
     {
-        return Cache::get($this->prepareVirtualPath($key));
+        $this->_cachedData or $this->_cachedData = Cache::get('model-metadata');
+        return isset($this->_cachedData[$key]) ? $this->_cachedData[$key] : null;
     }
 
     /**
@@ -43,6 +40,14 @@ class InCache extends MetaData
      */
     public function write($key, $data)
     {
-        Cache::set($this->prepareVirtualPath($key), $data, Cache::TTL_ONE_MONTH);
+        $this->_cachedData[$key] = $data;
+        Cache::set('model-metadata', $this->_cachedData, Cache::TTL_ONE_MONTH);
+    }
+
+    public function reset()
+    {
+        parent::reset();
+        $this->_cachedData = [];
+        Cache::delete('model-metadata');
     }
 }

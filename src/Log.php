@@ -26,6 +26,11 @@ class Log extends Logger
         static::log(static::ERROR, $message, $context);
     }
 
+    public static function info($message = null, array $context = [])
+    {
+        static::log(static::INFO, $message, $context);
+    }
+
     public static function log($type, $message = null, array $context = [])
     {
         static::$logger or static::$logger = Di::getDefault()->getShared('log');
