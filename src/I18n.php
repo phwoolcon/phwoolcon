@@ -20,6 +20,7 @@ class I18n extends Adapter
     protected $currentLocale;
     protected $multiLocale = false;
     protected $detectClientLocale = false;
+    protected $options = [];
     /**
      * @var \Phalcon\Http\Request
      */
@@ -28,10 +29,11 @@ class I18n extends Adapter
     public function __construct(array $options = [])
     {
         parent::__construct($options);
-        $this->multiLocale = Config::get('multi_locale');
-        $this->detectClientLocale = Config::get('i18n.detect_client_locale');
-        $this->defaultLocale = $this->currentLocale = Config::get('i18n.default_locale');
-        $this->localePath = Config::get('i18n.locale_path');
+        $this->multiLocale = $options['multi_locale'];
+        $this->detectClientLocale = $options['detect_client_locale'];
+        $this->defaultLocale = $this->currentLocale = $options['default_locale'];
+        $this->localePath = $options['locale_path'];
+        $this->options = $options;
         $this->loadLocale($this->defaultLocale);
         $this->_reset();
     }
@@ -60,12 +62,29 @@ class I18n extends Adapter
         $this->loadLocale($locale);
     }
 
+    public static function clearCache()
+    {
+        static::$instance or static::$instance = static::$di->getShared('i18n');
+        foreach (glob(static::$instance->localePath . '/*', GLOB_ONLYDIR) as $dir) {
+            $locale = basename($dir);
+            Cache::delete('locale.' . $locale);
+        }
+    }
+
+    public static function getCurrentLocale()
+    {
+        static::$instance or static::$instance = static::$di->getShared('i18n');
+        return static::$instance->currentLocale;
+    }
+
     public function loadLocale($locale, $force = false)
     {
-        if (($useCache = !$force) && isset($this->locale[$locale])) {
+        if (isset($this->locale[$locale]) && !$force) {
             return $this;
         }
-        if (($cached = Cache::get($cacheKey = 'locale.' . $locale)) && $useCache) {
+        $useCache = $this->options['cache_locale'];
+        $cacheKey = 'locale.' . $locale;
+        if ($useCache && !$force && $cached = Cache::get($cacheKey)) {
             $this->locale[$locale] = $cached;
             return $this;
         }
@@ -75,7 +94,8 @@ class I18n extends Adapter
             $package = pathinfo($file, PATHINFO_FILENAME);
             $combined = array_merge($combined, $packages[$package] = include $file);
         }
-        Cache::set($cacheKey, $this->locale[$locale] = compact('combined', 'packages'));
+        $this->locale[$locale] = compact('combined', 'packages');
+        $useCache and Cache::set($cacheKey, $this->locale[$locale]);
         return $this;
     }
 
@@ -95,7 +115,7 @@ class I18n extends Adapter
     {
         static::$di = $di;
         $di->setShared('i18n', function () {
-            return new static;
+            return new static(Config::get('i18n'));
         });
     }
 
