@@ -36,6 +36,11 @@ class View extends PhalconView
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }
 
+    public static function getPageLanguage()
+    {
+        return strtr(static::getParam('page_language', I18n::getCurrentLocale()), ['_' => '-']);
+    }
+
     public static function getParam($key, $default = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
