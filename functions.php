@@ -151,14 +151,19 @@ function url($path, $queries = [], $secure = null)
     if (substr($path, 0, 2) == '//' || ($prefix = substr($path, 0, 7)) == 'http://' || $prefix == 'https:/') {
         return $path;
     }
-    $secure === null and $secure = Di::getDefault()['request']->isSecureRequest();
+    $path = trim($path, '/');
+    if (Config::get('app.enable_https')) {
+        $secure === null && (null !== $configValue = Config::get('app.secure_routes.' . $path)) and $secure = $configValue;
+        $secure === null and $secure = Di::getDefault()['request']->isSecureRequest();
+    } else {
+        $secure = false;
+    }
     $protocol = $secure ? 'https://' : 'http://';
     $host = fnGet($_SERVER, 'HTTP_HOST');
     $base = $_SERVER['SCRIPT_NAME'];
     $base = trim(dirname($base), '/');
     $base and $base .= '/';
     $url = $protocol . $host . '/' . $base;
-    $path{0} == '/' and $path = substr($path, 1);
     $url .= $path;
     if ($queries && is_array($queries)) {
         $queries = http_build_query($queries);
