@@ -14,5 +14,6 @@ abstract class Admin extends Controller
         parent::initialize();
         $this->addPageTitle(__(Config::get('view.admin.title_suffix')));
         $this->view->setLayout(Config::get('view.admin.layout'));
+        $this->view->isAdmin(true);
     }
 }
