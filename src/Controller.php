@@ -18,11 +18,6 @@ abstract class Controller extends PhalconController
         $this->pageTitles[] = $title;
     }
 
-    public function getPageTitle()
-    {
-        return implode(Config::get('view.title_separator'), array_reverse($this->pageTitles));
-    }
-
     public function initialize()
     {
         $this->pageTitles = [__(Config::get('view.title_suffix'))];
@@ -31,7 +26,7 @@ abstract class Controller extends PhalconController
 
     public function render($path, $view, array $params = [])
     {
-        $params['page_title'] = $this->getPageTitle();
+        $params['page_title'] = $this->pageTitles;
         $this->view->render($path, $view, $params);
     }
 

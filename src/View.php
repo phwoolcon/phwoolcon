@@ -39,9 +39,34 @@ class View extends PhalconView
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }
 
+    public static function getConfig($key = null)
+    {
+        static::$instance or static::$instance = static::$di->getShared('view');
+        return fnGet(static::$instance->config, $key);
+    }
+
+    public static function getPageDescription()
+    {
+        return static::getParam('page_description');
+    }
+
+    public static function getPageKeywords()
+    {
+        $keywords = static::getParam('page_keywords');
+        is_array($keywords) and $keywords = implode(',', $keywords);
+        return $keywords;
+    }
+
     public static function getPageLanguage()
     {
         return strtr(static::getParam('page_language', I18n::getCurrentLocale()), ['_' => '-']);
+    }
+
+    public static function getPageTitle()
+    {
+        $title = static::getParam('page_title');
+        is_array($title) and $title = implode(static::getConfig('title_separator'), array_reverse($title));
+        return $title;
     }
 
     public static function getParam($key, $default = null)
@@ -97,6 +122,7 @@ class View extends PhalconView
         $this->_content = null;
         $this->_templatesBefore = null;
         $this->_templatesAfter = null;
+        $this->_params = [];
         return $this;
     }
 
