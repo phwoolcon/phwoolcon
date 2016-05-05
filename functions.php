@@ -81,11 +81,11 @@ if (!function_exists('array_set')) {
  * Assume you want to get value from a multidimensional array like: $array = ['l1' => ['l2' => 'value']],
  * then you can try following:
  * $l1 = fnGet($array, 'l1'); // returns ['l2' => 'value']
- * $l2 = fnGet($array, 'l1/l2'); // returns 'value'
+ * $l2 = fnGet($array, 'l1.l2'); // returns 'value'
  * $undefined = fnGet($array, 'l3'); // returns null
  *
  * You can specify default value for undefined keys, and the key separator:
- * $l2 = fnGet($array, 'l1.l2', null, '.'); // returns 'value'
+ * $l2 = fnGet($array, 'l1/l2', null, '/'); // returns 'value'
  * $undefined = fnGet($array, 'l3', 'default value'); // returns 'default value'
  *
  * @param array|object $array     Subject array or object
@@ -95,7 +95,7 @@ if (!function_exists('array_set')) {
  *
  * @return mixed
  */
-function fnGet(&$array, $key, $default = null, $separator = '/')
+function fnGet(&$array, $key, $default = null, $separator = '.')
 {
     if (false === $subKeyPos = strpos($key, $separator)) {
         if (is_object($array)) {
