@@ -116,6 +116,11 @@ function fnGet(&$array, $key, $default = null, $separator = '.')
     }
 }
 
+function isHttpUrl($url)
+{
+    return substr($url, 0, 2) == '//' || ($prefix = substr($url, 0, 7)) == 'http://' || $prefix == 'https:/';
+}
+
 function migrationPath($path = null)
 {
     return Di::getDefault()['MIGRATION_PATH'] . ($path ? '/' . $path : '');
@@ -148,7 +153,7 @@ function storagePath($path = null)
 
 function url($path, $queries = [], $secure = null)
 {
-    if (substr($path, 0, 2) == '//' || ($prefix = substr($path, 0, 7)) == 'http://' || $prefix == 'https:/') {
+    if (isHttpUrl($path)) {
         return $path;
     }
     $path = trim($path, '/');

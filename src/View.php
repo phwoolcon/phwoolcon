@@ -2,6 +2,11 @@
 namespace Phwoolcon;
 
 use Exception;
+use Phalcon\Assets\Filters\Cssmin;
+use Phalcon\Assets\Filters\Jsmin;
+use Phalcon\Assets\Manager;
+use Phwoolcon\Assets\Resource\Css;
+use Phwoolcon\Assets\Resource\Js;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Di;
 use Phalcon\Mvc\View as PhalconView;
@@ -20,6 +25,11 @@ class View extends PhalconView
     protected static $instance;
     protected $config = [];
     protected $_theme;
+    protected $_loadedThemes = [];
+    /**
+     * @var Manager
+     */
+    public $assets;
 
     public function __construct($config = null)
     {
@@ -37,6 +47,54 @@ class View extends PhalconView
         $silence = $silence && !$this->config['debug'];
         $this->config['debug'] and $this->_options['debug_wrapper'] = $viewPath;
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
+    }
+
+    public static function assets($collectionName)
+    {
+        static::$instance or static::$instance = static::$di->getShared('view');
+        $view = static::$instance;
+        if (!$view->assets) {
+            $view->assets = static::$di->getShared('assets');
+        }
+        set_time_limit(1);
+        $view->loadAssets($view->config['assets'], $view->_theme);
+        $view->loadAssets($view->config['admin']['assets'], $view->_theme, true);
+        $type = substr($collectionName, strrpos($collectionName, '-') + 1);
+        $collectionName = $view->_theme . '-' . $collectionName;
+        $view->isAdmin() and $collectionName = 'admin-' . $collectionName;
+        try {
+            switch ($type) {
+                case 'js':
+                    $view->assets->outputJs($collectionName);
+                    break;
+                case 'css':
+                    $view->assets->outputCss($collectionName);
+                    break;
+            }
+        } catch (Exception $e) {
+            Log::exception($e);
+        }
+    }
+
+    public static function generateBodyJs()
+    {
+        static::assets('body-js');
+    }
+
+    public static function generateHeadCss()
+    {
+        static::assets('head-css');
+    }
+
+    public static function generateHeadJs()
+    {
+        static::assets('head-js');
+    }
+
+    public static function generateIeHack()
+    {
+        static::assets('ie-hack-css');
+        static::assets('ie-hack-js');
     }
 
     public static function getConfig($key = null)
@@ -79,9 +137,50 @@ class View extends PhalconView
     {
         if ($flag !== null) {
             $this->_options['is_admin'] = $flag = (bool)$flag;
-            $this->_theme = $flag ? 'admin/' . $this->config['admin']['theme'] : $this->config['theme'];
+            $this->_theme = $flag ? $this->config['admin']['theme'] : $this->config['theme'];
         }
         return !empty(static::$instance->_options['is_admin']);
+    }
+
+    public function loadAssets($assets, $theme, $isAdmin = false)
+    {
+        $prefix = $isAdmin ? 'admin-' : '';
+        if (isset($this->_loadedThemes[$prefix . $theme])) {
+            return $this;
+        }
+        $this->_loadedThemes[$prefix . $theme] = true;
+        $basePath = $this->config['options']['assets_options']['base_path'];
+        $assetsDir = '/' . $this->config['options']['assets_options']['assets_dir'] . '/';
+        $resourcePath = $assetsDir . ($isAdmin ? 'admin/' . $theme : $theme) . '/';
+        $compiledPath = $assetsDir . 'compiled/';
+        foreach ($assets as $collectionName => $resources) {
+            $resourceType = substr($collectionName, strrpos($collectionName, '-') + 1);
+            $collectionName = $theme . '-' . $collectionName;
+            $collectionName = $prefix . $collectionName;
+            $collection = $this->assets->collection($collectionName);
+            $collection->setSourcePath($basePath)
+                ->setTargetPath($basePath . $targetUri = $compiledPath . $collectionName . '.' . $resourceType)
+                ->setTargetUri(url($targetUri));
+            switch ($resourceType) {
+                case 'css':
+                    foreach ($resources as $item) {
+                        $isLocal = !isHttpUrl($item);
+                        $resource = new Css($isLocal ? $resourcePath . $item : $item, $isLocal, $isLocal);
+                        $collection->add($resource);
+                    }
+                    $collection->addFilter(new Cssmin());
+                    break;
+                case 'js':
+                    foreach ($resources as $item) {
+                        $isLocal = !isHttpUrl($item);
+                        $resource = new Js($isLocal ? $resourcePath . $item : $item, $isLocal, $isLocal);
+                        $collection->add($resource);
+                    }
+                    $collection->addFilter(new Jsmin());
+                    break;
+            }
+        }
+        return $this;
     }
 
     public static function make($path, $file, $params = null)
