@@ -60,6 +60,11 @@ class Router extends PhalconRouter
         }
     }
 
+    public static function disableCsrfCheck()
+    {
+        static::$disableCsrfCheck = true;
+    }
+
     public static function disableSession()
     {
         static::$disableSession = true;
