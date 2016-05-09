@@ -40,6 +40,7 @@ class View extends PhalconView
         $this->_theme = $config['theme'];
         $this->_layout = $config['default_layout'];
         $this->config = $config;
+        $this->registerEngines($config['engines']);
     }
 
     protected function _engineRender($engines, $viewPath, $silence, $mustClean, BackendInterface $cache = null)
@@ -119,6 +120,11 @@ class View extends PhalconView
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         return fnGet(static::$instance->config, $key);
+    }
+
+    public function getAbsoluteViewPath($view)
+    {
+        return $this->_viewsDir . $this->_theme . '/' . $view;
     }
 
     public static function getPageDescription()
