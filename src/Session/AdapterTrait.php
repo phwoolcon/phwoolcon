@@ -45,7 +45,7 @@ trait AdapterTrait
 
     public function generateRandomString()
     {
-        return md5(openssl_random_pseudo_bytes(32));
+        return bin2hex(openssl_random_pseudo_bytes(16));
     }
 
     public function getCsrfToken()
