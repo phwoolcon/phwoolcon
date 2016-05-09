@@ -23,6 +23,7 @@ class View extends PhalconView
      * @var static
      */
     protected static $instance;
+    protected static $cachedAssets = [];
     protected $config = [];
     protected $_theme;
     protected $_loadedThemes = [];
@@ -53,15 +54,22 @@ class View extends PhalconView
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         $view = static::$instance;
+        $useCache = $view->config['options']['assets_options']['cache_assets'];
         if (!$view->assets) {
             $view->assets = static::$di->getShared('assets');
+            $useCache and static::$cachedAssets = Cache::get('assets');
         }
-        set_time_limit(1);
-        $view->loadAssets($view->config['assets'], $view->_theme);
-        $view->loadAssets($view->config['admin']['assets'], $view->_theme, true);
         $type = substr($collectionName, strrpos($collectionName, '-') + 1);
         $collectionName = $view->_theme . '-' . $collectionName;
         $view->isAdmin() and $collectionName = 'admin-' . $collectionName;
+        if ($useCache && isset(static::$cachedAssets[$collectionName])) {
+            echo static::$cachedAssets[$collectionName];
+            return;
+        }
+
+        $view->loadAssets($view->config['assets'], $view->_theme);
+        $view->loadAssets($view->config['admin']['assets'], $view->_theme, true);
+        ob_start();
         try {
             switch ($type) {
                 case 'js':
@@ -74,6 +82,16 @@ class View extends PhalconView
         } catch (Exception $e) {
             Log::exception($e);
         }
+        $assets = ob_get_clean();
+        static::$cachedAssets[$collectionName] = $assets;
+        $useCache and Cache::set('assets', static::$cachedAssets);
+        echo $assets;
+    }
+
+    public static function clearAssetsCache()
+    {
+        static::$cachedAssets = [];
+        Cache::delete('assets');
     }
 
     public static function generateBodyJs()

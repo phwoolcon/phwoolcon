@@ -20,7 +20,7 @@ trait ResourceTrait
         return file_get_contents($this->_path, false, stream_context_create([
             'http' => [
                 'method' => 'GET',
-                'timeout' => 10,
+                'timeout' => 1,
             ],
         ]));
     }
