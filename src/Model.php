@@ -8,7 +8,9 @@ use Phalcon\Mvc\ModelInterface;
 
 abstract class Model extends PhalconModel
 {
+    protected static $distributionNodeId;
     protected $_data = [];
+    protected $table;
     protected $pk = 'id';
 
     public function __get($property)
@@ -36,6 +38,15 @@ abstract class Model extends PhalconModel
         return $this;
     }
 
+    public function generateId()
+    {
+        static::$distributionNodeId or static::$distributionNodeId = Config::get('distribution.node_id');
+        var_dump(static::$distributionNodeId);exit;
+        $id = '';
+        $this->setId($id);
+        return $this;
+    }
+
     public function getData($key = null)
     {
         return $key === null ? $this->_data : fnGet($this->_data, $key);
@@ -44,6 +55,11 @@ abstract class Model extends PhalconModel
     public function getId()
     {
         return $this->getData($this->pk);
+    }
+    
+    protected function onConstruct()
+    {
+        $this->setSource($this->table);
     }
 
     public function setData($key, $value = null)
