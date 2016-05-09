@@ -4,7 +4,7 @@ namespace Phwoolcon\Exception;
 use Phalcon\Http\Response;
 use RuntimeException;
 
-class HttpRuntimeException extends RuntimeException
+class HttpException extends RuntimeException
 {
     protected $headers = [];
 

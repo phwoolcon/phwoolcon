@@ -3,10 +3,12 @@ namespace Phwoolcon;
 
 use Closure;
 use Phalcon\Di;
+use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Router as PhalconRouter;
 use Phalcon\Mvc\Router\Route;
-use Phwoolcon\Exception\NotFoundException;
+use Phwoolcon\Exception\Http\CsrfException;
+use Phwoolcon\Exception\Http\NotFoundException;
 
 /**
  * Class Router
@@ -20,7 +22,8 @@ class Router extends PhalconRouter
      * @var Di
      */
     protected static $di;
-    protected static $disableSession;
+    protected static $disableSession = false;
+    protected static $disableCsrfCheck = false;
     /**
      * @var static
      */
@@ -35,7 +38,8 @@ class Router extends PhalconRouter
         is_array($routes) and $this->addRoutes($routes);
     }
 
-    public function addRoutes(array $routes, $prefix = null, $filter = null) {
+    public function addRoutes(array $routes, $prefix = null, $filter = null)
+    {
         $prefix and $prefix = rtrim($prefix, '/');
         foreach ($routes as $method => $methodRoutes) {
             foreach ($methodRoutes as $uri => $handler) {
@@ -44,6 +48,15 @@ class Router extends PhalconRouter
                 $uri == '/' or $uri = rtrim($uri, '/');
                 $this->quickAdd($method, $uri, $handler, $filter);
             }
+        }
+    }
+
+    public static function checkCsrfToken()
+    {
+        /* @var Request $request */
+        $request = static::$di->getShared('request');
+        if ($request->isPost() && $request->get('_token') != Session::getCsrfToken()) {
+            self::throwCsrfException();
         }
     }
 
@@ -59,6 +72,7 @@ class Router extends PhalconRouter
         $router->handle($uri);
         if ($route = $router->getMatchedRoute()) {
             static::$disableSession or Session::start();
+            static::$disableCsrfCheck or static::checkCsrfToken();
             if (($controllerClass = $router->getControllerName()) instanceof Closure) {
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
@@ -82,9 +96,9 @@ class Router extends PhalconRouter
         return false;
     }
 
-    public static function generate404Page()
+    public static function generateErrorPage($template, $pateTitle)
     {
-        return View::make('errors', '404', ['page_title' => '404 NOT FOUND']);
+        return View::make('errors', $template, ['page_title' => $pateTitle]);
     }
 
     public function prefix($prefix, array $routes, $filter = null)
@@ -125,9 +139,21 @@ class Router extends PhalconRouter
         });
     }
 
+    public static function reset()
+    {
+        static::$disableSession = false;
+        static::$disableCsrfCheck = false;
+    }
+
     public static function throw404Exception($content = null, $contentType = 'text/html')
     {
-        $content or $content = static::generate404Page();
+        $content or $content = static::generateErrorPage('404', '404 NOT FOUND');
         throw new NotFoundException($content, ['content-type' => $contentType]);
+    }
+
+    public static function throwCsrfException($content = null, $contentType = 'text/html')
+    {
+        $content or $content = static::generateErrorPage('csrf', '403 FORBIDDEN');
+        throw new CsrfException($content, ['content-type' => $contentType]);
     }
 }

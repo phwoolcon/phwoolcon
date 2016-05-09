@@ -1,7 +1,9 @@
 <?php
-namespace Phwoolcon\Exception;
+namespace Phwoolcon\Exception\Http;
 
-class NotFoundException extends HttpRuntimeException
+use Phwoolcon\Exception\HttpException;
+
+class NotFoundException extends HttpException
 {
 
     public function __construct($message, $headers = null)

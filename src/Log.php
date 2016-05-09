@@ -2,11 +2,12 @@
 namespace Phwoolcon;
 
 use Exception;
-use Phwoolcon\Exception\NotFoundException;
+use Phwoolcon\Exception\Http\NotFoundException;
 use Phalcon\Di;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\File;
 use Phalcon\Logger\Formatter\Line;
+use Phwoolcon\Exception\HttpException;
 
 class Log extends Logger
 {
@@ -41,7 +42,7 @@ class Log extends Logger
 
     public static function exception(Exception $e)
     {
-        static::error($e instanceof NotFoundException ? ' 404 Not Found' : "\n" . $e->__toString());
+        static::error($e instanceof HttpException ? get_class($e) : "\n" . $e->__toString());
     }
 
     public static function register(Di $di)
