@@ -81,6 +81,12 @@ trait AdapterTrait
         return $this;
     }
 
+    public function remove($index)
+    {
+        $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
+        array_forget($_SESSION, $index);
+    }
+
     public function set($index, $value)
     {
         $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;

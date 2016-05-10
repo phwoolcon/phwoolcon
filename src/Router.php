@@ -58,6 +58,7 @@ class Router extends PhalconRouter
         if ($request->isPost() && $request->get('_token') != Session::getCsrfToken()) {
             self::throwCsrfException();
         }
+        unset($_POST['_token']);
     }
 
     public static function disableCsrfCheck()

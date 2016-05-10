@@ -165,4 +165,14 @@ abstract class Controller extends PhalconController
         }
         return $this->request->has($name);
     }
+
+    protected function rememberFormData($key, $data)
+    {
+        $this->session->set('form.data.' . $key, $data);
+    }
+
+    protected function clearRememberFormData($key)
+    {
+        $this->session->remove('form.data.' . $key);
+    }
 }
