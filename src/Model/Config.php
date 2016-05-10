@@ -8,6 +8,7 @@ use Phalcon\Db\Column;
 
 class Config extends Model
 {
+    protected $table = 'config';
 
     public static function all()
     {

@@ -56,10 +56,10 @@ abstract class Model extends PhalconModel
     {
         return $this->getData($this->pk);
     }
-    
+
     protected function onConstruct()
     {
-        $this->setSource($this->table);
+        $this->table and $this->setSource($this->table);
     }
 
     public function setData($key, $value = null)
