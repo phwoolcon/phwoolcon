@@ -143,7 +143,7 @@ abstract class Model extends PhalconModel
      * @param array                $bind
      * @param string               $order
      * @param string               $columns
-     * @return $this
+     * @return $this|false
      */
     public static function findFirstSimple($conditions, $bind = [], $order = null, $columns = null)
     {

@@ -16,6 +16,11 @@ trait AdapterTrait
 {
     protected $cookieRenewedAt = 0;
 
+    public function clearFormData($key)
+    {
+        $this->remove('form_data.' . $key);
+    }
+
     public function end()
     {
         if ($this->_started) {
@@ -26,14 +31,6 @@ trait AdapterTrait
         }
         $this->_started = false;
         $this->cookieRenewedAt = 0;
-    }
-
-    public function get($index, $defaultValue = null, $remove = false)
-    {
-        $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
-        $value = fnGet($_SESSION, $index, $defaultValue, '.');
-        $remove and array_forget($_SESSION, $index);
-        return $value;
     }
 
     public function generateCsrfToken()
@@ -48,11 +45,26 @@ trait AdapterTrait
         return bin2hex(openssl_random_pseudo_bytes(16));
     }
 
-    public function getCsrfToken()
+    public function get($index, $defaultValue = null, $remove = false)
     {
-        return ($this->get('csrf_token_expire') > time() && $token = $this->get('csrf_token')) ?
+        $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
+        $value = fnGet($_SESSION, $index, $defaultValue, '.');
+        $remove and array_forget($_SESSION, $index);
+        return $value;
+    }
+
+    public function getCsrfToken($renew = false)
+    {
+        $result = ($this->get('csrf_token_expire') > ($now = time()) && $token = $this->get('csrf_token')) ?
             $token :
             $this->generateCsrfToken();
+        $renew and $this->set('csrf_token_expire', $now + $this->_options['csrf_token_lifetime']);
+        return $result;
+    }
+
+    public function getFormData($key, $default = null)
+    {
+        return $this->get('form_data.' . $key, $default);
     }
 
     protected function isValidSid($value)
@@ -79,6 +91,11 @@ trait AdapterTrait
         $this->setId($this->generateRandomString());
         $this->cookieRenewedAt = 0;
         return $this;
+    }
+
+    public function rememberFormData($key, $data)
+    {
+        $this->set('form_data.' . $key, $data);
     }
 
     public function remove($index)

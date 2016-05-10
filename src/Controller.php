@@ -7,6 +7,8 @@ use Phalcon\Mvc\Controller as PhalconController;
  * Class Controller
  * @package Phwoolcon
  *
+ * @property \Phalcon\Http\Request $request
+ * @property Session|Session\AdapterTrait $session
  * @property View $view
  */
 abstract class Controller extends PhalconController
@@ -164,15 +166,5 @@ abstract class Controller extends PhalconController
             }
         }
         return $this->request->has($name);
-    }
-
-    protected function rememberFormData($key, $data)
-    {
-        $this->session->set('form.data.' . $key, $data);
-    }
-
-    protected function clearRememberFormData($key)
-    {
-        $this->session->remove('form.data.' . $key);
     }
 }
