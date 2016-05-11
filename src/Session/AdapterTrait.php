@@ -16,6 +16,12 @@ trait AdapterTrait
 {
     protected $cookieRenewedAt = 0;
 
+    public function clear()
+    {
+        $this->cookieRenewedAt = 0;
+        $_SESSION = [];
+    }
+
     public function clearFormData($key)
     {
         $this->remove('form_data.' . $key);

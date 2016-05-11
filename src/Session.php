@@ -12,6 +12,10 @@ use Phwoolcon\Session\Exception;
  * Class Session
  * @package Phwoolcon
  *
+ * @method static void clear()
+ * @uses AdapterTrait::clear()
+ * @method static void clearFormData(string $key)
+ * @uses AdapterTrait::clearFormData()
  * @method static bool destroy(bool $removeData = false)
  * @uses Phalcon\Session\Adapter::destroy()
  * @method static void end()
