@@ -14,7 +14,7 @@ class Db extends PhalconDb
      */
     protected static $di;
     /**
-     * @var Adapter|Adapter\Mysql
+     * @var Adapter|Db\Adapter\Pdo\Mysql
      */
     protected static $instance;
     protected static $defaultTableCharset;
@@ -35,7 +35,7 @@ class Db extends PhalconDb
     }
 
     /**
-     * @return Adapter|Adapter\Mysql
+     * @return Adapter|Db\Adapter\Pdo\Mysql
      */
     public static function getInstance()
     {
@@ -51,14 +51,17 @@ class Db extends PhalconDb
             return new InCache();
         });
         $di->setShared('db', function () {
-            $default = Config::get('database.default');
-            $config = Config::get('database.connections.' . $default);
-            $class = $config['adapter'];
-            isset($config['charset']) and static::$defaultTableCharset = $config['charset'];
-            isset($config['default_table_charset']) and static::$defaultTableCharset = $config['default_table_charset'];
-            unset($config['adapter'], $config['default_table_charset']);
+            $config = Config::get('database');
+            $connection = $config['connections'][$config['default']];
+            $class = $connection['adapter'];
+            isset($connection['charset']) and static::$defaultTableCharset = $connection['charset'];
+            isset($connection['default_table_charset']) and static::$defaultTableCharset = $connection['default_table_charset'];
+            unset($connection['adapter'], $connection['default_table_charset']);
             strpos($class, '\\') === false and $class = 'Phalcon\\Db\\Adapter\\Pdo\\' . $class;
-            return new $class($config);
+            Model::setup([
+                'distributed' => $config['distributed'],
+            ]);
+            return new $class($connection);
         });
     }
 

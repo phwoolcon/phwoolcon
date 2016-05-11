@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Migrate extends Command
 {
     /**
-     * @var \Phalcon\Db\Adapter\Pdo|\Phalcon\Db\Adapter\Pdo\Mysql
+     * @var \Phalcon\Db\Adapter\Pdo|\Phwoolcon\Db\Adapter\Pdo\Mysql
      */
     protected $db;
     protected $table = 'migrations';

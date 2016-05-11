@@ -5,5 +5,5 @@ use Phwoolcon\Model;
 
 class User extends Model
 {
-    protected $table = 'users';
+    protected $_table = 'users';
 }

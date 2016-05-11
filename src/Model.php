@@ -6,71 +6,125 @@ use Phalcon\Db as PhalconDb;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phalcon\Mvc\ModelInterface;
 
+/**
+ * Class Model
+ * @package Phwoolcon
+ *
+ * @method PhalconModel\Message[] getMessages(string $filter = null)
+ */
 abstract class Model extends PhalconModel
 {
-    protected static $distributionNodeId;
-    protected $_data = [];
-    protected $table;
-    protected $pk = 'id';
-
-    public function __get($property)
-    {
-        return isset($this->_data[$property]) ? $this->_data[$property] : parent::__get($property);
-    }
-
-    public function __isset($property)
-    {
-        return isset($this->_data[$property]) && parent::__isset($property);
-    }
-
-    public function __set($property, $value)
-    {
-        if ($value instanceof ModelInterface) {
-            parent::__set($property, $value);
-            return $value;
-        }
-        return $this->_data[$property] = $value;
-    }
+    protected static $_distributedOptions = [
+        'node_id' => '001',
+        'start_time' => 1362931200,
+    ];
+    protected static $_dataColumns = [];
+    protected $_additionalData = [];
+    protected $_table;
+    protected $_pk = 'id';
+    protected $_isNew = true;
 
     public function addData(array $data)
     {
-        $this->_data = array_merge($this->_data, $data);
+        $this->assign($data);
         return $this;
     }
 
-    public function generateId()
+    public function afterFetch()
     {
-        static::$distributionNodeId or static::$distributionNodeId = Config::get('distribution.node_id');
-        var_dump(static::$distributionNodeId);exit;
-        $id = '';
+        $this->_isNew = false;
+    }
+
+    public function checkDataColumn($column = null)
+    {
+        if (!isset(static::$_dataColumns[$key = get_class($this)])) {
+            static::$_dataColumns[$key] = $this->getModelsMetaData()->getDataTypes($this) ?: [];
+        }
+        return $column === null ? static::$_dataColumns[$key] : isset(static::$_dataColumns[$key][$column]);
+    }
+
+    public function clearData()
+    {
+        foreach ($this->checkDataColumn() as $attribute => $type) {
+            $this->__set($attribute, null);
+        }
+        $this->_additionalData = [];
+        return $this;
+    }
+
+    public function generateDistributedId()
+    {
+        $prefix = (time() - static::$_distributedOptions['start_time']) . substr(microtime(), 2, 3);
+        $id = $prefix . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
         $this->setId($id);
         return $this;
     }
 
     public function getData($key = null)
     {
-        return $key === null ? $this->_data : fnGet($this->_data, $key);
+        return $key === null ?
+            array_merge($this->toArray(), $this->_additionalData) :
+            (property_exists($this, $key) ? $this->$key : null);
     }
 
     public function getId()
     {
-        return $this->getData($this->pk);
+        return $this->getData($this->_pk);
+    }
+
+    public function getStringMessages()
+    {
+        $messages = [];
+        foreach ($this->getMessages() as $message) {
+            $messages[] = $message->getMessage();
+        }
+        return implode('; ', $messages);
     }
 
     protected function onConstruct()
     {
-        $this->table and $this->setSource($this->table);
+        $this->_table and $this->setSource($this->_table);
+    }
+
+    protected function prepareSave()
+    {
+        $now = time();
+        if (!$this->getData($property = 'created_at') && $this->getModelsMetaData()->hasAttribute($this, $property)) {
+            $this->setData($property, $now);
+        }
+        if ($this->getModelsMetaData()->hasAttribute($this, $property = 'updated_at')) {
+            $this->setData($property, $now);
+        }
+    }
+
+    public function reset()
+    {
+        parent::reset();
+        $this->clearData();
+        $this->_isNew = true;
+        return $this;
     }
 
     public function setData($key, $value = null)
     {
-        is_array($key) ? $this->_data = $key : $this->_data[$key] = $value;
+        if (is_array($key)) {
+            return $this->clearData()
+                ->addData($key);
+        }
+        $this->__set($key, $value);
+        $this->checkDataColumn($key) or $this->_additionalData[$key] = $value;
         return $this;
     }
 
     public function setId($id)
     {
-        return $this->setData($this->pk, $id);
+        return $this->setData($this->_pk, $id);
+    }
+
+    public static function setup(array $options)
+    {
+        PhalconModel::setup($options);
+        isset($options['distributed']) and static::$_distributedOptions = $options['distributed'];
     }
 
     /**

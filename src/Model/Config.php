@@ -8,7 +8,7 @@ use Phalcon\Db\Column;
 
 class Config extends Model
 {
-    protected $table = 'config';
+    protected $_table = 'config';
 
     public static function all()
     {
@@ -47,7 +47,7 @@ class Config extends Model
 
     public static function saveConfig($key, $value)
     {
-        is_array($value) and $value = json_encode($value);
+        $value = json_encode($value);
         /* @var Config $config */
         $config = new static;
         $config->setData('key', $key)
