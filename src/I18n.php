@@ -62,6 +62,13 @@ class I18n extends Adapter
         $this->loadLocale($locale);
     }
 
+    public static function checkMobile($mobile, $country = 'CN')
+    {
+        static::$instance or static::$instance = static::$di->getShared('i18n');
+        $pattern = fnGet(static::$instance->options, "verification_patterns.{$country}.mobile");
+        return $pattern ? preg_match($pattern, $mobile) : true;
+    }
+
     public static function clearCache()
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
