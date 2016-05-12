@@ -185,6 +185,7 @@ class View extends PhalconView
             return $this;
         }
         $this->_loadedThemes[$prefix . $theme] = true;
+        $applyFilter = $this->config['options']['assets_options']['apply_filter'];
         $basePath = $this->config['options']['assets_options']['base_path'];
         $assetsDir = '/' . $this->config['options']['assets_options']['assets_dir'] . '/';
         $resourcePath = $assetsDir . ($isAdmin ? 'admin/' . $theme : $theme) . '/';
@@ -201,18 +202,18 @@ class View extends PhalconView
                 case 'css':
                     foreach ($resources as $item) {
                         $isLocal = !isHttpUrl($item);
-                        $resource = new Css($isLocal ? $resourcePath . $item : $item, $isLocal, $isLocal);
+                        $resource = new Css($isLocal ? $resourcePath . $item : $item, $isLocal);
                         $collection->add($resource);
                     }
-                    $collection->addFilter(new Cssmin());
+                    $applyFilter and $collection->addFilter(new Cssmin());
                     break;
                 case 'js':
                     foreach ($resources as $item) {
                         $isLocal = !isHttpUrl($item);
-                        $resource = new Js($isLocal ? $resourcePath . $item : $item, $isLocal, $isLocal);
+                        $resource = new Js($isLocal ? $resourcePath . $item : $item, $isLocal);
                         $collection->add($resource);
                     }
-                    $collection->addFilter(new Jsmin());
+                    $applyFilter and $collection->addFilter(new Jsmin());
                     break;
             }
         }
