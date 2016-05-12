@@ -21,6 +21,7 @@ class I18n extends Adapter
     protected $multiLocale = false;
     protected $detectClientLocale = false;
     protected $options = [];
+    protected $availableLocales = [];
     /**
      * @var \Phalcon\Http\Request
      */
@@ -30,6 +31,7 @@ class I18n extends Adapter
     {
         parent::__construct($options);
         $this->multiLocale = $options['multi_locale'];
+        $this->multiLocale and $this->availableLocales = $options['available_locales'];
         $this->detectClientLocale = $options['detect_client_locale'];
         $this->defaultLocale = $this->currentLocale = $options['default_locale'];
         $this->localePath = $options['locale_path'];
@@ -43,12 +45,22 @@ class I18n extends Adapter
         if (!$this->multiLocale) {
             return;
         }
+        $this->request or $this->request = static::$di->getShared('request');
+        if ($locale = $this->request->get('_locale')) {
+            $this->_setLocale($locale);
+            return;
+        }
+        if (($cookie = Cookies::get('locale')) && $locale = $cookie->useEncryption(false)->getValue()) {
+            $this->_setLocale($locale);
+            $cookie->setHttpOnly(false)
+                ->delete();
+            return;
+        }
         if ($locale = Session::get('current_locale')) {
             $this->loadLocale($this->currentLocale = $locale);
             return;
         }
         if ($this->detectClientLocale) {
-            $this->request or $this->request = static::$di->getShared('request');
             $this->_setLocale($this->request->getBestLanguage());
         }
     }
@@ -78,6 +90,12 @@ class I18n extends Adapter
         }
     }
 
+    public static function getAvailableLocales()
+    {
+        static::$instance or static::$instance = static::$di->getShared('i18n');
+        return static::$instance->availableLocales;
+    }
+
     public static function getCurrentLocale()
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
@@ -97,7 +115,7 @@ class I18n extends Adapter
         }
         $packages = [];
         $combined = [];
-        foreach (glob($this->localePath . '/' . $this->defaultLocale . '/*.php') as $file) {
+        foreach (glob($this->localePath . '/' . $this->currentLocale . '/*.php') as $file) {
             $package = pathinfo($file, PATHINFO_FILENAME);
             $combined = array_merge($combined, $packages[$package] = include $file);
         }
