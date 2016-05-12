@@ -126,8 +126,8 @@ trait AdapterTrait
             $this->set('_cookie_renewed_at', $now);
         }
         Cookies::set($cookieName = $this->getName(), $this->getId(), $now + $this->_options['lifetime'],
-            $this->_options['cookie_path'], $this->_options['cookie_secure'], $this->_options['cookie_domain'],
-            $this->_options['cookie_http_only']
+            $this->_options['cookies']['path'], $this->_options['cookies']['secure'],
+            $this->_options['cookies']['domain'], $this->_options['cookies']['http_only']
         );
         Cookies::get($cookieName)->useEncryption(false);
         return $this;

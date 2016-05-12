@@ -84,7 +84,8 @@ class Session
             $class = $config['adapter'];
             $options = $config['options'];
             $options += Config::get('session.options');
-            session_name($options['cookie_name']);
+            $options['cookies'] += Config::get('cookies');
+            session_name($options['cookies']['name']);
             strpos($class, '\\') === false and $class = 'Phwoolcon\\Session\\Adapter\\' . $class;
             $session = new $class($options);
             if (!$session instanceof AdapterInterface) {
