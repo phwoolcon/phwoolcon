@@ -17,7 +17,9 @@ trait ResourceTrait
         if ($this->_local) {
             return parent::getContent($basePath);
         }
-        return file_get_contents($this->_path, false, stream_context_create([
+        $path = $this->_path;
+        substr($this->_path, 0, 2) == '//' and $path = 'http:' . $path;
+        return file_get_contents($path, false, stream_context_create([
             'http' => [
                 'method' => 'GET',
                 'timeout' => 1,

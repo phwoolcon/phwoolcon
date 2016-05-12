@@ -45,9 +45,9 @@ class View extends PhalconView
 
     protected function _engineRender($engines, $viewPath, $silence, $mustClean, BackendInterface $cache = null)
     {
-        $viewPath == $this->_mainView or $viewPath = trim($this->_theme . '/' . $viewPath, '/');
         $silence = $silence && !$this->config['debug'];
-        $this->config['debug'] and $this->_options['debug_wrapper'] = $viewPath;
+        $this->config['debug'] and $this->_options['debug_wrapper'] = $this->getDebugWrapper($viewPath);
+        $viewPath == $this->_mainView or $viewPath = trim($this->_theme . '/' . $viewPath, '/');
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }
 
@@ -116,15 +116,26 @@ class View extends PhalconView
         static::assets('ie-hack-js');
     }
 
+    public function getAbsoluteViewPath($view)
+    {
+        return $this->_viewsDir . $this->_theme . '/' . $view;
+    }
+
     public static function getConfig($key = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         return fnGet(static::$instance->config, $key);
     }
 
-    public function getAbsoluteViewPath($view)
+    public function getCurrentTheme()
     {
-        return $this->_viewsDir . $this->_theme . '/' . $view;
+        return $this->_theme;
+    }
+
+    public function getDebugWrapper($viewPath)
+    {
+        $viewPath = trim($this->_theme . '/' . $viewPath, '/');
+        return ["<!-- [{$viewPath} -->\n", "<!-- {$viewPath}] -->\n"];
     }
 
     public static function getPageDescription()
@@ -265,8 +276,8 @@ class View extends PhalconView
     public function setContent($content)
     {
         if (isset($this->_options['debug_wrapper'])) {
-            $debugWrapper = $this->_options['debug_wrapper'];
-            $this->_content = "<!-- [{$debugWrapper} -->" . $content . "<!-- {$debugWrapper}] -->";
+            $wrapper = $this->_options['debug_wrapper'];
+            $this->_content = $wrapper[0] . $content . $wrapper[1];
         } else {
             $this->_content = $content;
         }
