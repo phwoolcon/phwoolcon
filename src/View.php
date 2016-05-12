@@ -157,6 +157,18 @@ class View extends PhalconView
         return fnGet(static::$instance->_params, $key, $default, '.');
     }
 
+    public static function getPhwoolconJsOptions()
+    {
+        $options = [
+            'locale' => I18n::getCurrentLocale(),
+            'cookies' => [
+                'domain' => Config::get('cookies.domain'),
+                'path' => Config::get('cookies.path'),
+            ],
+        ];
+        return $options;
+    }
+
     public function isAdmin($flag = null)
     {
         if ($flag !== null) {
