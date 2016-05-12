@@ -64,7 +64,7 @@ abstract class Model extends PhalconModel
     {
         return $key === null ?
             array_merge($this->toArray(), $this->_additionalData) :
-            (property_exists($this, $key) ? $this->$key : null);
+            (isset($this->$key) ? $this->$key : null);
     }
 
     public function getId()

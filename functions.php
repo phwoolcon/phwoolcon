@@ -33,7 +33,7 @@ if (!function_exists('array_forget')) {
             if (!isset($array[$key]) || !is_array($array[$key])) {
                 return;
             }
-            $array = &$array[$key];
+            $array =& $array[$key];
         }
         unset($array[array_shift($keys)]);
     }
@@ -67,7 +67,7 @@ if (!function_exists('array_set')) {
                 $array[$key] = [];
             }
 
-            $array = &$array[$key];
+            $array =& $array[$key];
         }
         $array[array_shift($keys)] = $value;
         return $array;
@@ -91,29 +91,23 @@ if (!function_exists('array_set')) {
  * @param array|object $array     Subject array or object
  * @param              $key
  * @param mixed        $default   Default value if key not found in subject
- * @param string       $separator Key level separator, default '/'
+ * @param string       $separator Key level separator, default '.'
  *
  * @return mixed
  */
 function fnGet(&$array, $key, $default = null, $separator = '.')
 {
-    if (false === $subKeyPos = strpos($key, $separator)) {
-        if (is_object($array)) {
-            return property_exists($array, $key) ? $array->$key : $default;
-        }
-        return isset($array[$key]) ? $array[$key] : $default;
-    } else {
-        $firstKey = substr($key, 0, $subKeyPos);
-        if (is_object($array)) {
-            $tmp = property_exists($array, $firstKey) ? $array->$firstKey : null;
+    $tmp =& $array;
+    foreach (explode($separator, $key) as $subKey) {
+        if (isset($tmp->$subKey)) {
+            $tmp =& $tmp->$subKey;
+        } else if (isset($tmp[$subKey])) {
+            $tmp =& $tmp[$subKey];
         } else {
-            $tmp = isset($array[$firstKey]) ? $array[$firstKey] : null;
-        }
-        if ($tmp === null) {
             return $default;
         }
-        return fnGet($tmp, substr($key, $subKeyPos + 1), $default, $separator);
     }
+    return $tmp;
 }
 
 function isHttpUrl($url)
