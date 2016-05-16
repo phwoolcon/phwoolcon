@@ -56,7 +56,7 @@ abstract class Model extends PhalconModel
     {
         $prefix = (time() - static::$_distributedOptions['start_time']) . substr(microtime(), 2, 3);
         $id = $prefix . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
-        $this->setId($id);
+        $this->setData($this->_pk, $id);
         return $this;
     }
 
@@ -114,11 +114,6 @@ abstract class Model extends PhalconModel
         $this->__set($key, $value);
         $this->checkDataColumn($key) or $this->_additionalData[$key] = $value;
         return $this;
-    }
-
-    public function setId($id)
-    {
-        return $this->setData($this->_pk, $id);
     }
 
     public static function setup(array $options)

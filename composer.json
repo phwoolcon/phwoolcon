@@ -18,7 +18,7 @@
         "ext-mcrypt": "*",
         "ext-openssl": "*",
         "ext-PDO": "*",
-        "ext-phalcon": "*",
+        "ext-phalcon": ">=2.0.11",
         "phwoolcon/fsm": "dev-master",
         "symfony/console": "3.0.*"
     },

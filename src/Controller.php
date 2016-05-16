@@ -133,22 +133,15 @@ abstract class Controller extends PhalconController
     }
 
     /**
-     * get input from request
+     * Get input from request
      *
-     * @param null $name
-     * @param null $filters
-     * @param null $defaultValue
+     * @param string $key
+     * @param mixed  $defaultValue
      * @return mixed
      */
-    protected function input($name = null, $filters = null, $defaultValue = null)
+    protected function input($key = null, $defaultValue = null)
     {
-        if (strpos($name, "/") !== false) {
-            list($method, $name) = explode("/", $name);
-            if (method_exists($this->request, $realMethod = 'get' . ucfirst(strtolower($method)))) {
-                return $this->request->$realMethod($name, $filters, $defaultValue);
-            }
-        }
-        return $this->request->get($name, $filters, $defaultValue);
+        return fnGet($_REQUEST, $key, $defaultValue);
     }
 
     /**
