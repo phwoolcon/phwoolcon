@@ -5,6 +5,7 @@ use Exception;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phalcon\Mvc\ModelInterface;
+use Phalcon\Text;
 
 /**
  * Class Model
@@ -20,9 +21,25 @@ abstract class Model extends PhalconModel
     ];
     protected static $_dataColumns = [];
     protected $_additionalData = [];
+    protected $_jsonFields = [];
     protected $_table;
     protected $_pk = 'id';
     protected $_isNew = true;
+    protected $_useDistributedId = true;
+
+    public function __call($method, $arguments)
+    {
+        if (($prefix = substr($method, 0, 3)) == 'get') {
+            $property = Text::uncamelize(substr($method, 3));
+            if (null !== $result = $this->getData($property)) {
+                return $result;
+            }
+        } else if ($prefix == 'set') {
+            $property = Text::uncamelize(substr($method, 3));
+            return $this->setData($property, fnGet($arguments, 0));
+        }
+        return parent::__call($method, $arguments);
+    }
 
     public function addData(array $data)
     {
@@ -33,6 +50,16 @@ abstract class Model extends PhalconModel
     public function afterFetch()
     {
         $this->_isNew = false;
+        foreach ($this->_jsonFields as $field) {
+            isset($this->$field) && is_string($data = $this->$field) and $this->$field = json_decode($data, true);
+        }
+    }
+
+    protected function afterSave()
+    {
+        foreach ($this->_jsonFields as $field) {
+            isset($this->$field) && is_string($data = $this->$field) and $this->$field = json_decode($data, true);
+        }
     }
 
     public function checkDataColumn($column = null)
@@ -46,7 +73,7 @@ abstract class Model extends PhalconModel
     public function clearData()
     {
         foreach ($this->checkDataColumn() as $attribute => $type) {
-            $this->__set($attribute, null);
+            $this->$attribute = null;
         }
         $this->_additionalData = [];
         return $this;
@@ -56,24 +83,26 @@ abstract class Model extends PhalconModel
     {
         $prefix = (time() - static::$_distributedOptions['start_time']) . substr(microtime(), 2, 3);
         $id = $prefix . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
-        $this->setData($this->_pk, $id);
-        return $this;
+        return $this->setId($id);
     }
 
     public function getData($key = null)
     {
         return $key === null ?
-            array_merge($this->toArray(), $this->_additionalData) :
+            ($this->_additionalData ? array_merge($this->toArray(), $this->_additionalData) : $this->toArray()) :
             (isset($this->$key) ? $this->$key : null);
     }
 
     public function getId()
     {
-        return $this->getData($this->_pk);
+        return $this->{$this->_pk};
     }
 
     public function getStringMessages()
     {
+        if (!$this->getMessages()) {
+            return '';
+        }
         $messages = [];
         foreach ($this->getMessages() as $message) {
             $messages[] = $message->getMessage();
@@ -81,19 +110,36 @@ abstract class Model extends PhalconModel
         return implode('; ', $messages);
     }
 
-    protected function onConstruct()
+    /**
+     * Runs once, only when the model instance is created at the first time
+     */
+    public function initialize()
     {
         $this->_table and $this->setSource($this->_table);
+        $this->keepSnapshots(true);
+    }
+
+    /**
+     * Runs every time, when a model object is created
+     */
+    protected function onConstruct()
+    {
     }
 
     protected function prepareSave()
     {
+        foreach ($this->_jsonFields as $field) {
+            isset($this->$field) && is_array($data = $this->$field) and $this->$field = json_encode($data);
+        }
         $now = time();
         if (!$this->getData($property = 'created_at') && $this->getModelsMetaData()->hasAttribute($this, $property)) {
             $this->setData($property, $now);
         }
         if ($this->getModelsMetaData()->hasAttribute($this, $property = 'updated_at')) {
             $this->setData($property, $now);
+        }
+        if ($this->_useDistributedId && !$this->getId()) {
+            $this->generateDistributedId();
         }
     }
 
@@ -111,8 +157,14 @@ abstract class Model extends PhalconModel
             return $this->clearData()
                 ->addData($key);
         }
-        $this->__set($key, $value);
+        $this->$key = $value;
         $this->checkDataColumn($key) or $this->_additionalData[$key] = $value;
+        return $this;
+    }
+
+    public function setId($id)
+    {
+        $this->{$this->_pk} = $id;
         return $this;
     }
 
