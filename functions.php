@@ -75,6 +75,27 @@ if (!function_exists('array_set')) {
 }
 
 /**
+ * Convert a decimal number into base62 string
+ *
+ * @param mixed $val Decimal value
+ *
+ * @return string Base 62 value
+ */
+function base62encode($val)
+{
+    $val = (int)abs($val);
+    $base = 62;
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $str = '';
+    do {
+        $i = $val % $base;
+        $str = $chars[$i] . $str;
+        $val = ($val - $i) / $base;
+    } while($val > 0);
+    return $str;
+}
+
+/**
  * Safely get child value from an array or an object
  *
  * Usage:
