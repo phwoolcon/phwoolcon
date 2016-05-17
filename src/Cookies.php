@@ -11,7 +11,6 @@ use Phalcon\Http\Response\Cookies as PhalconCookies;
  *
  * @method static bool delete(string $name)
  * @method static Cookie get(string $name)
- * @method static PhalconCookies set(string $name, $value = null, int $expire = 0, string $path = "/", bool $secure = null, string $domain = null, bool $httpOnly = null)
  */
 class Cookies
 {
@@ -23,6 +22,7 @@ class Cookies
      * @var PhalconCookies
      */
     protected static $cookies;
+    protected static $options;
 
     public static function __callStatic($name, $arguments)
     {
@@ -33,7 +33,26 @@ class Cookies
     {
         static::$di = $di;
         static::$cookies = static::$di->getShared('cookies');
-        static::$cookies->useEncryption($encrypt = Config::get('cookies.encrypt'));
-        $encrypt and static::$di->getShared('crypt')->setKey(Config::get('cookies.encrypt_key'));
+        $options = static::$options = Config::get('cookies');
+        static::$cookies->useEncryption($encrypt = $options['encrypt']);
+        $encrypt and static::$di->getShared('crypt')->setKey($options['encrypt_key']);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     * @param int    $expire
+     * @param string $path
+     * @param bool   $secure
+     * @param string $domain
+     * @param bool   $httpOnly
+     * @return PhalconCookies
+     */
+    public static function set($name, $value = null, $expire = 0, $path = null, $secure = null, $domain = null, $httpOnly = null)
+    {
+        $options = static::$options;
+        $path === null and $path = $options['path'];
+        $domain === null and $domain = $options['domain'];
+        return static::$cookies->set($name, $value, $expire, $path, $secure, $domain, $httpOnly);
     }
 }

@@ -3,6 +3,7 @@
 namespace Phwoolcon\Session;
 
 use Phwoolcon\Cookies;
+use Phwoolcon\Text;
 
 /**
  * Class AdapterTrait
@@ -41,14 +42,9 @@ trait AdapterTrait
 
     public function generateCsrfToken()
     {
-        $this->set('csrf_token', $token = $this->generateRandomString());
+        $this->set('csrf_token', $token = Text::token());
         $this->set('csrf_token_expire', time() + $this->_options['csrf_token_lifetime']);
         return $token;
-    }
-
-    public function generateRandomString()
-    {
-        return bin2hex(openssl_random_pseudo_bytes(16));
     }
 
     public function get($index, $defaultValue = null, $remove = false)
@@ -94,7 +90,7 @@ trait AdapterTrait
     public function regenerateId($deleteOldSession = true)
     {
         session_regenerate_id($deleteOldSession);
-        $this->setId($this->generateRandomString());
+        $this->setId(Text::token());
         $this->cookieRenewedAt = 0;
         return $this;
     }

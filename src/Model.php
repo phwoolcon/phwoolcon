@@ -5,7 +5,6 @@ use Exception;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phalcon\Mvc\ModelInterface;
-use Phalcon\Text;
 
 /**
  * Class Model
