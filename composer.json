@@ -21,7 +21,8 @@
         "ext-phalcon": ">=2.0.11",
         "phwoolcon/fsm": "dev-master",
         "symfony/console": "3.0.*",
-        "pda/pheanstalk": "3.1.0"
+        "pda/pheanstalk": "3.1.0",
+        "swiftmailer/swiftmailer": "5.4.2"
     },
     "suggest": {
         "ext-swoole": "*"
