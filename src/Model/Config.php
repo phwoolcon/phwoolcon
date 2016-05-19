@@ -13,7 +13,7 @@ class Config extends Model
     public static function all()
     {
         if (null === $config = Cache::get($key = 'db_configs')) {
-            $db = Db::getInstance();
+            $db = Db::connection();
             $db->tableExists('config') or static::createConfigTable();
 
             $config = [];
@@ -29,7 +29,7 @@ class Config extends Model
 
     protected static function createConfigTable()
     {
-        $db = Db::getInstance();
+        $db = Db::connection();
         $db->createTable('config', null, [
             'columns' => [
                 new Column('key', [

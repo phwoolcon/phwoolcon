@@ -54,7 +54,7 @@ class Migrate extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->db = Db::getInstance();
+        $this->db = Db::connection();
         parent::execute($input, $output);
     }
 
