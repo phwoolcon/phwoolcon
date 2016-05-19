@@ -1,16 +1,25 @@
 <?php
 namespace Phwoolcon\Queue;
 
+use Phalcon\Di;
+
 trait AdapterTrait
 {
+    /**
+     * @var Di
+     */
+    protected $di;
     protected $connection;
     protected $defaultQueue;
     protected $options;
+    protected $connectionName;
 
-    public function __construct(array $options)
+    public function __construct(Di $di, array $options, $connectionName)
     {
+        $this->di = $di;
         $this->options = $options;
         $this->defaultQueue = $options['default'];
+        $this->connectionName = $connectionName;
         $this->connect($options);
     }
 
@@ -19,18 +28,28 @@ trait AdapterTrait
     /**
      * Create a payload string from the given worker and data.
      *
-     * @param  array|callable $worker
-     * @param  mixed          $data
+     * @param  string $worker
+     * @param  mixed  $data
      * @return string
      */
     protected function createPayload($worker, $data = '')
     {
-        return serialize(['worker' => $worker, 'data' => $data]);
+        return json_encode(['job' => $worker, 'data' => $data]);
     }
 
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    public function getConnectionName()
+    {
+        return $this->connectionName;
+    }
+
+    public function getDi()
+    {
+        return $this->di;
     }
 
     /**

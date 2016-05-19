@@ -12,6 +12,7 @@ use Phwoolcon\Queue\AdapterTrait;
  * @package Phwoolcon\Queue\Adapter
  *
  * @property Pheanstalk $connection
+ * @method Pheanstalk getConnection()
  */
 class Beanstalkd implements AdapterInterface
 {
