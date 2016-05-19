@@ -139,6 +139,7 @@ class Router extends PhalconRouter
     public static function register(Di $di)
     {
         static::$di = $di;
+        $di->remove('router');
         $di->setShared('router', function () {
             return new static();
         });

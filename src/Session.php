@@ -78,6 +78,7 @@ class Session
     {
         static::$di = $di;
         ini_set('session.use_cookies', 0);
+        $di->remove('session');
         $di->setShared('session', function () {
             $default = Config::get('session.default');
             $config = Config::get('session.drivers.' . $default);
