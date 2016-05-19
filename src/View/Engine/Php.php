@@ -10,6 +10,7 @@ use Phwoolcon\View;
  *
  * @property View $_view
  * @method void include(string $path, $params = [])
+ * @uses Phwoolcon\View\Engine\Php::processInclude()
  */
 class Php extends PhpEngine
 {
