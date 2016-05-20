@@ -1,6 +1,7 @@
 <?php
 namespace Phwoolcon\Queue\Adapter;
 
+use Phwoolcon\Queue\AdapterInterface;
 use Phwoolcon\Queue\AdapterTrait;
 
 trait JobTrait
@@ -45,9 +46,9 @@ trait JobTrait
 
     /**
      * JobTrait constructor.
-     * @param AdapterTrait $queue
-     * @param              $rawJob
-     * @param string       $queueName
+     * @param AdapterInterface|AdapterTrait $queue
+     * @param                               $rawJob
+     * @param string                        $queueName
      */
     public function __construct($queue, $rawJob, $queueName)
     {
