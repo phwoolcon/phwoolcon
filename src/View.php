@@ -64,8 +64,7 @@ class View extends PhalconView
         $collectionName = $view->_theme . '-' . $collectionName;
         $view->isAdmin() and $collectionName = 'admin-' . $collectionName;
         if ($useCache && isset(static::$cachedAssets[$collectionName])) {
-            echo static::$cachedAssets[$collectionName];
-            return;
+            return static::$cachedAssets[$collectionName];
         }
 
         $view->loadAssets($view->config['assets'], $view->_theme);
@@ -86,7 +85,7 @@ class View extends PhalconView
         $assets = ob_get_clean();
         static::$cachedAssets[$collectionName] = $assets;
         $useCache and Cache::set('assets', static::$cachedAssets);
-        echo $assets;
+        return $assets;
     }
 
     public static function clearAssetsCache()
@@ -97,23 +96,22 @@ class View extends PhalconView
 
     public static function generateBodyJs()
     {
-        static::assets('body-js');
+        return static::assets('body-js');
     }
 
     public static function generateHeadCss()
     {
-        static::assets('head-css');
+        return static::assets('head-css');
     }
 
     public static function generateHeadJs()
     {
-        static::assets('head-js');
+        return static::assets('head-js');
     }
 
     public static function generateIeHack()
     {
-        static::assets('ie-hack-css');
-        static::assets('ie-hack-js');
+        return static::assets('ie-hack-css') . static::assets('ie-hack-js');
     }
 
     public function getAbsoluteViewPath($view)
