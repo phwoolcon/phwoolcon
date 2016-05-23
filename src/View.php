@@ -35,6 +35,7 @@ class View extends PhalconView
     public function __construct($config = null)
     {
         parent::__construct($config['options']);
+        $this->response = static::$di->getShared('response');
         $this->setViewsDir($config['path']);
         $this->_mainView = $config['top_level'];
         $this->_theme = $config['theme'];
@@ -46,7 +47,7 @@ class View extends PhalconView
     protected function _engineRender($engines, $viewPath, $silence, $mustClean, BackendInterface $cache = null)
     {
         $silence = $silence && !$this->config['debug'];
-        $this->config['debug'] and $this->_options['debug_wrapper'] = $this->getDebugWrapper($viewPath);
+        $this->config['debug'] and $this->_options['debug_wrapper'] = ($viewPath == $this->_mainView ? false : $this->getDebugWrapper($viewPath));
         $viewPath == $this->_mainView or $viewPath = trim($this->_theme . '/' . $viewPath, '/');
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }
@@ -232,7 +233,7 @@ class View extends PhalconView
     public static function make($path, $file, $params = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
-        return static::$instance->reset()->start()->render($path, $file, $params)->finish()->getContent();
+        return static::$instance->reset()->render($path, $file, $params)->getContent();
     }
 
     public static function register(Di $di)
@@ -246,7 +247,11 @@ class View extends PhalconView
     public function render($controllerName, $actionName, $params = null)
     {
         try {
-            return parent::render($controllerName, $actionName, $params);
+            $this->start();
+            $result = parent::render($controllerName, $actionName, $params);
+            $this->finish();
+            $this->response->setContent($this->getContent());
+            return $result;
         } catch (ViewException $e) {
             Log::exception($e);
             return false;
