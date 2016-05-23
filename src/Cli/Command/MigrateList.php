@@ -12,8 +12,9 @@ class MigrateList extends Migrate
 
     protected function configure()
     {
-        $this->setDescription('List migrations.')
-            ->addOption('installed', 'i', InputOption::VALUE_NONE, 'List installed migrations');
+        $this->setDescription('List available migrations.')
+            ->addOption('installed', 'i', InputOption::VALUE_NONE, 'List installed migrations')
+            ->addOption('all', 'a', InputOption::VALUE_NONE, 'List available and installed migrations');
     }
 
     public function fire()
@@ -21,6 +22,9 @@ class MigrateList extends Migrate
         $this->checkMigrationsTable();
         if ($this->input->getOption('installed')) {
             $this->listMigrated();
+        } else if ($this->input->getOption('all')) {
+            $this->listMigrated();
+            $this->listToBeMigrated();
         } else {
             $this->listToBeMigrated();
         }
