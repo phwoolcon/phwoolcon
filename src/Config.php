@@ -11,6 +11,7 @@ class Config
     public static function clearCache()
     {
         is_file($cacheFile = storagePath('cache/config.php')) and unlink($cacheFile);
+        Cache::delete('db_configs');
     }
 
     public static function environment()
