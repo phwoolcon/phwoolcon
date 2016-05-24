@@ -20,6 +20,24 @@ abstract class Controller extends PhalconController
         $this->pageTitles[] = $title;
     }
 
+    public function getBrowserCache($pageId = null, $type = null)
+    {
+        $pageId or $pageId = $this->request->getURI();
+        $cacheKey = md5($pageId);
+        switch ($type) {
+            case 'etag':
+                return Cache::get('fpc-etag-' . $cacheKey);
+                break;
+            case 'content':
+                return Cache::get('fpc-content-' . $cacheKey);
+                break;
+        }
+        return [
+            'etag' => Cache::get('fpc-etag-' . $cacheKey),
+            'content' => Cache::get('fpc-content-' . $cacheKey),
+        ];
+    }
+
     public function initialize()
     {
         $this->pageTitles = [__(Config::get('view.title_suffix'))];
@@ -30,6 +48,36 @@ abstract class Controller extends PhalconController
     {
         $params['page_title'] = $this->pageTitles;
         $this->view->render($path, $view, $params);
+    }
+
+    public function setBrowserCache($pageId = null, $type = null, $ttl = Cache::TTL_ONE_WEEK)
+    {
+        $pageId or $pageId = $this->request->getURI();
+        $cacheKey = md5($pageId);
+        $eTag = 'W/' . dechex(crc32($content = $this->response->getContent()));
+        switch ($type) {
+            case 'etag':
+                Cache::set('fpc-etag-' . $cacheKey, $eTag, $ttl);
+                break;
+            case 'content':
+                Cache::set('fpc-content-' . $cacheKey, $content, $ttl);
+                break;
+            default:
+                Cache::set('fpc-etag-' . $cacheKey, $eTag, $ttl);
+                Cache::set('fpc-content-' . $cacheKey, $content, $ttl);
+                break;
+        }
+        $this->setBrowserCacheHeaders($eTag, $ttl);
+        return $this;
+    }
+
+    public function setBrowserCacheHeaders($eTag, $ttl = Cache::TTL_ONE_WEEK)
+    {
+        $this->response->setHeader('Expires', gmdate(DateTime::RFC2616, time() + $ttl))
+            ->setHeader('Cache-Control', 'public, max-age=' . $ttl)
+            ->setHeader('Pragma', 'public')
+            ->setHeader('Last-Modified', gmdate(DateTime::RFC2616))
+            ->setEtag($eTag);
     }
 
     /**
