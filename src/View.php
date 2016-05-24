@@ -170,7 +170,9 @@ class View extends PhalconView
     public static function getPhwoolconJsOptions()
     {
         static::$instance or static::$instance = static::$di->getShared('view');
-        $options = Events::fire('view:generatePhwoolconJsOptions', static::$instance, []) ?: [];
+        $options = Events::fire('view:generatePhwoolconJsOptions', static::$instance, [
+            'baseUrl' => url(''),
+        ]) ?: [];
         return $options;
     }
 
@@ -229,6 +231,20 @@ class View extends PhalconView
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         return static::$instance->reset()->render($path, $file, $params)->getContent();
+    }
+
+    public static function noFooter($flag = null)
+    {
+        static::$instance or static::$instance = static::$di->getShared('view');
+        $flag === null or static::$instance->_options['no_footer'] = (bool)$flag;
+        return static::$instance->_options['no_footer'];
+    }
+
+    public static function noHeader($flag = null)
+    {
+        static::$instance or static::$instance = static::$di->getShared('view');
+        $flag === null or static::$instance->_options['no_header'] = (bool)$flag;
+        return !empty(static::$instance->_options['no_header']);
     }
 
     public static function register(Di $di)
