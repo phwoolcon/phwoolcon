@@ -169,13 +169,8 @@ class View extends PhalconView
 
     public static function getPhwoolconJsOptions()
     {
-        $options = [
-            'locale' => I18n::getCurrentLocale(),
-            'cookies' => [
-                'domain' => Config::get('cookies.domain'),
-                'path' => Config::get('cookies.path'),
-            ],
-        ];
+        static::$instance or static::$instance = static::$di->getShared('view');
+        $options = Events::fire('view:generatePhwoolconJsOptions', static::$instance, []) ?: [];
         return $options;
     }
 

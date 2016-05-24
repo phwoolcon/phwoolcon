@@ -2,6 +2,7 @@
 namespace Phwoolcon;
 
 use Phalcon\Di;
+use Phalcon\Events\Event;
 use Phalcon\Translate\Adapter;
 
 class I18n extends Adapter
@@ -141,6 +142,12 @@ class I18n extends Adapter
         static::$di = $di;
         $di->setShared('i18n', function () {
             return new static(Config::get('i18n'));
+        });
+        Events::attach('view:generatePhwoolconJsOptions', function (Event $event) {
+            $options = $event->getData() ?: [];
+            $options['locale'] = static::getCurrentLocale();
+            $event->setData($options);
+            return $options;
         });
     }
 

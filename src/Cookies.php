@@ -3,6 +3,7 @@ namespace Phwoolcon;
 
 use Phalcon\Crypt;
 use Phalcon\Di;
+use Phalcon\Events\Event;
 use Phalcon\Http\Cookie;
 use Phalcon\Http\Response\Cookies as PhalconCookies;
 
@@ -34,11 +35,20 @@ class Cookies
     {
         static::$di = $di;
         static::$cookies = static::$di->getShared('cookies');
-        $options = static::$options = Config::get('cookies');
+        static::$options = $options = Config::get('cookies');
         static::$cookies->useEncryption($encrypt = $options['encrypt']);
         $encrypt and static::$di->getShared('crypt')
             ->setKey($options['encrypt_key'])
             ->setPadding(Crypt::PADDING_ZERO);
+        Events::attach('view:generatePhwoolconJsOptions', function (Event $event) {
+            $options = $event->getData() ?: [];
+            $options['cookies'] = [
+                'domain' => static::$options['domain'],
+                'path' => static::$options['path'],
+            ];
+            $event->setData($options);
+            return $options;
+        });
     }
 
     /**
