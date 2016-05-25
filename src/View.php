@@ -115,6 +115,11 @@ class View extends PhalconView
         return static::assets('ie-hack-css') . static::assets('ie-hack-js');
     }
 
+    public static function generateIeHackBodyJs()
+    {
+        return static::assets('ie-hack-body-js');
+    }
+
     public function getAbsoluteViewPath($view)
     {
         return $this->_viewsDir . $this->_theme . '/' . $view;
