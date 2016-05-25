@@ -13,6 +13,9 @@ use Phalcon\Mvc\Controller as PhalconController;
  */
 abstract class Controller extends PhalconController
 {
+    const BROWSER_CACHE_ETAG = 'etag';
+    const BROWSER_CACHE_CONTENT = 'content';
+
     protected $pageTitles = [];
 
     public function addPageTitle($title)
@@ -25,10 +28,10 @@ abstract class Controller extends PhalconController
         $pageId or $pageId = $this->request->getURI();
         $cacheKey = md5($pageId);
         switch ($type) {
-            case 'etag':
+            case (static::BROWSER_CACHE_ETAG):
                 return Cache::get('fpc-etag-' . $cacheKey);
                 break;
-            case 'content':
+            case (static::BROWSER_CACHE_CONTENT):
                 return Cache::get('fpc-content-' . $cacheKey);
                 break;
         }
@@ -36,6 +39,11 @@ abstract class Controller extends PhalconController
             'etag' => Cache::get('fpc-etag-' . $cacheKey),
             'content' => Cache::get('fpc-content-' . $cacheKey),
         ];
+    }
+
+    public function getContentEtag(&$content)
+    {
+        return 'W/' . dechex(crc32($content));
     }
 
     public function initialize()
@@ -54,12 +62,13 @@ abstract class Controller extends PhalconController
     {
         $pageId or $pageId = $this->request->getURI();
         $cacheKey = md5($pageId);
-        $eTag = 'W/' . dechex(crc32($content = $this->response->getContent()));
+        $content = $this->response->getContent();
+        $eTag = $this->getContentEtag($content);
         switch ($type) {
-            case 'etag':
+            case (static::BROWSER_CACHE_ETAG):
                 Cache::set('fpc-etag-' . $cacheKey, $eTag, $ttl);
                 break;
-            case 'content':
+            case (static::BROWSER_CACHE_CONTENT):
                 Cache::set('fpc-content-' . $cacheKey, $content, $ttl);
                 break;
             default:
