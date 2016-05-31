@@ -1,4 +1,7 @@
 # Phwoolcon
+
+[![Build Status](https://travis-ci.org/phwoolcon/phwoolcon.svg?branch=master)](https://travis-ci.org/phwoolcon/phwoolcon)
+
 Phalcon + Swoole
 
 ***

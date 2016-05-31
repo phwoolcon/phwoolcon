@@ -24,11 +24,19 @@
         "pda/pheanstalk": "3.1.0",
         "swiftmailer/swiftmailer": "5.4.2"
     },
+    "require-dev": {
+        "techpivot/phalcon-ci-installer": "~1.0"
+    },
     "suggest": {
         "ext-swoole": "*"
     },
     "autoload": {
         "psr-4": {"Phwoolcon\\": "src"},
         "files": ["functions.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Phwoolcon\\Tests\\": "tests"
+        }
     }
 }
