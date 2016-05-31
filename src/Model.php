@@ -94,7 +94,7 @@ abstract class Model extends PhalconModel
 
     public function getId()
     {
-        return $this->{$this->_pk};
+        return isset($this->{$this->_pk}) ? $this->{$this->_pk} : null;
     }
 
     public function getStringMessages()

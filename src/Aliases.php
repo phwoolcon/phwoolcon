@@ -8,8 +8,10 @@ class Aliases
 
     public static function register(Di $di)
     {
-        foreach (Config::get('app.class_aliases') as $alias => $class) {
-            class_alias($class, $alias);
+        if ($aliases = Config::get('app.class_aliases')) {
+            foreach ($aliases as $alias => $class) {
+                class_exists($alias, false) and class_alias($class, $alias);
+            }
         }
     }
 }

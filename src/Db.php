@@ -76,9 +76,11 @@ class Db extends PhalconDb
     {
         static::$instance === null and static::$instance = static::$di->getShared('dbManager');
         $db = static::$instance;
+        // @codeCoverageIgnoreStart
         if (!$name = $name ?: $db->config['default']) {
             throw new PhalconDb\Exception('Please set default database connection in your production config!');
         }
+        // @codeCoverageIgnoreEnd
 
         if (!isset($db->connections[$name])) {
             $db->connections[$name] = $db->connect($name);
@@ -97,7 +99,9 @@ class Db extends PhalconDb
             $db->connections[$name]->connect();
             return $db->connections[$name];
         }
+        // @codeCoverageIgnoreStart
         return static::connection($name);
+        // @codeCoverageIgnoreEnd
     }
 
     public function disconnect($name)

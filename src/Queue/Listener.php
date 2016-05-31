@@ -1,7 +1,7 @@
 <?php
 namespace Phwoolcon\Queue;
 
-use Exception, Throwable;
+use Throwable;
 use Phwoolcon\Queue;
 use Phwoolcon\Queue\Adapter\JobInterface;
 use Phwoolcon\Queue\Adapter\JobTrait;
@@ -64,7 +64,7 @@ class Listener
         try {
             $job->fire();
             return ['job' => $job, 'failed' => false];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // If we catch an exception, we will attempt to release the job back onto
             // the queue so it is not lost. This will let is be retried at a later
             // time by another listener (or the same one). We will do that here.

@@ -2,6 +2,7 @@
 namespace Phwoolcon\Model;
 
 use Phwoolcon\Cache;
+use Phwoolcon\Config as PhwoolconConfig;
 use Phwoolcon\Db;
 use Phwoolcon\Model;
 use Phalcon\Db\Column;
@@ -9,6 +10,7 @@ use Phalcon\Db\Column;
 class Config extends Model
 {
     protected $_table = 'config';
+    protected $_useDistributedId = false;
 
     public static function all()
     {
@@ -43,6 +45,9 @@ class Config extends Model
                 ]),
             ],
         ]);
+        if (PhwoolconConfig::environment() == 'testing') {
+            static::saveConfig('_testing', ['k' => 'v']);
+        }
     }
 
     public static function saveConfig($key, $value)

@@ -8,9 +8,9 @@ use Phalcon\Events\Manager;
  * Class Events
  * @package Phwoolcon
  *
- * @method void detach(string $eventType, object $handler)
+ * @method static void detach(string $eventType, object $handler)
  * @see Manager::detach()
- * @method void detachAll(string $type = null)
+ * @method static void detachAll(string $type = null)
  * @see Manager::detachAll()
  */
 class Events

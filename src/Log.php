@@ -53,7 +53,7 @@ class Log extends Logger
             if (!is_dir($filePath)) {
                 mkdir($filePath, 0777, true);
             }
-            $filePath .= '/' . Config::get('app.log.file');
+            $filePath .= '/' . Config::get('app.log.file', 'phwoolcon.log');
             $logger = new File($filePath);
             $formatter = $logger->getFormatter();
             if ($formatter instanceof Line) {
