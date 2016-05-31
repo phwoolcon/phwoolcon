@@ -1,7 +1,6 @@
 <?php
 namespace Phwoolcon;
 
-use Phalcon\Crypt;
 use Phalcon\Di;
 use Phalcon\Events\Event;
 use Phalcon\Http\Cookie;
