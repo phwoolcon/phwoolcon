@@ -1,5 +1,6 @@
 <?php
 use Phalcon\Di;
+use Phwoolcon\Config;
 use Phwoolcon\I18n;
 
 /**
@@ -122,8 +123,8 @@ function fnGet(&$array, $key, $default = null, $separator = '.')
     foreach (explode($separator, $key) as $subKey) {
         if (isset($tmp->$subKey)) {
             $tmp =& $tmp->$subKey;
-        } else if (isset($tmp[$subKey])) {
-            $tmp =& $tmp[$subKey];
+        } else if (($tmp2 = (array)$tmp) && isset($tmp2[$subKey])) {
+            $tmp =& $tmp2[$subKey];
         } else {
             return $default;
         }
@@ -141,6 +142,12 @@ function migrationPath($path = null)
     return Di::getDefault()['MIGRATION_PATH'] . ($path ? '/' . $path : '');
 }
 
+if (!function_exists('random_bytes')) {
+    function random_bytes($length) {
+        return openssl_random_pseudo_bytes($length);
+    }
+}
+
 /**
  * Show execution trace for debugging
  *
@@ -148,6 +155,7 @@ function migrationPath($path = null)
  * @param bool $print Set to true to print trace
  *
  * @return string
+ * @codeCoverageIgnore
  */
 function showTrace($exit = true, $print = true)
 {
@@ -179,7 +187,7 @@ function url($path, $queries = [], $secure = null)
         $secure = false;
     }
     $protocol = $secure ? 'https://' : 'http://';
-    $host = fnGet($_SERVER, 'HTTP_HOST');
+    $host = fnGet($_SERVER, 'HTTP_HOST') ?: parse_url(Config::get('app.url'), PHP_URL_HOST);
     $base = $_SERVER['SCRIPT_NAME'];
     $base = trim(dirname($base), '/');
     $base and $base .= '/';

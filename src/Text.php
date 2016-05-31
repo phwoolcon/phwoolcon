@@ -8,6 +8,6 @@ class Text extends PhalconText
 
     public static function token()
     {
-        return bin2hex(openssl_random_pseudo_bytes(16));
+        return bin2hex(random_bytes(16));
     }
 }
