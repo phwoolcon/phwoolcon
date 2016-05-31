@@ -18,7 +18,6 @@
         "ext-mcrypt": "*",
         "ext-openssl": "*",
         "ext-PDO": "*",
-        "ext-phalcon": ">=2.0.11",
         "phwoolcon/fsm": "dev-master",
         "symfony/console": "3.0.*",
         "pda/pheanstalk": "3.1.0",
@@ -28,6 +27,7 @@
         "techpivot/phalcon-ci-installer": "~1.0"
     },
     "suggest": {
+        "ext-phalcon": ">=2.0.11",
         "ext-swoole": "*"
     },
     "autoload": {
