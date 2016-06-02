@@ -61,9 +61,9 @@ class Config
             return;
         }
         // @codeCoverageIgnoreEnd
-        $defaultFiles = glob($di['CONFIG_PATH'] . '/*.php');
-        $environment = isset($_SERVER['PHALCON_ENV']) ? $_SERVER['PHALCON_ENV'] : 'production';
-        $environmentFiles = glob($di['CONFIG_PATH'] . '/' . $environment . '/*.php');
+        $defaultFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/*.php');
+        $environment = isset($_SERVER['PHWOOLCON_ENV']) ? $_SERVER['PHWOOLCON_ENV'] : 'production';
+        $environmentFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/' . $environment . '/*.php');
 
         $config = new PhalconConfig(static::loadFiles($defaultFiles));
         $environmentSettings = static::loadFiles($environmentFiles);

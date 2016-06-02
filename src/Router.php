@@ -40,7 +40,7 @@ class Router extends PhalconRouter
             $this->_sitePathLength = strlen($this->_sitePathPrefix);
         }
         $this->removeExtraSlashes(true);
-        $routes = is_file($file = static::$di['ROOT_PATH'] . '/app/routes.php') ? include $file : [];
+        $routes = is_file($file = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/app/routes.php') ? include $file : [];
         is_array($routes) and $this->addRoutes($routes);
     }
 

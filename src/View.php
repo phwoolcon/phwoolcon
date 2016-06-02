@@ -27,6 +27,7 @@ class View extends PhalconView
     protected $config = [];
     protected $_theme;
     protected $_loadedThemes = [];
+    protected $_viewsDir;
     /**
      * @var Manager
      */
@@ -36,7 +37,7 @@ class View extends PhalconView
     {
         parent::__construct($config['options']);
         $this->response = static::$di->getShared('response');
-        $this->setViewsDir($config['path']);
+        $this->setViewsDir($this->_viewsDir = $config['path']);
         $this->_mainView = $config['top_level'];
         $this->_theme = $config['theme'];
         $this->_layout = $config['default_layout'];

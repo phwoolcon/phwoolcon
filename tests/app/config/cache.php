@@ -17,6 +17,7 @@ return [
                 'index' => 5,
                 'persistent' => true,
                 'prefix' => '.',
+                'statsKey' => '_PHCR',
             ],
         ],
         'memcached' => [
@@ -29,6 +30,7 @@ return [
                     Memcached::OPT_HASH => Memcached::HASH_MD5,
                     Memcached::OPT_PREFIX_KEY => 'phwoolcon.',
                 ] : [],
+                'statsKey' => '_PHCM',
             ],
         ],
     ],

@@ -150,7 +150,7 @@ function isHttpUrl($url)
 
 function migrationPath($path = null)
 {
-    return Di::getDefault()['MIGRATION_PATH'] . ($path ? '/' . $path : '');
+    return $_SERVER['PHWOOLCON_MIGRATION_PATH'] . ($path ? '/' . $path : '');
 }
 
 if (!function_exists('random_bytes')) {
@@ -183,7 +183,7 @@ function showTrace($exit = true, $print = true)
 
 function storagePath($path = null)
 {
-    return Di::getDefault()['ROOT_PATH'] . '/storage' . ($path ? '/' . $path : '');
+    return $_SERVER['PHWOOLCON_ROOT_PATH'] . '/storage' . ($path ? '/' . $path : '');
 }
 
 function url($path, $queries = [], $secure = null)
