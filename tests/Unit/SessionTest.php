@@ -63,11 +63,19 @@ class SessionTest extends TestCase
 
     public function testSessionCRUDRedis()
     {
+        if (!extension_loaded('redis')) {
+            $this->markTestSkipped('The "redis" extension is not available.');
+            return;
+        }
         $this->realTestSessionCRUD('redis');
     }
 
     public function testSessionCRUDMemcached()
     {
+        if (!extension_loaded('memcached')) {
+            $this->markTestSkipped('The "memcached" extension is not available.');
+            return;
+        }
         $this->realTestSessionCRUD('memcached');
     }
 
