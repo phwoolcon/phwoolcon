@@ -92,7 +92,7 @@ function base62encode($val)
         $i = $val % $base;
         $str = $chars[$i] . $str;
         $val = ($val - $i) / $base;
-    } while($val > 0);
+    } while ($val > 0);
     return $str;
 }
 
@@ -111,20 +111,31 @@ function base62encode($val)
  * $undefined = fnGet($array, 'l3', 'default value'); // returns 'default value'
  *
  * @param array|object $array     Subject array or object
- * @param              $key
+ * @param string       $key       Indicates the data element of the target value
  * @param mixed        $default   Default value if key not found in subject
  * @param string       $separator Key level separator, default '.'
+ * @param bool         $hasObject Indicates that the subject may contains object, default false
  *
  * @return mixed
  */
-function fnGet(&$array, $key, $default = null, $separator = '.')
+function fnGet(&$array, $key, $default = null, $separator = '.', $hasObject = false)
 {
     $tmp =& $array;
+    if ($hasObject) {
+        foreach (explode($separator, $key) as $subKey) {
+            if (isset($tmp->$subKey)) {
+                $tmp =& $tmp->$subKey;
+            } else if (is_array($tmp) && isset($tmp[$subKey])) {
+                $tmp =& $tmp[$subKey];
+            } else {
+                return $default;
+            }
+        }
+        return $tmp;
+    }
     foreach (explode($separator, $key) as $subKey) {
-        if (isset($tmp->$subKey)) {
-            $tmp =& $tmp->$subKey;
-        } else if (($tmp2 = (array)$tmp) && isset($tmp2[$subKey])) {
-            $tmp =& $tmp2[$subKey];
+        if (isset($tmp[$subKey])) {
+            $tmp =& $tmp[$subKey];
         } else {
             return $default;
         }
@@ -143,7 +154,8 @@ function migrationPath($path = null)
 }
 
 if (!function_exists('random_bytes')) {
-    function random_bytes($length) {
+    function random_bytes($length)
+    {
         return openssl_random_pseudo_bytes($length);
     }
 }
