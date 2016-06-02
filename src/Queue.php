@@ -76,6 +76,8 @@ class Queue
     public static function register(Di $di)
     {
         static::$di = $di;
+        $di->remove('queue');
+        static::$instance = null;
         $di->setShared('queue', function () {
             return new static(Config::get('queue'));
         });

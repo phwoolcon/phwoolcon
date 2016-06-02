@@ -39,6 +39,8 @@ class Cache
 
     public static function register(Di $di)
     {
+        $di->remove('cache');
+        static::$cache = null;
         $di->setShared('cache', function () {
             $frontend = new Data(['lifetime' => static::TTL_ONE_DAY]);
             $default = Config::get('cache.default');

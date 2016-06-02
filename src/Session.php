@@ -20,6 +20,8 @@ use Phwoolcon\Session\Exception;
  * @uses Phalcon\Session\Adapter::destroy()
  * @method static void end()
  * @uses AdapterTrait::end()
+ * @method static void flush()
+ * @uses AdapterTrait::flush()
  * @method static mixed get(string $index, mixed $defaultValue = null, bool $remove = false)
  * @uses AdapterTrait::get()
  * @method static mixed getFormData(string $key, mixed $default = null)
@@ -40,12 +42,16 @@ use Phwoolcon\Session\Exception;
  * @uses Phalcon\Session\Adapter::has()
  * @method static bool isStarted()
  * @uses Phalcon\Session\Adapter::isStarted()
- * @method static Adapter regenerateId(bool $deleteOldSession = true)
+ * @method static AdapterTrait regenerateId(bool $deleteOldSession = true)
  * @uses AdapterTrait::regenerateId()
+ * @method static void rememberFormData(string $key, $data)
+ * @uses AdapterTrait::rememberFormData()
  * @method static void remove(string $index)
  * @uses AdapterTrait::remove()
  * @method static void set(string $index, mixed $value)
  * @uses AdapterTrait::set()
+ * @method static AdapterTrait setCookie()
+ * @uses AdapterTrait::setCookie()
  * @method static void setId(string $id)
  * @uses Phalcon\Session\Adapter::setId()
  * @method static void setName(string $id)
@@ -78,7 +84,9 @@ class Session
     {
         static::$di = $di;
         ini_set('session.use_cookies', 0);
+        ini_set('session.cache_limiter', '');
         $di->remove('session');
+        static::$session = null;
         $di->setShared('session', function () {
             $default = Config::get('session.default');
             $config = Config::get('session.drivers.' . $default);
@@ -89,9 +97,11 @@ class Session
             session_name($options['cookies']['name']);
             strpos($class, '\\') === false and $class = 'Phwoolcon\\Session\\Adapter\\' . $class;
             $session = new $class($options);
+            // @codeCoverageIgnoreStart
             if (!$session instanceof AdapterInterface) {
                 throw new Exception('Session class should implement ' . AdapterInterface::class);
             }
+            // @codeCoverageIgnoreEnd
             return $session;
         });
     }

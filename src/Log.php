@@ -48,6 +48,8 @@ class Log extends Logger
     public static function register(Di $di)
     {
         static::$hostname = gethostname();
+        $di->remove('log');
+        static::$logger = null;
         $di->setShared('log', function () {
             $filePath = storagePath('logs');
             if (!is_dir($filePath)) {
