@@ -2,7 +2,7 @@ language: php
 sudo: required
 
 services:
-#  - memcached
+  - memcached
   - redis-server
   - mysql
 
