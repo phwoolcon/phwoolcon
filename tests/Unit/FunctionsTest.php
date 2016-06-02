@@ -58,9 +58,10 @@ class FunctionsTest extends TestCase
         $obj = json_decode(json_encode($array));
         $default = 'default';
         $this->assertEquals($array['child']['child']['child'], fnGet($array, 'child.child.child'), 'Unable to fetch child on array');
-        $this->assertEquals($obj->child->child->child, fnGet($obj, 'child.child.child'), 'Unable to fetch child on object');
+        $this->assertEquals($array['child']['child']['child'], fnGet($array, 'child.child.child', null, '.', true), 'Unable to fetch child on array');
+        $this->assertEquals($obj->child->child->child, fnGet($obj, 'child.child.child', null, '.', true), 'Unable to fetch child on object');
         $this->assertEquals($default, fnGet($array, 'bad.key', $default), 'Unable to return default value if child not found on array');
-        $this->assertEquals($default, fnGet($obj, 'bad.key', $default), 'Unable to return default value if child not found on object');
+        $this->assertEquals($default, fnGet($obj, 'bad.key', $default, '.', true), 'Unable to return default value if child not found on object');
     }
 
     public function testUrl()
