@@ -16,4 +16,11 @@ class Native extends Files implements AdapterInterface
         parent::__construct($options);
         session_save_path($options['save_path']);
     }
+
+    public function flush()
+    {
+        foreach (glob($this->_options['save_path'] . '/sess*') as $file) {
+            @unlink($file);
+        }
+    }
 }

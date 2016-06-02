@@ -40,6 +40,8 @@ trait AdapterTrait
         $this->cookieRenewedAt = 0;
     }
 
+    abstract public function flush();
+
     public function generateCsrfToken()
     {
         $this->set('csrf_token', $token = Text::token());
@@ -119,7 +121,7 @@ trait AdapterTrait
             if ($this->cookieRenewedAt + $lazyRenew > $now) {
                 return $this;
             }
-            $this->set('_cookie_renewed_at', $now);
+            $this->set('_cookie_renewed_at', $this->cookieRenewedAt = $now);
         }
         Cookies::set($cookieName = $this->getName(), $this->getId(), $now + $this->_options['lifetime'],
             $this->_options['cookies']['path'], $this->_options['cookies']['secure'],
