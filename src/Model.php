@@ -37,7 +37,9 @@ abstract class Model extends PhalconModel
             $property = Text::uncamelize(substr($method, 3));
             return $this->setData($property, fnGet($arguments, 0));
         }
+        // @codeCoverageIgnoreStart
         return parent::__call($method, $arguments);
+        // @codeCoverageIgnoreEnd
     }
 
     public function addData(array $data)
@@ -84,6 +86,11 @@ abstract class Model extends PhalconModel
         $id = $prefix . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
         return $this->setId($id);
     }
+    
+    public function getAdditionalData($key = null)
+    {
+        return $key === null ? $this->_additionalData : fnGet($this->_additionalData, $key);
+    }
 
     public function getData($key = null)
     {
@@ -123,6 +130,7 @@ abstract class Model extends PhalconModel
      */
     protected function onConstruct()
     {
+        $this->clearData();
     }
 
     protected function prepareSave()

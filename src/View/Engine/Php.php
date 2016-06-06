@@ -34,6 +34,7 @@ class Php extends PhpEngine
 
     public function processInclude($path, $params = [])
     {
+        // @codeCoverageIgnoreStart
         if ($this->_debug) {
             $wrapper = $this->_view->getDebugWrapper($path);
             echo $wrapper[0];
@@ -41,6 +42,7 @@ class Php extends PhpEngine
             echo $wrapper[1];
             return;
         }
+        // @codeCoverageIgnoreEnd
         $this->render($this->_view->getAbsoluteViewPath($path . '.phtml'), $params);
     }
 }

@@ -3,3 +3,4 @@
 /ignore/
 /tests/app/config/testing/
 /tests/storage/
+/tests/public/assets/compiled/

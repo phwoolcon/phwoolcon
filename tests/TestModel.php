@@ -10,12 +10,14 @@ use Phwoolcon\Model;
  * @package Phwoolcon\Tests
  *
  * @method string getKey()
+ * @method mixed getValue()
  * @method $this setValue(mixed $value)
  */
 class TestModel extends Model
 {
     protected $_table = 'test_model';
     protected $_pk = 'key';
+    protected $_jsonFields = ['value'];
 
     protected function createTable()
     {

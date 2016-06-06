@@ -27,9 +27,11 @@ class DiFix extends Di
                 }
                 /* @var Di\Service $service */
                 $service = $di->_services[$name];
+                // @codeCoverageIgnoreStart
                 if (!$service->isShared()) {
                     return false;
                 }
+                // @codeCoverageIgnoreEnd
                 if (!(($definition = $service->getDefinition()) instanceof Closure)) {
                     return false;
                 }

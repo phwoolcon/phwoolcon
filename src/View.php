@@ -81,9 +81,11 @@ class View extends PhalconView
                     $view->assets->outputCss($collectionName);
                     break;
             }
-        } catch (Exception $e) {
+        } // @codeCoverageIgnoreStart
+        catch (Exception $e) {
             Log::exception($e);
         }
+        // @codeCoverageIgnoreEnd
         $assets = ob_get_clean();
         static::$cachedAssets[$collectionName] = $assets;
         $useCache and Cache::set('assets', static::$cachedAssets);
@@ -132,11 +134,20 @@ class View extends PhalconView
         return fnGet(static::$instance->config, $key);
     }
 
+    /**
+     * @return mixed
+     * @codeCoverageIgnore
+     */
     public function getCurrentTheme()
     {
         return $this->_theme;
     }
 
+    /**
+     * @param $viewPath
+     * @return array
+     * @codeCoverageIgnore
+     */
     public function getDebugWrapper($viewPath)
     {
         $viewPath = trim($this->_theme . '/' . $viewPath, '/');
@@ -269,12 +280,14 @@ class View extends PhalconView
             $this->finish();
             $this->response->setContent($this->getContent());
             return $result;
-        } catch (ViewException $e) {
+        } // @codeCoverageIgnoreStart
+        catch (ViewException $e) {
             Log::exception($e);
             return false;
         } catch (Exception $e) {
             throw $e;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     public function reset()
@@ -295,12 +308,19 @@ class View extends PhalconView
 
     public function setContent($content)
     {
+        // @codeCoverageIgnoreStart
         if (isset($this->_options['debug_wrapper'])) {
             $wrapper = $this->_options['debug_wrapper'];
             $this->_content = $wrapper[0] . $content . $wrapper[1];
-        } else {
+        } // @codeCoverageIgnoreEnd
+        else {
             $this->_content = $content;
         }
         return $this;
+    }
+
+    public function setParams(array $params)
+    {
+        $this->_params = $params;
     }
 }

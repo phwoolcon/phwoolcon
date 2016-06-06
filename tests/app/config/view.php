@@ -10,36 +10,16 @@ return [
     'title_suffix' => 'Phwoolcon',
     'assets' => [
         'head-css' => [
-            '../base/css/normalize-4.1.1.css',
-            '../base/css/mincss.css',
-            'css/styles.css',
-            'css/no-js.css',
-            '../base/css/font-pt-sans.css',
         ],
         'head-js' => [
-            '../base/js/jquery-1.12.3.min.js',
-            '../base/js/jquery.cookie-1.4.1.min.js',
-            '../base/js/simpleStorage-0.2.1.min.js',
-            '../base/js/phwoolcon.js',
         ],
         'body-js' => [
-            '../base/js/body-js.js',
         ],
         'ie-hack-css' => [
-            '../base/css/ie-hack.css',
         ],
         'ie-hack-js' => [
-            '../base/js/ie/function-bind.min.js.js',
-            '../base/js/ie/json2-20160501.min.js',
-            '../base/js/ie/html5shiv-3.7.3.min.js',
         ],
         'ie-hack-body-js' => [
-            '../base/js/ie/jquery.placeholder-2.3.1.min.js',
-            '../base/js/ie/respond-1.4.2.js',
-            '../base/js/ie/ie-hack.js',
-        ],
-        'sso-js' => [
-            '../base/js/sso.js',
         ],
     ],
     'admin' => [
@@ -48,31 +28,22 @@ return [
         'layout' => 'default',
         'assets' => [
             'head-css' => [
-                '../../base/css/normalize-4.1.1.css',
-                '../../base/css/mincss.css',
-                'css/styles.css',
+                'test.css',
             ],
             'head-js' => [
-                '../../base/js/jquery-1.12.3.min.js',
-                '../../base/js/jquery.cookie-1.4.1.min.js',
-                '../../base/js/ie/simpleStorage-0.2.1.min.js',
-                '../../base/js/phwoolcon.js',
+                'test.js',
             ],
             'body-js' => [
-                '../../base/js/body-js.js',
+                'test-body.js',
             ],
             'ie-hack-css' => [
-                '../../base/css/ie-hack.css',
+                'test-ie-hack.css',
             ],
             'ie-hack-js' => [
-                '../../base/js/ie/function-bind.min.js.js',
-                '../../base/js/ie/json2-20160501.min.js',
-                '../../base/js/ie/html5shiv-3.7.3.min.js',
+                'test-ie-hack.js',
             ],
             'ie-hack-body-js' => [
-                '../../base/js/ie/jquery.placeholder-2.3.1.min.js',
-                '../../base/js/ie/respond-1.4.2.js',
-                '../../base/js/ie/ie-hack.js',
+                'test-ie-hack-body.js',
             ],
         ],
     ],
