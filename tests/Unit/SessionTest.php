@@ -12,7 +12,6 @@ class SessionTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Cookies::register($this->di);
     }
 
     protected function realTestSessionCRUD($driver)

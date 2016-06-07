@@ -2,6 +2,8 @@
 namespace Phwoolcon\Tests;
 
 use Phalcon\Db\Column;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\StringLength;
 use Phwoolcon\Db;
 use Phwoolcon\Model;
 
@@ -33,6 +35,18 @@ class TestModel extends Model
                 new Column('value', [
                     'type' => Column::TYPE_TEXT,
                 ]),
+                new Column('created_at', [
+                    'type' => Column::TYPE_BIGINTEGER,
+                    'size' => 20,
+                    'unsigned' => true,
+                    'notNull' => false,
+                ]),
+                new Column('updated_at', [
+                    'type' => Column::TYPE_BIGINTEGER,
+                    'size' => 20,
+                    'unsigned' => true,
+                    'notNull' => false,
+                ]),
             ],
         ]);
     }
@@ -43,5 +57,16 @@ class TestModel extends Model
         $db = Db::connection();
         $db->tableExists($this->_table) or $this->createTable();
         $db->delete($this->_table);
+    }
+
+    public function validation()
+    {
+        $validator = new Validation();
+        $validator->add('key', new StringLength([
+            'min' => 3,
+            'max' => 32,
+        ]));
+        $this->validate($validator);
+        return parent::validation();
     }
 }

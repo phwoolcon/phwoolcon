@@ -7,10 +7,13 @@ use PHPUnit_Framework_TestCase;
 use Phwoolcon\Aliases;
 use Phwoolcon\Cache;
 use Phwoolcon\Config;
+use Phwoolcon\Cookies;
 use Phwoolcon\Db;
 use Phwoolcon\DiFix;
 use Phwoolcon\Events;
+use Phwoolcon\I18n;
 use Phwoolcon\Log;
+use Phwoolcon\Session;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
@@ -30,6 +33,9 @@ class TestCase extends PHPUnit_Framework_TestCase
         Log::register($di);
         Config::register($di);
         Aliases::register($di);
+        I18n::register($this->di);
+        Cookies::register($this->di);
+        Session::register($di);
         Cache::flush();
         Config::clearCache();
         parent::setUp();
