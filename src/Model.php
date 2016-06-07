@@ -25,6 +25,10 @@ abstract class Model extends PhalconModel
     protected $_pk = 'id';
     protected $_isNew = true;
     protected $_useDistributedId = true;
+    protected $_integerColumnTypes = [
+        PhalconDb\Column::TYPE_INTEGER => true,
+        PhalconDb\Column::TYPE_BIGINTEGER => true,
+    ];
 
     public function __call($method, $arguments)
     {
@@ -58,6 +62,7 @@ abstract class Model extends PhalconModel
 
     protected function afterSave()
     {
+        $this->_isNew = false;
         foreach ($this->_jsonFields as $field) {
             isset($this->$field) && is_string($data = $this->$field) and $this->$field = json_decode($data, true);
         }
@@ -86,7 +91,7 @@ abstract class Model extends PhalconModel
         $id = $prefix . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
         return $this->setId($id);
     }
-    
+
     public function getAdditionalData($key = null)
     {
         return $key === null ? $this->_additionalData : fnGet($this->_additionalData, $key);
@@ -125,6 +130,11 @@ abstract class Model extends PhalconModel
         $this->keepSnapshots(true);
     }
 
+    public function isNew()
+    {
+        return $this->_isNew;
+    }
+
     /**
      * Runs every time, when a model object is created
      */
@@ -139,11 +149,14 @@ abstract class Model extends PhalconModel
             isset($this->$field) && is_array($data = $this->$field) and $this->$field = json_encode($data);
         }
         $now = time();
-        if (!$this->getData($property = 'created_at') && $this->getModelsMetaData()->hasAttribute($this, $property)) {
-            $this->setData($property, $now);
+        $columns = $this->checkDataColumn();
+        if (!$this->getData($property = 'created_at') && isset($columns[$property])) {
+            $convert = empty($this->_integerColumnTypes[$columns[$property]]);
+            $this->setData($property, $convert ? date(DateTime::MYSQL_DATETIME, $now) : $now);
         }
-        if ($this->getModelsMetaData()->hasAttribute($this, $property = 'updated_at')) {
-            $this->setData($property, $now);
+        if (isset($columns[$property = 'updated_at'])) {
+            $convert = empty($this->_integerColumnTypes[$columns[$property]]);
+            $this->setData($property, $convert ? date(DateTime::MYSQL_DATETIME, $now) : $now);
         }
         if ($this->_useDistributedId && !$this->getId()) {
             $this->generateDistributedId();
@@ -246,6 +259,11 @@ abstract class Model extends PhalconModel
         return $sql;
     }
 
+    public function validation()
+    {
+        return !$this->validationHasFailed();
+    }
+
     /**
      * @param array | string | int $conditions
      * @param array                $bind
@@ -265,7 +283,7 @@ abstract class Model extends PhalconModel
      * @param string     $order
      * @param string     $columns
      * @param string|int $limit
-     * @return $this
+     * @return \Phalcon\Mvc\Model\Resultset\Simple|\Phalcon\Mvc\Model\ResultsetInterface
      */
     public static function findSimple($conditions = [], $bind = [], $order = null, $columns = null, $limit = null)
     {
