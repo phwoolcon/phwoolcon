@@ -38,4 +38,7 @@ before_script:
   - phpenv config-add php-ext.ini
 
 script:
-  - phpunit --verbose
+  - phpunit --verbose --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
