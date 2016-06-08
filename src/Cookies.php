@@ -33,12 +33,18 @@ class Cookies
     public static function register(Di $di)
     {
         static::$di = $di;
+        $di->set('Phalcon\\Http\\Cookie', 'Phwoolcon\\Http\\Cookie');
         static::$cookies = static::$di->getShared('cookies');
+        static::$cookies->reset();
         static::$options = $options = Config::get('cookies');
         static::$cookies->useEncryption($encrypt = $options['encrypt']);
         $encrypt and static::$di->getShared('crypt')
             ->setKey($options['encrypt_key'])
             ->setPadding(Crypt::PADDING_ZERO);
+        /* @var \Phalcon\Http\Response $response */
+        if ($response = $di->getShared('response')) {
+            $response->setCookies(static::$cookies);
+        }
         Events::attach('view:generatePhwoolconJsOptions', function (Event $event) {
             $options = $event->getData() ?: [];
             $options['cookies'] = [
