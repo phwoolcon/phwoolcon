@@ -63,7 +63,9 @@ class I18n extends Adapter
         }
         if ($this->detectClientLocale) {
             $this->_setLocale($this->request->getBestLanguage());
+            return;
         }
+        $this->loadLocale($this->currentLocale = $this->defaultLocale);
     }
 
     protected function _setLocale($locale)
