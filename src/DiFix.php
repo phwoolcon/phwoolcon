@@ -9,11 +9,16 @@ use Phalcon\Version;
 class DiFix extends Di
 {
 
+    /**
+     * Fix over clever di service resolver in phalcon 2.1.x:
+     * let definition = \Closure::bind(definition, dependencyInjector)
+     * which leads to php warning "Cannot bind an instance to a static closure"
+     *
+     * @param Di $di
+     * @codeCoverageIgnore
+     */
     public static function register(Di $di)
     {
-        // Fix over clever di service resolver:
-        // let definition = \Closure::bind(definition, dependencyInjector)
-        // which leads to php warning "Cannot bind an instance to a static closure"
         if (Version::getId() > '2010000') {
             $di->setInternalEventsManager($di->getShared('eventsManager'));
             Events::attach('di:beforeServiceResolve', function (Event $event) {
@@ -27,11 +32,9 @@ class DiFix extends Di
                 }
                 /* @var Di\Service $service */
                 $service = $di->_services[$name];
-                // @codeCoverageIgnoreStart
                 if (!$service->isShared()) {
                     return false;
                 }
-                // @codeCoverageIgnoreEnd
                 if (!(($definition = $service->getDefinition()) instanceof Closure)) {
                     return false;
                 }
