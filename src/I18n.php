@@ -154,7 +154,7 @@ class I18n extends Adapter
     public static function reset()
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
-        static::_reset();
+        static::$instance->_reset();
     }
 
     public static function setLocale($locale)
