@@ -162,7 +162,7 @@ class I18n extends Adapter
     public static function setLocale($locale)
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
-        static::_setLocale($locale);
+        static::$instance->_setLocale($locale);
     }
 
     public static function translate($string, array $params = null, $package = null)
