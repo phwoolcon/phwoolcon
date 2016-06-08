@@ -1,9 +1,6 @@
 <?php
 namespace Phwoolcon\Tests\Unit;
 
-use Phwoolcon\Config;
-use Phwoolcon\Cookies;
-use Phwoolcon\I18n;
 use Phwoolcon\Tests\TestCase;
 use Phwoolcon\View;
 
@@ -13,8 +10,6 @@ class ViewTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        I18n::register($this->di);
-        Cookies::register($this->di);
         View::register($this->di);
     }
 
