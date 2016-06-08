@@ -70,6 +70,7 @@ class TestModel extends Model
             ]));
         } else {
             $validator = new \Phalcon\Mvc\Model\Validator\StringLength([
+                'field' => 'key',
                 'min' => 3,
                 'max' => 32,
             ]);
