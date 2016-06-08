@@ -61,10 +61,12 @@ class I18n extends Adapter
             $this->loadLocale($this->currentLocale = $locale);
             return;
         }
+        // @codeCoverageIgnoreStart
         if ($this->detectClientLocale) {
             $this->_setLocale($this->request->getBestLanguage());
             return;
         }
+        // @codeCoverageIgnoreEnd
         $this->loadLocale($this->currentLocale = $this->defaultLocale);
     }
 
@@ -81,12 +83,16 @@ class I18n extends Adapter
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
         $pattern = fnGet(static::$instance->options, "verification_patterns.{$country}.mobile");
-        return $pattern ? preg_match($pattern, $mobile) : true;
+        return $pattern ? (bool)preg_match($pattern, $mobile) : true;
     }
 
-    public static function clearCache()
+    public static function clearCache($memoryOnly = false)
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
+        static::$instance->locale = [];
+        if ($memoryOnly) {
+            return;
+        }
         foreach (glob(static::$instance->localePath . '/*', GLOB_ONLYDIR) as $dir) {
             $locale = basename($dir);
             Cache::delete('locale.' . $locale);
@@ -129,8 +135,8 @@ class I18n extends Adapter
 
     public function query($string, $params = null, $package = null)
     {
-        if ($package && isset($this->locale[$this->currentLocale][$package][$string])) {
-            $translation = $this->locale[$this->currentLocale][$package][$string];
+        if ($package && isset($this->locale[$this->currentLocale]['packages'][$package][$string])) {
+            $translation = $this->locale[$this->currentLocale]['packages'][$package][$string];
         } else if (isset($this->locale[$this->currentLocale]['combined'][$string])) {
             $translation = $this->locale[$this->currentLocale]['combined'][$string];
         } else {
