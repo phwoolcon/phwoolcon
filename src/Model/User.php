@@ -1,12 +1,15 @@
 <?php
 namespace Phwoolcon\Model;
 
+use Phalcon\Di;
 use Phwoolcon\Model;
 
 /**
  * Class User
  * @package Phwoolcon\Model
  *
+ * @property Di $_dependencyInjector
+ * @property Di $_dependencyInjector
  * @method UserProfile|false getUserProfile()
  * @method $this setUserProfile(UserProfile $profile)
  */
@@ -16,7 +19,7 @@ class User extends Model
 
     protected function assignUserProfile()
     {
-        return $this->setUserProfile(new UserProfile);
+        return $this->setUserProfile($this->_dependencyInjector->get(UserProfile::class));
     }
 
     public function getRememberToken()
@@ -26,7 +29,9 @@ class User extends Model
 
     public function initialize()
     {
-        $this->hasOne('id', UserProfile::class, 'user_id', ['alias' => 'user_profile']);
+        $class = UserProfile::class;
+        $this->_dependencyInjector->has($class) and $class = $this->_dependencyInjector->getRaw($class);
+        $this->hasOne('id', $class, 'user_id', ['alias' => 'user_profile']);
         parent::initialize();
     }
 
