@@ -170,4 +170,11 @@ class I18n extends Adapter
         static::$instance or static::$instance = static::$di->getShared('i18n');
         return static::$instance->query($string, $params, $package);
     }
+
+    public static function useMultiLocale($flag = null)
+    {
+        static::$instance or static::$instance = static::$di->getShared('i18n');
+        $flag === null or static::$instance->multiLocale = (bool)$flag;
+        return static::$instance->multiLocale;
+    }
 }
