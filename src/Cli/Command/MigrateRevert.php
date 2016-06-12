@@ -3,6 +3,7 @@
 namespace Phwoolcon\Cli\Command;
 
 use Exception;
+use Phwoolcon\Config;
 use Phwoolcon\Db;
 use Phwoolcon\Log;
 
@@ -22,12 +23,14 @@ class MigrateRevert extends Migrate
             $file = $lastMigration['file'];
             $runAt = $lastMigration['run_at'];
             $this->comment(sprintf(' You are going to revert migration "%s" which was run at %s', $file, $runAt));
-            if ($this->confirm('please confirm', false)) {
+            if (Config::environment() == 'testing' || $this->confirm('please confirm', false)) {
                 $this->revertMigration($file);
             }
-        } else {
+        } // @codeCoverageIgnoreStart
+        else {
             $this->info('No migrations to be reverted.');
         }
+        // @codeCoverageIgnoreEnd
     }
 
     protected function getLastMigration()
@@ -56,11 +59,13 @@ class MigrateRevert extends Migrate
             $db->commit();
             Db::clearMetadata();
             $this->logAndShowInfo(sprintf('Finish reverting migration "%s"', $filename));
-        } catch (Exception $e) {
+        } // @codeCoverageIgnoreStart
+        catch (Exception $e) {
             $db->rollback();
             Log::exception($e);
             $this->error(sprintf('Error when reverting migration "%s"', $filename));
             $this->error($e->getMessage());
         }
+        // @codeCoverageIgnoreEnd
     }
 }

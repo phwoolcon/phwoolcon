@@ -28,6 +28,12 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
             <file>functions.php</file>
+            <exclude>
+                <file>src/Cli/Command/Migrate/template.php</file>
+                <file>src/Protocol/StreamWrapperTrait.php</file>
+                <file>src/Cli/Output/Stream.php</file>
+                <file>src/Cli/Command/ClearCacheCommand.php</file>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

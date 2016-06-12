@@ -23,7 +23,7 @@ class MigrateCreate extends Command
         $this->output->writeln("<info>Created Migration:</info> {$filename}");
     }
 
-    protected function template()
+    public function template()
     {
         return file_get_contents(__DIR__ . '/Migrate/template.php');
     }

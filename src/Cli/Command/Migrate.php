@@ -6,6 +6,7 @@ use Exception;
 use Phalcon\Db\Column;
 use Phalcon\Di;
 use Phwoolcon\Cli\Command;
+use Phwoolcon\Config;
 use Phwoolcon\Db;
 use Phwoolcon\Log;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,6 +47,18 @@ class Migrate extends Command
         return $this;
     }
 
+    public function cleanMigrationsTable()
+    {
+        // @codeCoverageIgnoreStart
+        if (Config::environment() != 'testing') {
+            return;
+        }
+        // @codeCoverageIgnoreEnd
+        $this->db = Db::connection();
+        $this->db->dropTable($this->table);
+        $this->checkMigrationsTable();
+    }
+
     protected function configure()
     {
         $this->setDescription('Run migration scripts.')
@@ -64,6 +77,9 @@ class Migrate extends Command
         $this->runMigration();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getDefaultTableCharset()
     {
         return Db::getDefaultTableCharset();
@@ -105,12 +121,6 @@ class Migrate extends Command
         }
         $this->migrated or $this->loadMigrated();
         return isset($this->migrated[$filename]);
-        isset($this->sql[$sqlKey = 'check_executed']) or $this->sql[$sqlKey] =
-            strtr('SELECT `column` FROM `table` WHERE `column` = ?', [
-                '`column`' => $db->escapeIdentifier('file'),
-                '`table`' => $db->escapeIdentifier($this->table),
-            ]);
-        return (bool)$db->fetchColumn($this->sql[$sqlKey], [$filename]);
     }
 
     protected function runMigration()
@@ -130,19 +140,30 @@ class Migrate extends Command
                 }
                 $this->migrationExecuted($filename, true);
                 $db->commit();
-            } catch (Exception $e) {
+            } // @codeCoverageIgnoreStart
+            catch (Exception $e) {
                 $db->rollback();
                 Log::exception($e);
                 $this->error(sprintf('Error in migration "%s"', $filename));
                 $this->error($e->getMessage());
                 return;
             }
+            // @codeCoverageIgnoreEnd
             $this->logAndShowInfo(sprintf('Finish migration "%s"', $filename));
         }
         if ($migrated) {
             Db::clearMetadata();
-        } else {
+        } // @codeCoverageIgnoreStart
+        else {
             $this->info('Nothing to be migrated.');
         }
+        // @codeCoverageIgnoreEnd
+    }
+
+    public function clearMigratedCache()
+    {
+        $this->migrated = [];
+        $this->rawMigrated = [];
+        return $this;
     }
 }

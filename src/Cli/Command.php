@@ -34,11 +34,17 @@ abstract class Command extends SymfonyCommand
         parent::__construct($name);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function ask($question, $default = null)
     {
         return $this->interactive->ask($question, $default);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function confirm($question, $default = true)
     {
         return $this->interactive->confirm($question, $default);
@@ -59,6 +65,9 @@ abstract class Command extends SymfonyCommand
         $this->fire();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function fire()
     {
         throw new LogicException('You must override the fire() method in the concrete command class.');
@@ -66,6 +75,7 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @return Di
+     * @codeCoverageIgnore
      */
     public function getDi()
     {
@@ -75,6 +85,7 @@ abstract class Command extends SymfonyCommand
     /**
      * @param Di $di
      * @return $this
+     * @codeCoverageIgnore
      */
     public function setDi($di)
     {
@@ -87,6 +98,9 @@ abstract class Command extends SymfonyCommand
         $this->output->writeln("<comment>{$messages}</comment>");
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function error($messages)
     {
         $this->output->writeln("<error>{$messages}</error>");
