@@ -10,7 +10,7 @@ if (!extension_loaded('phalcon')) {
     throw new RuntimeException($error);
 }
 
-define('TEST_ROOT_PATH', __DIR__);
+define('TEST_ROOT_PATH', __DIR__ . '/root');
 
 // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
 $di = new FactoryDefault();
