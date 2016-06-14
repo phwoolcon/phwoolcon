@@ -16,6 +16,11 @@ class MultiFilter implements FilterInterface
 
     use FilterTrait;
 
+    public function __invoke($uri, $route, $router)
+    {
+        return $this->filter($uri, $route, $router);
+    }
+
     public function add(FilterInterface $filter)
     {
         $this->filters[get_class($filter)] = $filter;
@@ -38,6 +43,16 @@ class MultiFilter implements FilterInterface
         return true;
     }
 
+    public static function instance()
+    {
+        return new static;
+    }
+
+    /**
+     * @param string $key
+     * @return $this
+     * @codeCoverageIgnore
+     */
     public function remove($key)
     {
         unset($this->filters[$key]);

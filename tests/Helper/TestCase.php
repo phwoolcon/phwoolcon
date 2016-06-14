@@ -33,8 +33,8 @@ class TestCase extends PHPUnit_Framework_TestCase
         Log::register($di);
         Config::register($di);
         Aliases::register($di);
-        I18n::register($this->di);
-        Cookies::register($this->di);
+        I18n::register($di);
+        Cookies::register($di);
         Session::register($di);
         Cache::flush();
         Config::clearCache();

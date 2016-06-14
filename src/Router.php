@@ -108,8 +108,7 @@ class Router extends PhalconRouter
             Session::end();
             return $response;
         }
-        static::throw404Exception();
-        return false;
+        return static::throw404Exception();
     }
 
     public static function generateErrorPage($template, $pateTitle)
@@ -164,12 +163,14 @@ class Router extends PhalconRouter
 
     public static function throw404Exception($content = null, $contentType = 'text/html')
     {
+        !$content && Config::environment() == 'testing' and $content = '404 NOT FOUND';
         $content or $content = static::generateErrorPage('404', '404 NOT FOUND');
         throw new NotFoundException($content, ['content-type' => $contentType]);
     }
 
     public static function throwCsrfException($content = null, $contentType = 'text/html')
     {
+        !$content && Config::environment() == 'testing' and $content = '403 FORBIDDEN';
         $content or $content = static::generateErrorPage('csrf', '403 FORBIDDEN');
         throw new CsrfException($content, ['content-type' => $contentType]);
     }
