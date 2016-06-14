@@ -49,7 +49,7 @@ abstract class Controller extends PhalconController
     public function initialize()
     {
         $this->pageTitles = [__(Config::get('view.title_suffix'))];
-        $this->view->reset();
+        isset($this->view) and $this->view->reset();
     }
 
     public function render($path, $view, array $params = [])
