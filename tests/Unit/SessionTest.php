@@ -4,7 +4,7 @@ namespace Phwoolcon\Tests\Unit;
 use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\Session;
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 
 class SessionTest extends TestCase
 {

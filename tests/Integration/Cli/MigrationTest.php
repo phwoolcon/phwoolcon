@@ -2,7 +2,7 @@
 namespace Phwoolcon\Tests\Integration\Cli;
 
 use Phwoolcon\Cli\Command\Migrate;
-use Phwoolcon\Tests\CliTestCase;
+use Phwoolcon\Tests\Helper\CliTestCase;
 use Symfony\Component\Console\Input\ArgvInput;
 
 class MigrationTest extends CliTestCase

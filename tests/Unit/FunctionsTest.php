@@ -2,7 +2,7 @@
 namespace Phwoolcon\Tests\Unit;
 
 use Phwoolcon\Config;
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 
 class FunctionsTest extends TestCase
 {

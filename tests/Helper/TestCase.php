@@ -1,6 +1,6 @@
 <?php
 
-namespace Phwoolcon\Tests;
+namespace Phwoolcon\Tests\Helper;
 
 use Phalcon\Di;
 use PHPUnit_Framework_TestCase;

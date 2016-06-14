@@ -1,7 +1,7 @@
 <?php
 namespace Phwoolcon\Tests\Unit;
 
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 use Phwoolcon\View;
 
 class ViewTest extends TestCase

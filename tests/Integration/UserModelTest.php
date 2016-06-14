@@ -4,9 +4,9 @@ namespace Phwoolcon\Tests\Unit;
 use Phwoolcon\Db;
 use Phwoolcon\Model\User;
 use Phwoolcon\Model\UserProfile;
-use Phwoolcon\Tests\TestCase;
-use Phwoolcon\Tests\TestUserModel;
-use Phwoolcon\Tests\TestUserProfileModel;
+use Phwoolcon\Tests\Helper\TestCase;
+use Phwoolcon\Tests\Helper\TestUserModel;
+use Phwoolcon\Tests\Helper\TestUserProfileModel;
 
 class UserModelTest extends TestCase
 {

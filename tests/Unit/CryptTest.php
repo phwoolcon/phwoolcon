@@ -2,7 +2,7 @@
 namespace Phwoolcon\Tests\Unit;
 
 use Phwoolcon\Crypt;
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 
 class CryptTest extends TestCase
 {

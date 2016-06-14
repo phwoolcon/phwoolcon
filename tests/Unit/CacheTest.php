@@ -2,7 +2,7 @@
 namespace Phwoolcon\Tests\Unit;
 
 use Phwoolcon\Cache;
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 
 class CacheTest extends TestCase
 {

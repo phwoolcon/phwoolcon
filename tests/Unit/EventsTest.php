@@ -3,7 +3,7 @@ namespace Phwoolcon\Tests\Unit;
 
 use Phalcon\Events\Event;
 use Phwoolcon\Events;
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 
 class EventsTest extends TestCase
 {

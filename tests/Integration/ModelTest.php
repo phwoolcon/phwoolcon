@@ -2,8 +2,8 @@
 namespace Phwoolcon\Tests\Unit;
 
 use Phwoolcon\Db;
-use Phwoolcon\Tests\TestCase;
-use Phwoolcon\Tests\TestModel;
+use Phwoolcon\Tests\Helper\TestCase;
+use Phwoolcon\Tests\Helper\TestModel;
 
 class ModelTest extends TestCase
 {

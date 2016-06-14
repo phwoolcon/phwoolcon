@@ -5,7 +5,7 @@ use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\I18n;
 use Phwoolcon\Session;
-use Phwoolcon\Tests\TestCase;
+use Phwoolcon\Tests\Helper\TestCase;
 
 class I18nTest extends TestCase
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Phwoolcon\Tests;
+namespace Phwoolcon\Tests\Helper;
 
 use Phalcon\Db\Column;
 use Phalcon\Validation;
