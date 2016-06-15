@@ -42,6 +42,10 @@ trait AdapterTrait
         return $this->connection;
     }
 
+    /**
+     * @return string
+     * @codeCoverageIgnore
+     */
     public function getConnectionName()
     {
         return $this->connectionName;
@@ -63,8 +67,12 @@ trait AdapterTrait
         return $queue ?: $this->defaultQueue;
     }
 
+    abstract public function pop($queue = null);
+
     public function push($worker, $data = '', $queue = null, array $options = [])
     {
         return $this->pushRaw($this->createPayload($worker, $data), $queue, $options);
     }
+
+    abstract public function pushRaw($payload, $queue = null, array $options = []);
 }
