@@ -9,6 +9,7 @@ use Phalcon\Mvc\Router as PhalconRouter;
 use Phalcon\Mvc\Router\Route;
 use Phwoolcon\Exception\Http\CsrfException;
 use Phwoolcon\Exception\Http\NotFoundException;
+use Phwoolcon\Exception\HttpException;
 
 /**
  * Class Router
@@ -24,6 +25,7 @@ class Router extends PhalconRouter
     protected static $di;
     protected static $disableSession = false;
     protected static $disableCsrfCheck = false;
+    protected static $runningUnitTest = false;
     /**
      * @var static
      */
@@ -35,6 +37,7 @@ class Router extends PhalconRouter
     public function __construct()
     {
         parent::__construct(false);
+        static::$runningUnitTest = Config::runningUnitTest();
         // @codeCoverageIgnoreStart
         if ($this->_sitePathPrefix = Config::get('app.site_path')) {
             $this->_uriSource = self::URI_SOURCE_GET_URL;
@@ -80,17 +83,18 @@ class Router extends PhalconRouter
 
     public static function dispatch($uri = null)
     {
-        static::$router === null and static::$router = static::$di->getShared('router');
-        $router = static::$router;
-        // @codeCoverageIgnoreStart
-        if (!$uri && $router->_sitePathLength && $router->_uriSource == self::URI_SOURCE_GET_URL) {
-            list($uri) = explode('?', $_SERVER['REQUEST_URI']);
-            $uri = str_replace(basename($_SERVER['SCRIPT_FILENAME']), '', $uri);
-            substr($uri, 0, $router->_sitePathLength) == $router->_sitePathPrefix and $uri = substr($uri, $router->_sitePathLength);
-        }
-        // @codeCoverageIgnoreEnd
-        $router->handle($uri);
-        if ($route = $router->getMatchedRoute()) {
+        try {
+            static::$router === null and static::$router = static::$di->getShared('router');
+            $router = static::$router;
+            // @codeCoverageIgnoreStart
+            if (!$uri && $router->_sitePathLength && $router->_uriSource == self::URI_SOURCE_GET_URL) {
+                list($uri) = explode('?', $_SERVER['REQUEST_URI']);
+                $uri = str_replace(basename($_SERVER['SCRIPT_FILENAME']), '', $uri);
+                substr($uri, 0, $router->_sitePathLength) == $router->_sitePathPrefix and $uri = substr($uri, $router->_sitePathLength);
+            }
+            // @codeCoverageIgnoreEnd
+            $router->handle($uri);
+            ($route = $router->getMatchedRoute()) or static::throw404Exception();
             static::$disableSession or Session::start();
             static::$disableCsrfCheck or static::checkCsrfToken();
             if (($controllerClass = $router->getControllerName()) instanceof Closure) {
@@ -111,8 +115,10 @@ class Router extends PhalconRouter
             }
             Session::end();
             return $response;
+        } catch (HttpException $e) {
+            Log::exception($e);
+            return static::$runningUnitTest ? $e : $e->toResponse();
         }
-        return static::throw404Exception();
     }
 
     public static function generateErrorPage($template, $pateTitle)
@@ -167,14 +173,14 @@ class Router extends PhalconRouter
 
     public static function throw404Exception($content = null, $contentType = 'text/html')
     {
-        !$content && Config::environment() == 'testing' and $content = '404 NOT FOUND';
+        !$content && static::$runningUnitTest and $content = '404 NOT FOUND';
         $content or $content = static::generateErrorPage('404', '404 NOT FOUND');
         throw new NotFoundException($content, ['content-type' => $contentType]);
     }
 
     public static function throwCsrfException($content = null, $contentType = 'text/html')
     {
-        !$content && Config::environment() == 'testing' and $content = '403 FORBIDDEN';
+        !$content && static::$runningUnitTest and $content = '403 FORBIDDEN';
         $content or $content = static::generateErrorPage('csrf', '403 FORBIDDEN');
         throw new CsrfException($content, ['content-type' => $contentType]);
     }
