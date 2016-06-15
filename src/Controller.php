@@ -21,6 +21,7 @@ abstract class Controller extends PhalconController
     public function addPageTitle($title)
     {
         $this->pageTitles[] = $title;
+        return $this;
     }
 
     public function getBrowserCache($pageId = null, $type = null)
@@ -104,62 +105,6 @@ abstract class Controller extends PhalconController
     }
 
     /**
-     * set cookie
-     *
-     * @param        $name
-     * @param null   $value
-     * @param int    $expire
-     * @param string $path
-     * @param null   $secure
-     * @param null   $domain
-     * @param null   $httpOnly
-     * @return \Phalcon\Http\Response\Cookies|\Phalcon\Http\Response\CookiesInterface
-     */
-    protected function cookie(
-        $name,
-        $value = null,
-        $expire = 0,
-        $path = "/",
-        $secure = null,
-        $domain = null,
-        $httpOnly = null
-    ) {
-        return $this->cookies->set($name, $value, $expire, $path, $secure, $domain, $httpOnly);
-    }
-
-    /**
-     * set session use default session adapter
-     *
-     * @param $index
-     * @param $value
-     */
-    protected function session($index, $value)
-    {
-        $this->session->set($index, $value);
-    }
-
-    /**
-     * add content
-     *
-     * @param $content
-     */
-    protected function content($content)
-    {
-        $this->response->appendContent($content);
-    }
-
-    /**
-     * stop application and return content to client
-     *
-     * @param int $httpCode
-     * @return \Phalcon\Http\ResponseInterface
-     */
-    protected function response($httpCode = 200)
-    {
-        return $this->response->setStatusCode($httpCode);
-    }
-
-    /**
      * redirect url
      *
      * @param null $location
@@ -173,23 +118,6 @@ abstract class Controller extends PhalconController
     }
 
     /**
-     * assign vars into template
-     *
-     * @link https://docs.phalconphp.com/zh/latest/reference/volt.html
-     * @param      $name
-     * @param null $value
-     * @return \Phalcon\Mvc\View
-     */
-    protected function assign($name, $value = null)
-    {
-        if (is_array($name) && $value === null) {
-            return $this->view->setVars($name);
-        } else {
-            return $this->view->setVar($name, $value);
-        }
-    }
-
-    /**
      * Get input from request
      *
      * @param string $key
@@ -199,22 +127,5 @@ abstract class Controller extends PhalconController
     protected function input($key = null, $defaultValue = null)
     {
         return fnGet($_REQUEST, $key, $defaultValue);
-    }
-
-    /**
-     * check if request has the specify input
-     *
-     * @param $name
-     * @return bool
-     */
-    protected function has($name)
-    {
-        if (strpos($name, "/") !== false) {
-            list($method, $name) = explode("/", $name);
-            if (method_exists($this->request, $realMethod = 'has' . ucfirst(strtolower($method)))) {
-                return $this->request->$realMethod($name);
-            }
-        }
-        return $this->request->has($name);
     }
 }
