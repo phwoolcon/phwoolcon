@@ -21,6 +21,7 @@ class TestCase extends PHPUnit_Framework_TestCase
      * @var Di
      */
     protected $di;
+    protected static $logged = [];
 
     public function setUp()
     {
@@ -39,5 +40,9 @@ class TestCase extends PHPUnit_Framework_TestCase
         Cache::flush();
         Config::clearCache();
         parent::setUp();
+
+        $class = get_class($this);
+        isset(static::$logged[$class]) or Log::debug("Starting {$class} tests");
+        static::$logged[$class] = true;
     }
 }
