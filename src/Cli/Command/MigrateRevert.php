@@ -23,7 +23,7 @@ class MigrateRevert extends Migrate
             $file = $lastMigration['file'];
             $runAt = $lastMigration['run_at'];
             $this->comment(sprintf(' You are going to revert migration "%s" which was run at %s', $file, $runAt));
-            if (Config::environment() == 'testing' || $this->confirm('please confirm', false)) {
+            if (Config::runningUnitTest() || $this->confirm('please confirm', false)) {
                 $this->revertMigration($file);
             }
         } // @codeCoverageIgnoreStart

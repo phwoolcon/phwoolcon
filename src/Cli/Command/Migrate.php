@@ -50,7 +50,7 @@ class Migrate extends Command
     public function cleanMigrationsTable()
     {
         // @codeCoverageIgnoreStart
-        if (Config::environment() != 'testing') {
+        if (!Config::runningUnitTest()) {
             return;
         }
         // @codeCoverageIgnoreEnd

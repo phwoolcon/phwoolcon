@@ -45,7 +45,7 @@ class Config extends Model
                 ]),
             ],
         ]);
-        if (PhwoolconConfig::environment() == 'testing') {
+        if (PhwoolconConfig::runningUnitTest()) {
             static::saveConfig('_testing', ['k' => 'v']);
         }
     }

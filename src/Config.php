@@ -93,4 +93,9 @@ class Config
         array_set(static::$config, $key, $value, '.');
         return $value;
     }
+
+    public static function runningUnitTest()
+    {
+        return static::environment() == 'testing';
+    }
 }
