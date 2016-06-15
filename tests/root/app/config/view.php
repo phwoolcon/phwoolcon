@@ -10,16 +10,22 @@ return [
     'title_suffix' => 'Phwoolcon',
     'assets' => [
         'head-css' => [
+            'css/test.css',
         ],
         'head-js' => [
+            'js/test.js',
         ],
         'body-js' => [
+            'js/test.js',
         ],
         'ie-hack-css' => [
         ],
         'ie-hack-js' => [
         ],
         'ie-hack-body-js' => [
+        ],
+        'non-existing-remote-js' => [
+            'http://127.0.0.1:8888/x.js',
         ],
     ],
     'admin' => [
