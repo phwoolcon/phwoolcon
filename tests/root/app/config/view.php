@@ -25,7 +25,7 @@ return [
         'ie-hack-body-js' => [
         ],
         'non-existing-remote-js' => [
-            'http://127.0.0.1:8888/x.js',
+            'http://127.0.0.1:8888/non-existing.js',
         ],
     ],
     'admin' => [
