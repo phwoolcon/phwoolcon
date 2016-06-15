@@ -12,6 +12,7 @@ use Phalcon\Http\Response\Cookies as PhalconCookies;
  *
  * @method static bool delete(string $name)
  * @method static Cookie get(string $name)
+ * @method static PhalconCookies reset()
  */
 class Cookies
 {
