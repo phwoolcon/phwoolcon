@@ -9,7 +9,6 @@ use Phwoolcon\Model;
  * @package Phwoolcon\Model
  *
  * @property Di $_dependencyInjector
- * @property Di $_dependencyInjector
  * @method UserProfile|false getUserProfile()
  * @method $this setUserProfile(UserProfile $profile)
  */
