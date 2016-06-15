@@ -199,7 +199,7 @@ class View extends PhalconView
             $this->_options['is_admin'] = $flag = (bool)$flag;
             $this->_theme = $flag ? $this->config['admin']['theme'] : $this->config['theme'];
         }
-        return !empty(static::$instance->_options['is_admin']);
+        return !empty($this->_options['is_admin']);
     }
 
     public function loadAssets($assets, $theme, $isAdmin = false)
