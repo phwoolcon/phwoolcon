@@ -26,12 +26,12 @@ class ViewTest extends TestCase
     {
         View::noHeader(true);
         View::noFooter(true);
-        $this->assertEquals("TEST MAKE\n", View::make('test', 'make'), 'Bad View::make() content');
+        $this->assertEquals("TEST MAKE", View::make('test', 'make'), 'Bad View::make() content');
     }
 
     public function testPhpTemplateInclude()
     {
-        $this->assertEquals("TEST MAKE\n", View::make('test', 'include'), 'Bad View Php engine include content');
+        $this->assertEquals("TEST MAKE", View::make('test', 'include'), 'Bad View Php engine include content');
     }
 
     public function testPageVariables()
