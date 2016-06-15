@@ -85,6 +85,7 @@ trait JobTrait
             }
         }
         call_user_func($worker, $this, $data);
+        $this->delete();
     }
 
     public function getName()
@@ -92,11 +93,19 @@ trait JobTrait
         return json_decode($this->getRawBody(), true)['job'];
     }
 
+    /**
+     * @return AdapterInterface|AdapterTrait
+     * @codeCoverageIgnore
+     */
     public function getQueue()
     {
         return $this->queue;
     }
 
+    /**
+     * @return string
+     * @codeCoverageIgnore
+     */
     public function getQueueName()
     {
         return $this->queueName;
