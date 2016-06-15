@@ -53,6 +53,8 @@ class SessionTest extends TestCase
         $this->assertTrue(Session::start(), 'Failed to restart session' . $messageSuffix);
         $this->assertEquals($value, $_SESSION[$key], 'Bad session load result' . $messageSuffix);
         Session::end();
+        Config::set('session.default', 'native');
+        Session::register($this->di);
     }
 
     public function testSessionCRUDNative()
