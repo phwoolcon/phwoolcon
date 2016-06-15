@@ -17,7 +17,7 @@ class Listener
      */
     protected function fail($job)
     {
-        Queue::getFailLogger()->log($job->getQueue()->getConnectionName(), $job->getQueue(), $job->getRawBody());
+        Queue::getFailLogger()->log($job->getQueue()->getConnectionName(), $job->getQueueName(), $job->getRawBody());
         $job->delete();
 
         return ['job' => $job, 'failed' => true];
@@ -72,11 +72,13 @@ class Listener
                 $job->release($delay);
             }
             throw $e;
-        } catch (Throwable $e) {
+        } // @codeCoverageIgnoreStart
+        catch (Throwable $e) {
             if (!$job->isDeleted()) {
                 $job->release($delay);
             }
             throw $e;
         }
+        // @codeCoverageIgnoreEnd
     }
 }
