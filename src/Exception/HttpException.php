@@ -27,7 +27,7 @@ class HttpException extends RuntimeException
             if (is_numeric($name)) {
                 list($name, $value) = explode(':', $value);
             }
-            $response->setHeader($name, $value);
+            $response->setHeader(trim($name), trim($value));
         }
         return $response;
     }
