@@ -14,7 +14,9 @@ return [
     'queues' => [
         'default_queue' => [
             'connection' => 'beanstalkd',
-            'options' => [],
+            'options' => [
+                'default' => 'phwoolcon-test',
+            ],
         ],
     ],
 

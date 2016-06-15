@@ -14,6 +14,7 @@ use Phwoolcon\Queue\Adapter\JobTrait;
  * @property Pheanstalk    $connection
  * @property Beanstalkd    $queue
  * @property PheanstalkJob $rawJob
+ * @method  PheanstalkJob getRawJob()
  */
 class Job implements JobInterface
 {

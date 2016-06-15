@@ -1,8 +1,9 @@
 <?php
 namespace Phwoolcon\Queue;
 
-use DateTime;
 use Phalcon\Db\Column;
+use Phwoolcon\Config;
+use Phwoolcon\DateTime;
 use Phwoolcon\Db;
 
 class FailedLoggerDb
@@ -22,6 +23,7 @@ class FailedLoggerDb
         $this->options = $options;
         $this->table = $options['table'];
         $this->db = Db::connection($options['connection']);
+        Config::runningUnitTest() and $this->db->dropTable($this->table);
         $this->db->tableExists($this->table) or $this->createTable();
     }
 
@@ -71,7 +73,7 @@ class FailedLoggerDb
      */
     public function log($connection, $queue, $payload)
     {
-        $failed_at = date(DateTime::ISO8601);
+        $failed_at = date(DateTime::MYSQL_DATETIME);
         $this->db->insertAsDict($this->table, compact('connection', 'queue', 'payload', 'failed_at'));
     }
 }

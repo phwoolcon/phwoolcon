@@ -20,9 +20,11 @@ class Beanstalkd implements AdapterInterface
 
     protected function connect(array $options)
     {
+        // @codeCoverageIgnoreStart
         if ($this->connection) {
             return;
         }
+        // @codeCoverageIgnoreEnd
         $this->connection = new Pheanstalk($options['host'], $options['port'], $options['connect_timeout'], $options['persistence']);
     }
 
