@@ -20,4 +20,24 @@ class TestController extends Controller
     {
         $this->jsonReturn($data);
     }
+
+    public function testInput($key, $default = null)
+    {
+        return $this->input($key, $default);
+    }
+
+    public function testRedirect($url)
+    {
+        $this->redirect($url);
+    }
+
+    public function testSetBrowserCache($pageId, $type = null)
+    {
+        $this->setBrowserCache($pageId, $type);
+    }
+
+    public function testGetBrowserCache($pageId, $type = null)
+    {
+        return $this->getBrowserCache($pageId, $type);
+    }
 }

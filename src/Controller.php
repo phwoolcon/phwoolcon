@@ -31,10 +31,8 @@ abstract class Controller extends PhalconController
         switch ($type) {
             case (static::BROWSER_CACHE_ETAG):
                 return Cache::get('fpc-etag-' . $cacheKey);
-                break;
             case (static::BROWSER_CACHE_CONTENT):
                 return Cache::get('fpc-content-' . $cacheKey);
-                break;
         }
         return [
             'etag' => Cache::get('fpc-etag-' . $cacheKey),

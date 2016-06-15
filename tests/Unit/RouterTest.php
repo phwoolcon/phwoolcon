@@ -3,6 +3,7 @@ namespace Phwoolcon\Tests\Unit;
 
 use Exception;
 use Phalcon\Http\Response;
+use Phwoolcon\Cookies;
 use Phwoolcon\Exception\Http\CsrfException;
 use Phwoolcon\Exception\Http\ForbiddenException;
 use Phwoolcon\Exception\Http\NotFoundException;
@@ -46,6 +47,7 @@ class RouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = $method;
         $router = $this->getRouter();
         $router::reset();
+        Cookies::reset();
         $this->getView()->reset();
         try {
             return $router->dispatch($uri);
