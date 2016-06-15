@@ -29,6 +29,14 @@ class RouterTest extends TestCase
     }
 
     /**
+     * @return View
+     */
+    protected function getView()
+    {
+        return $this->di->getShared('view');
+    }
+
+    /**
      * @param string $uri
      * @param string $method
      * @return CsrfException|NotFoundException|Response
@@ -38,6 +46,7 @@ class RouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = $method;
         $router = $this->getRouter();
         $router::reset();
+        $this->getView()->reset();
         try {
             return $router->dispatch($uri);
         } catch (Exception $e) {
@@ -50,6 +59,7 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/404');
         $this->assertInstanceOf(NotFoundException::class, $response);
         $this->assertEquals('404 NOT FOUND', $response->toResponse()->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testClosureRoutes()
@@ -57,6 +67,7 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/test-closure-route');
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContains('Test Closure Route Content', $response->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testControllerRoutes()
@@ -64,6 +75,7 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/test-controller-route');
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContains('Test Controller Route Content', $response->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testFilteredRoutes()
@@ -71,6 +83,7 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/test-filtered-route', 'POST');
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContains('Test Controller Route Content', $response->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testFailedFilterRoutes()
@@ -78,6 +91,7 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/test-failed-filter-route', 'POST');
         $this->assertInstanceOf(NotFoundException::class, $response);
         $this->assertEquals('404 NOT FOUND', $response->toResponse()->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testExceptionFilterRoutes()
@@ -87,6 +101,7 @@ class RouterTest extends TestCase
         $response = $response->toResponse();
         $this->assertEquals('ALWAYS EXCEPTION', $response->getContent());
         $this->assertEquals('bar', $response->getHeaders()->get('foo'));
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testCsrfCheck()
@@ -94,6 +109,7 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/test-csrf-check', 'POST');
         $this->assertInstanceOf(CsrfException::class, $response);
         $this->assertEquals('403 FORBIDDEN', $response->toResponse()->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testPrefixedRoutes()
@@ -101,6 +117,34 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/prefix/test-route');
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContains('Test Prefixed Route Content', $response->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
+    }
+
+    public function testAdminRoutes()
+    {
+        $response = $this->dispatch('/admin/test-route');
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContains('Test Admin Route Content', $response->getContent());
+        $this->assertTrue($this->getView()->isAdmin());
+    }
+
+    public function testApiRoutes()
+    {
+        $response = $this->dispatch('/api/test-route');
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContains('Test Api Route Content', $response->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
+    }
+
+    public function testApi404Routes()
+    {
+        $response = $this->dispatch('/api/404');
+        $this->assertInstanceOf(NotFoundException::class, $response);
+        $this->assertEquals(json_encode([
+            'error_code' => 404,
+            'error_msg' => '404 Not Found',
+        ]), $response->toResponse()->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
     }
 
     public function testGenerateErrorPage()

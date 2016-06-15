@@ -10,6 +10,7 @@ $this->prefix('/prefix', [
     ],
 ])->prefix('/api', [
     'GET' => [
+        '/:params' => 'Phwoolcon\Tests\Helper\TestApiController::missingMethod',
         'test-route' => 'Phwoolcon\Tests\Helper\TestApiController::getTestRoute',
     ],
 ], MultiFilter::instance()
