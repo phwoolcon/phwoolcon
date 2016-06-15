@@ -15,4 +15,9 @@ class TestController extends Controller
     {
         $this->response->setContent('Test Prefixed Route Content');
     }
+
+    public function testJsonReturn($data)
+    {
+        $this->jsonReturn($data);
+    }
 }
