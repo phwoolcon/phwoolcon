@@ -27,7 +27,7 @@ class Queue
     public function __construct($config)
     {
         $this->config = $config;
-        static::$di->setShared('queueFailLogger', function () use ($config) {
+        static::$di->has('queueFailLogger') or static::$di->setShared('queueFailLogger', function () use ($config) {
             $class = $config['failed_logger']['adapter'];
             return new $class($config['failed_logger']['options']);
         });
@@ -46,9 +46,11 @@ class Queue
         $class = $connection['adapter'];
         strpos($class, '\\') === false and $class = 'Phwoolcon\\Queue\\Adapter\\' . $class;
         $instance = new $class(static::$di, $options, $name);
+        // @codeCoverageIgnoreStart
         if (!$instance instanceof AdapterInterface) {
             throw new Exception('Queue adapter class should implement ' . AdapterInterface::class);
         }
+        // @codeCoverageIgnoreEnd
         return $instance;
     }
 
