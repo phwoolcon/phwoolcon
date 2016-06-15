@@ -2,10 +2,9 @@
 
 namespace Phwoolcon\Controller;
 
-use Phwoolcon\Controller;
 use Phwoolcon\Router;
 
-abstract class Api extends Controller
+trait Api
 {
 
     public function initialize()

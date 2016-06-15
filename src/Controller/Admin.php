@@ -5,8 +5,16 @@ namespace Phwoolcon\Controller;
 use Phwoolcon\Config;
 use Phwoolcon\Controller;
 use Phwoolcon\Session;
+use Phwoolcon\View;
 
-abstract class Admin extends Controller
+/**
+ * Class Admin
+ * @package Phwoolcon\Controller
+ *
+ * @property View $view
+ * @method Controller addPageTitle(string $title)
+ */
+trait Admin
 {
 
     public function initialize()
