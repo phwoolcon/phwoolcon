@@ -1,6 +1,7 @@
 <?php
 /* @var Phwoolcon\Router $this */
 
+use Phwoolcon\Tests\Helper\Filter\AlwaysException as AlwaysExceptionFilter;
 use Phwoolcon\Tests\Helper\Filter\AlwaysFail as AlwaysFailFilter;
 
 $this->prefix('/prefix', [
@@ -26,6 +27,12 @@ return [
             return 'Test Closure Route Content';
         },
         'test-controller-route' => 'Phwoolcon\Tests\Helper\TestController::getTestRoute',
+        'test-exception-filter-route' => [
+            'controller' => function () {
+                return 'Wont be executed';
+            },
+            'filter' => AlwaysExceptionFilter::instance(),
+        ],
     ],
     'POST' => [
         'test-filtered-route' => [

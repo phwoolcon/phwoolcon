@@ -4,9 +4,11 @@ namespace Phwoolcon\Tests\Unit;
 use Exception;
 use Phalcon\Http\Response;
 use Phwoolcon\Exception\Http\CsrfException;
+use Phwoolcon\Exception\Http\ForbiddenException;
 use Phwoolcon\Exception\Http\NotFoundException;
 use Phwoolcon\Router;
 use Phwoolcon\Tests\Helper\TestCase;
+use Phwoolcon\View;
 
 class RouterTest extends TestCase
 {
@@ -15,6 +17,7 @@ class RouterTest extends TestCase
     {
         parent::setUp();
         Router::register($this->di);
+        View::register($this->di);
     }
 
     /**
@@ -77,6 +80,15 @@ class RouterTest extends TestCase
         $this->assertEquals('404 NOT FOUND', $response->toResponse()->getContent());
     }
 
+    public function testExceptionFilterRoutes()
+    {
+        $response = $this->dispatch('/test-exception-filter-route', 'GET');
+        $this->assertInstanceOf(ForbiddenException::class, $response);
+        $response = $response->toResponse();
+        $this->assertEquals('ALWAYS EXCEPTION', $response->getContent());
+        $this->assertEquals('bar', $response->getHeaders()->get('foo'));
+    }
+
     public function testCsrfCheck()
     {
         $response = $this->dispatch('/test-csrf-check', 'POST');
@@ -89,5 +101,10 @@ class RouterTest extends TestCase
         $response = $this->dispatch('/prefix/test-route');
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContains('Test Prefixed Route Content', $response->getContent());
+    }
+
+    public function testGenerateErrorPage()
+    {
+        $this->assertEquals('404 NOT FOUND', Router::generateErrorPage('404', '404 PAGE TITLE'));
     }
 }

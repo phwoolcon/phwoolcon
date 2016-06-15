@@ -35,10 +35,12 @@ class Router extends PhalconRouter
     public function __construct()
     {
         parent::__construct(false);
+        // @codeCoverageIgnoreStart
         if ($this->_sitePathPrefix = Config::get('app.site_path')) {
             $this->_uriSource = self::URI_SOURCE_GET_URL;
             $this->_sitePathLength = strlen($this->_sitePathPrefix);
         }
+        // @codeCoverageIgnoreEnd
         $this->removeExtraSlashes(true);
         $routes = is_file($file = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/app/routes.php') ? include $file : [];
         is_array($routes) and $this->addRoutes($routes);
@@ -80,11 +82,13 @@ class Router extends PhalconRouter
     {
         static::$router === null and static::$router = static::$di->getShared('router');
         $router = static::$router;
+        // @codeCoverageIgnoreStart
         if (!$uri && $router->_sitePathLength && $router->_uriSource == self::URI_SOURCE_GET_URL) {
             list($uri) = explode('?', $_SERVER['REQUEST_URI']);
             $uri = str_replace(basename($_SERVER['SCRIPT_FILENAME']), '', $uri);
             substr($uri, 0, $router->_sitePathLength) == $router->_sitePathPrefix and $uri = substr($uri, $router->_sitePathLength);
         }
+        // @codeCoverageIgnoreEnd
         $router->handle($uri);
         if ($route = $router->getMatchedRoute()) {
             static::$disableSession or Session::start();

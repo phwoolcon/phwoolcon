@@ -52,9 +52,7 @@ class Log extends Logger
         static::$logger = null;
         $di->setShared('log', function () {
             $filePath = storagePath('logs');
-            if (!is_dir($filePath)) {
-                mkdir($filePath, 0777, true);
-            }
+            is_dir($filePath) or mkdir($filePath, 0777, true);
             $filePath .= '/' . Config::get('app.log.file', 'phwoolcon.log');
             $logger = new File($filePath);
             $formatter = $logger->getFormatter();
