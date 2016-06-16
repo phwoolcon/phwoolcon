@@ -1,5 +1,5 @@
 <?php
-namespace Phwoolcon\Tests\Unit;
+namespace Phwoolcon\Tests\Integration;
 
 use Phwoolcon\Db;
 use Phwoolcon\Tests\Helper\TestCase;

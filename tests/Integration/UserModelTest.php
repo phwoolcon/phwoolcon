@@ -1,5 +1,5 @@
 <?php
-namespace Phwoolcon\Tests\Unit;
+namespace Phwoolcon\Tests\Integration;
 
 use Phwoolcon\Db;
 use Phwoolcon\Model\User;
@@ -76,5 +76,15 @@ class UserModelTest extends TestCase
         $profile->setExtraData($key = 'test_extra_data', $value = ['foo' => 'bar']);
         $this->assertTrue($profile->save());
         $this->assertEquals($value, $profile->getExtraData($key));
+    }
+
+    public function testGetAvatar()
+    {
+        $user = $this->getTestUser();
+        $profile = $user->getUserProfile();
+        $avatarUrl = $user->getAvatar();
+        $avatarPath = $profile->getAvatar();
+        $this->assertNotEmpty($avatarPath);
+        $this->assertEquals(url($avatarPath), $avatarUrl);
     }
 }
