@@ -9,6 +9,8 @@ use Phwoolcon\Model;
  * @package Phwoolcon\Model
  *
  * @property Di $_dependencyInjector
+ * @method string getEmail()
+ * @method string getUsername()
  * @method UserProfile|false getUserProfile()
  * @method $this setUserProfile(UserProfile $profile)
  */
@@ -19,6 +21,12 @@ class User extends Model
     protected function assignUserProfile()
     {
         return $this->setUserProfile($this->_dependencyInjector->get(UserProfile::class));
+    }
+
+    public function getAvatar()
+    {
+        $avatar = $this->getUserProfile() ? $this->getUserProfile()->getAvatar() : '';
+        return $avatar ? url($avatar) : '';
     }
 
     public function getRememberToken()
