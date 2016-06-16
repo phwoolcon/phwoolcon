@@ -34,7 +34,7 @@ abstract class Model extends PhalconModel
     {
         if (($prefix = substr($method, 0, 3)) == 'get') {
             $property = Text::uncamelize(substr($method, 3));
-            if (null !== $result = $this->getData($property)) {
+            if ((null !== $result = $this->getData($property)) || $this->checkDataColumn($property)) {
                 return $result;
             }
         } else if ($prefix == 'set') {

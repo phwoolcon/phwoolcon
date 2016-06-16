@@ -10,6 +10,7 @@ use Phwoolcon\Model;
  *
  * @property Di $_dependencyInjector
  * @method string getEmail()
+ * @method string getMobile()
  * @method string getUsername()
  * @method UserProfile|false getUserProfile()
  * @method $this setUserProfile(UserProfile $profile)

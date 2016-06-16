@@ -44,6 +44,7 @@ class UserModelTest extends TestCase
         Db::clearMetadata();
         $this->di->set(User::class, TestUserModel::class);
         $this->di->set(UserProfile::class, TestUserProfileModel::class);
+        $this->getUserModelInstance()->delete();
     }
 
     public function testCreateUser()
@@ -55,6 +56,14 @@ class UserModelTest extends TestCase
             'confirmed' => '1',
         ]);
         $this->assertTrue($user->save());
+    }
+
+    public function testGetUserFields()
+    {
+        $user = $this->getTestUser();
+        $this->assertEquals('Test', $user->getUsername());
+        $this->assertNull($user->getEmail());
+        $this->assertNull($user->getMobile());
     }
 
     public function testRememberToken()
