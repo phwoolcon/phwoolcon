@@ -27,6 +27,11 @@ class Log extends Logger
         static::log(static::ERROR, $message, $context);
     }
 
+    public static function exception(Exception $e)
+    {
+        static::error($e instanceof HttpException ? get_class($e) : "\n" . $e->__toString());
+    }
+
     public static function info($message = null, array $context = [])
     {
         static::log(static::INFO, $message, $context);
@@ -38,11 +43,6 @@ class Log extends Logger
         $context['host'] = static::$hostname;
         $context['request'] = fnGet($_SERVER, 'REQUEST_METHOD') . ' ' . fnGet($_SERVER, 'REQUEST_URI');
         static::$logger->log($type, $message, $context);
-    }
-
-    public static function exception(Exception $e)
-    {
-        static::error($e instanceof HttpException ? get_class($e) : "\n" . $e->__toString());
     }
 
     public static function register(Di $di)
@@ -62,5 +62,10 @@ class Log extends Logger
             }
             return $logger;
         });
+    }
+
+    public static function warning($message = null, array $context = [])
+    {
+        static::log(static::WARNING, $message, $context);
     }
 }
