@@ -21,6 +21,12 @@ class RouterTest extends TestCase
         View::register($this->di);
     }
 
+    public function tearDown()
+    {
+        unset($_SERVER['REQUEST_METHOD']);
+        parent::tearDown();
+    }
+
     /**
      * @return Router
      */
