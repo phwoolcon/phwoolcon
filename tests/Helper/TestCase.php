@@ -21,7 +21,6 @@ class TestCase extends PHPUnit_Framework_TestCase
      * @var Di
      */
     protected $di;
-    protected static $logged = [];
 
     public function setUp()
     {
@@ -42,7 +41,12 @@ class TestCase extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $class = get_class($this);
-        isset(static::$logged[$class]) or Log::debug("Starting {$class} tests");
-        static::$logged[$class] = true;
+        Log::debug("Running {$class}::{$this->getName()}() ...");
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        Log::debug("Finished.\n");
     }
 }
