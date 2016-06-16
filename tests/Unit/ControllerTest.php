@@ -103,10 +103,10 @@ class ControllerTest extends TestCase
         $controller2->response->setContent($content2 = 'Test browser cache 2');
         $cachedContent2 = $controller2->testGetBrowserCache('non-existing');
         $this->assertNull(fnGet($cachedContent2, 'content'));
-        $controller2->setBrowserCache($pageId2, $controller2::BROWSER_CACHE_ETAG);
+        $controller2->testSetBrowserCache($pageId2, $controller2::BROWSER_CACHE_ETAG);
         $eTag = $controller2->getBrowserCache($pageId2, $controller2::BROWSER_CACHE_ETAG);
         $this->assertEquals($eTag, $controller2->response->getHeaders()->get('Etag'));
-        $controller2->setBrowserCache($pageId2, $controller2::BROWSER_CACHE_CONTENT);
+        $controller2->testSetBrowserCache($pageId2, $controller2::BROWSER_CACHE_CONTENT);
         $this->assertEquals($content2, $controller2->getBrowserCache($pageId2, $controller2::BROWSER_CACHE_CONTENT));
     }
 }
