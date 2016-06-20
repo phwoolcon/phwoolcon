@@ -1,0 +1,17 @@
+<?php
+namespace Phwoolcon\Exception;
+
+use RuntimeException;
+
+class OrderException extends RuntimeException
+{
+    const ERROR_CODE_BAD_PARAMETERS = 4001;
+    const ERROR_CODE_KEY_PARAMETERS_CHANGED = 4002;
+    const ERROR_CODE_ORDER_PROCESSING = 4003;
+    const ERROR_CODE_ORDER_CANNOT_BE_CONFIRMED = 4004;
+    const ERROR_CODE_ORDER_COMPLETED = 4005;
+    const ERROR_CODE_ORDER_FAILED = 4006;
+    const ERROR_CODE_INSUFFICIENT_USER_BALANCE = 4007;
+    const ERROR_CODE_ORDER_CANNOT_BE_CANCELED = 4008;
+    const ERROR_CODE_PAYMENT_AGENT_NOT_MATCH = 4009;
+}
