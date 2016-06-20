@@ -145,9 +145,12 @@ abstract class Model extends PhalconModel
 
     protected function prepareSave()
     {
+        // Serialize JSON fields
         foreach ($this->_jsonFields as $field) {
             isset($this->$field) && is_array($data = $this->$field) and $this->$field = json_encode($data);
         }
+
+        // Process created_at and updated_at fields
         $now = time();
         $columns = $this->checkDataColumn();
         if (!$this->getData($property = 'created_at') && isset($columns[$property])) {
@@ -158,8 +161,18 @@ abstract class Model extends PhalconModel
             $convert = empty($this->_integerColumnTypes[$columns[$property]]);
             $this->setData($property, $convert ? date(DateTime::MYSQL_DATETIME, $now) : $now);
         }
+
+        // Generate distributed ID if not specified
         if ($this->_useDistributedId && !$this->getId()) {
             $this->generateDistributedId();
+        }
+
+        // Process default values on null fields
+        $defaultValues = $this->getModelsMetaData()->getDefaultValues($this);
+        foreach ($defaultValues as $k => $v) {
+            if ($v !== null && $this->$k === null) {
+                $this->$k = $v;
+            }
         }
     }
 
