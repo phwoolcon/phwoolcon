@@ -21,6 +21,7 @@ class CliTestCase extends TestCase
         parent::setUp();
         $_SERVER['PHWOOLCON_MIGRATION_PATH'] = TEST_ROOT_PATH . '/bin/migrations';
         $this->cli = Cli::register($this->di);
+        $this->cli->setAutoExit(false);
         $this->output = new BufferedOutput();
     }
 

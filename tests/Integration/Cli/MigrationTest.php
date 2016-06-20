@@ -24,7 +24,6 @@ class MigrationTest extends CliTestCase
         foreach (glob(migrationPath('/*test.php')) as $file) {
             @unlink($file);
         }
-        $this->cli->setAutoExit(false);
         $output = $this->runCommand('migrate:create', ['test']);
         preg_match('/Created\ Migration:\ (.+)/', $output, $matches);
         return fnGet($matches, 1);
