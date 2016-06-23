@@ -9,13 +9,25 @@ class TestCommand extends Command
 
     protected function configure()
     {
-        $this->addArgument('format', InputArgument::OPTIONAL, 'The output format');
+        $this->addArgument('action', InputArgument::OPTIONAL, 'The test action');
     }
 
     public function fire()
     {
-        if ($this->input->getArgument('format') == 'question') {
-            $this->question('foo');
-        }
+        $action = $this->input->getArgument('action');
+        $this->{'test' . ucfirst($action)}();
+    }
+
+    public function testProgress()
+    {
+        $progress = $this->createProgressBar(10);
+        $progress->start();
+        $progress->advance();
+        $progress->advance();
+    }
+
+    public function testQuestion()
+    {
+        $this->question('foo');
     }
 }
