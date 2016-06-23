@@ -5,12 +5,14 @@ use Exception;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phalcon\Mvc\ModelInterface;
+use Phwoolcon\Db\Adapter\Pdo\Mysql;
 
 /**
  * Class Model
  * @package Phwoolcon
  *
  * @method PhalconModel\Message[] getMessages(string $filter = null)
+ * @method Mysql|PhalconDb\Adapter\Pdo getWriteConnection()
  */
 abstract class Model extends PhalconModel
 {
@@ -215,7 +217,7 @@ abstract class Model extends PhalconModel
     public function sqlExecute($sql, $bind = null)
     {
         $sql = $this->translatePhalconBindIntoPDO($sql, $bind);
-        return $this->getReadConnection()->execute($sql, $bind);
+        return $this->getWriteConnection()->prepare($sql)->execute($bind);
     }
 
     /**
@@ -248,7 +250,7 @@ abstract class Model extends PhalconModel
     public function sqlFetchColumn($sql, $bind = null)
     {
         $row = $this->sqlFetchOne($sql, $bind);
-        return reset($row);
+        return $row ? reset($row) : $row;
     }
 
     protected function translatePhalconBindIntoPDO($sql, &$bind = null)
@@ -318,17 +320,19 @@ abstract class Model extends PhalconModel
     /**
      * @param $conditions
      * @param array $bind
-     * @param string $order
+     * @param string $orderBy
      * @param string $columns
      * @param string|int $limit
      * @return array
      */
-    public static function buildParams($conditions = [], $bind = [], $order = null, $columns = null, $limit = null)
+    public static function buildParams($conditions = [], $bind = [], $orderBy = null, $columns = null, $limit = null)
     {
         $params = [];
+        // @codeCoverageIgnoreStart
         if (empty($conditions)) {
             return $params;
         }
+        // @codeCoverageIgnoreEnd
         if (empty($bind)) {
             if (is_array($conditions)) {
                 $params['conditions'] = "";
@@ -352,20 +356,18 @@ abstract class Model extends PhalconModel
             $params['conditions'] = $conditions;
             $params['bind'] = $bind;
         }
-        if (!is_null($order) && is_string($order)) {
-            $params['order'] = $order;
+        if (is_string($orderBy)) {
+            $params['order'] = $orderBy;
         }
-        if (!is_null($columns)) {
+        if ($columns) {
             $params['columns'] = is_array($columns) ? explode(',', $columns) : $columns;
         }
-        if (!is_null($limit)) {
-            if (is_int($limit)) {
-                $params['limit'] = $limit;
-            } elseif (is_string($limit) && strpos($limit, ',') && count($limitOffset = explode(',', $limit)) == 2) {
-                list($limit, $offset) = $limitOffset;
-                $params['limit'] = intval(trim($limit));
-                $params['offset'] = intval(trim($offset));
-            }
+        if (is_int($limit)) {
+            $params['limit'] = $limit;
+        } else if (is_string($limit) && strpos($limit, ',')) {
+            list($limit, $offset) = explode(',', $limit);
+            $params['limit'] = (int)trim($limit);
+            $params['offset'] = (int)trim($offset);
         }
         return $params;
     }
