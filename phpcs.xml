@@ -10,11 +10,17 @@
         <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
     </rule>
 
-    <file>CodeSniffer.php</file>
-    <file>CodeSniffer</file>
-    <file>scripts</file>
+    <file>src</file>
+    <file>tests</file>
 
-    <exclude-pattern>*/Tests/*</exclude-pattern>
+    <exclude-pattern>src/Cli/Output/Stream.php</exclude-pattern>
+    <exclude-pattern>src/Protocol/StreamWrapperTrait.php</exclude-pattern>
+    <exclude-pattern>src/Protocol/StreamWrapperInterface.php</exclude-pattern>
+    <exclude-pattern>*.min.js</exclude-pattern>
+    <exclude-pattern>*.min.css</exclude-pattern>
+    <exclude-pattern>tests/start.php</exclude-pattern>
 
     <arg value="sp"/>
+    <arg name="colors"/>
+    <arg name="report-width" value="180"/>
 </ruleset>
