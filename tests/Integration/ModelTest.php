@@ -87,7 +87,11 @@ class ModelTest extends TestCase
         $this->assertGreaterThan(0, $list->count(), 'Unable to load model list from db');
 
         // Test countSimple
-        $this->assertGreaterThan(0, $model::countSimple('key LIKE :test_bind:', ['test_bind' => 'test%']), 'Unable to get model count from db');
+        $this->assertGreaterThan(
+            0,
+            $model::countSimple('key LIKE :test_bind:', ['test_bind' => 'test%']),
+            'Unable to get model count from db'
+        );
         $this->assertGreaterThan(0, $model::countSimple('key LIKE "test%"'), 'Unable to get model count from db');
     }
 
@@ -115,17 +119,19 @@ class ModelTest extends TestCase
         // Test sqlExecute INSERT
         $key = 'test-key4';
         $value = 'foo';
+        $selectSql = "SELECT `value` FROM {$table} WHERE `key` IN ({test_bind:array})";
         $this->assertTrue($model->sqlExecute("INSERT INTO {$table} (`key`, `value`) VALUES ('{$key}', '{$value}')"));
-        $this->assertEquals($value, $model->sqlFetchColumn("SELECT `value` FROM {$table} WHERE `key` IN ({test_bind:array})", [
+        $this->assertEquals($value, $model->sqlFetchColumn($selectSql, [
             'test_bind' => [$key],
         ]));
 
         // Test sqlExecute UPDATE
         $value = 'bar';
-        $this->assertTrue($model->sqlExecute("UPDATE {$table} SET `value` = '{$value}' WHERE `key` IN ({test_bind:array})", [
+        $updateSql = "UPDATE {$table} SET `value` = '{$value}' WHERE `key` IN ({test_bind:array})";
+        $this->assertTrue($model->sqlExecute($updateSql, [
             'test_bind' => [$key],
         ]));
-        $this->assertEquals($value, $model->sqlFetchColumn("SELECT `value` FROM {$table} WHERE `key` IN ({test_bind:array})", [
+        $this->assertEquals($value, $model->sqlFetchColumn($selectSql, [
             'test_bind' => [$key],
         ]));
 
@@ -133,7 +139,7 @@ class ModelTest extends TestCase
         $this->assertTrue($model->sqlExecute("DELETE FROM {$table} WHERE `key` IN ({test_bind:array})", [
             'test_bind' => [$key],
         ]));
-        $this->assertFalse($model->sqlFetchColumn("SELECT `value` FROM {$table} WHERE `key` IN ({test_bind:array})", [
+        $this->assertFalse($model->sqlFetchColumn($selectSql, [
             'test_bind' => [$key],
         ]));
     }

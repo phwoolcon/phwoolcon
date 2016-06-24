@@ -36,7 +36,11 @@ class MigrationTest extends CliTestCase
         $command = $this->cli->get('migrate:create');
         $this->assertNotEmpty($migrationFile, 'Unable to create migration file');
         $this->assertFileExists($savedFile = migrationPath($migrationFile), 'Unable to write migration file');
-        $this->assertEquals($command->template(), file_get_contents($savedFile), 'Bad content written to migration file');
+        $this->assertEquals(
+            $command->template(),
+            file_get_contents($savedFile),
+            'Bad content written to migration file'
+        );
     }
 
     public function testMigrateUpAndDown()
@@ -66,7 +70,11 @@ class MigrationTest extends CliTestCase
 
         // Test migration down
         $output = $this->runCommand('migrate:down');
-        $this->assertContains(sprintf('Finish reverting migration "%s"', $migrationFile), $output, 'Unable to revert migration');
+        $this->assertContains(
+            sprintf('Finish reverting migration "%s"', $migrationFile),
+            $output,
+            'Unable to revert migration'
+        );
         $output = $this->runCommand('migrate:list');
         $this->assertContains($migrationFile, $output, 'Unable to re-detect migrations');
         $list->clearMigratedCache();

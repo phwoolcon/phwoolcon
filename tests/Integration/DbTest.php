@@ -27,6 +27,6 @@ class DbTest extends TestCase
 
     public function testReconnect()
     {
-        $this->assertEquals('value', Db::reconnect()->query('SELECT "value" v')->fetch()['v'], 'Unable to reconnect DB');
+        $this->assertEquals('value', Db::reconnect()->query('SELECT "value" v')->fetch()['v'], 'DB reconnect failed');
     }
 }

@@ -18,8 +18,16 @@ class ViewTest extends TestCase
         $jsOptions = View::getPhwoolconJsOptions();
         $this->assertArrayHasKey('baseUrl', $jsOptions, 'View::getPhwoolconJsOptions(): baseUrl not set');
         $this->assertArrayHasKey('cookies', $jsOptions, 'View::getPhwoolconJsOptions(): cookies not set');
-        $this->assertArrayHasKey('domain', fnGet($jsOptions, 'cookies'), 'View::getPhwoolconJsOptions(): cookies.domain not set');
-        $this->assertArrayHasKey('path', fnGet($jsOptions, 'cookies'), 'View::getPhwoolconJsOptions(): cookies.path not set');
+        $this->assertArrayHasKey(
+            'domain',
+            fnGet($jsOptions, 'cookies'),
+            'View::getPhwoolconJsOptions(): cookies.domain not set'
+        );
+        $this->assertArrayHasKey(
+            'path',
+            fnGet($jsOptions, 'cookies'),
+            'View::getPhwoolconJsOptions(): cookies.path not set'
+        );
     }
 
     public function testMake()

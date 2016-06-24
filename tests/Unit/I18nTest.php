@@ -47,7 +47,11 @@ class I18nTest extends TestCase
         I18n::setLocale($currentLocale);
         $this->assertEquals($currentLocale, I18n::getCurrentLocale(), 'Unable to set locale via setLocale()');
         I18n::setLocale('non-existing');
-        $this->assertEquals($currentLocale, I18n::getCurrentLocale(), 'Unable to restore default locale via setLocale()');
+        $this->assertEquals(
+            $currentLocale,
+            I18n::getCurrentLocale(),
+            'Unable to restore default locale via setLocale()'
+        );
         Session::end();
 
         I18n::clearCache(true);

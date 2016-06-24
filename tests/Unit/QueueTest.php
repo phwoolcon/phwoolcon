@@ -145,7 +145,8 @@ class QueueTest extends TestCase
         $e = null;
         try {
             $listener->pop('', null, 0, 0, 1);
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
         $this->assertInstanceOf(Exception::class, $e);
 
         // Log failure job

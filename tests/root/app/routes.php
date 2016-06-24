@@ -15,12 +15,12 @@ $this->prefix('/prefix', [
     ],
 ], MultiFilter::instance()
     ->add(DisableSessionFilter::instance())
-    ->add(DisableCsrfFilter::instance())
-)->prefix('/admin', [
-    'GET' => [
-        'test-route' => 'Phwoolcon\Tests\Helper\TestAdminController::getTestRoute',
-    ],
-]);
+    ->add(DisableCsrfFilter::instance()))
+    ->prefix('/admin', [
+        'GET' => [
+            'test-route' => 'Phwoolcon\Tests\Helper\TestAdminController::getTestRoute',
+        ],
+    ]);
 
 return [
     'GET' => [
