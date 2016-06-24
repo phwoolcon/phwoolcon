@@ -44,26 +44,34 @@ class MigrationTest extends CliTestCase
         $migrationFile = $this->createMigrateFile();
         /* @var \Phwoolcon\Cli\Command\MigrateList $list */
         $list = $this->cli->get('migrate:list');
-        /* @var \Phwoolcon\Cli\Command\Migrate $up */
-        $up = $this->cli->get('migrate:up');
-        /* @var \Phwoolcon\Cli\Command\MigrateRevert $down */
-        $down = $this->cli->get('migrate:down');
 
+        // Test migration list
         $output = $this->runCommand('migrate:list');
         $this->assertContains($migrationFile, $output, 'Unable to detect migrations');
         $list->clearMigratedCache();
 
+        // Test migration up
         $output = $this->runCommand('migrate:up');
         $this->assertContains(sprintf('Finish migration "%s"', $migrationFile), $output, 'Unable to run migration');
         $output = $this->runCommand('migrate:list', ['-i']);
         $this->assertContains($migrationFile, $output, 'Unable to detect installed migrations');
         $list->clearMigratedCache();
 
+        // Test repeat migration up
+        $output = $this->runCommand('migrate:up');
+        $this->assertContains('Nothing to be migrated', $output, 'Should not repeatedly run migrations');
+        $output = $this->runCommand('migrate:list');
+        $this->assertContains('Nothing to be migrated', $output, 'Should report no migrations');
+        $list->clearMigratedCache();
+
+        // Test migration down
         $output = $this->runCommand('migrate:down');
         $this->assertContains(sprintf('Finish reverting migration "%s"', $migrationFile), $output, 'Unable to revert migration');
         $output = $this->runCommand('migrate:list');
         $this->assertContains($migrationFile, $output, 'Unable to re-detect migrations');
         $list->clearMigratedCache();
+
+        // Test migration list -a
         $output = $this->runCommand('migrate:list', ['-a']);
         $this->assertContains($migrationFile, $output, 'Unable to detect all migrations');
     }
