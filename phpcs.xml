@@ -9,4 +9,12 @@
         <!-- Disable rule: Method name should not be prefixed with an underscore -->
         <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
     </rule>
+
+    <file>CodeSniffer.php</file>
+    <file>CodeSniffer</file>
+    <file>scripts</file>
+
+    <exclude-pattern>*/Tests/*</exclude-pattern>
+
+    <arg value="sp"/>
 </ruleset>
