@@ -6,7 +6,7 @@ use Phalcon\Session\Adapter;
 use Phwoolcon\Config;
 use Phwoolcon\Session\AdapterInterface;
 use Phwoolcon\Session\AdapterTrait;
-use Phwoolcon\Session\Exception;
+use Phwoolcon\Exception\SessionException;
 
 /**
  * Class Session
@@ -99,7 +99,7 @@ class Session
             $session = new $class($options);
             // @codeCoverageIgnoreStart
             if (!$session instanceof AdapterInterface) {
-                throw new Exception('Session class should implement ' . AdapterInterface::class);
+                throw new SessionException('Session class should implement ' . AdapterInterface::class);
             }
             // @codeCoverageIgnoreEnd
             return $session;

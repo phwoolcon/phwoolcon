@@ -4,7 +4,7 @@ namespace Phwoolcon;
 use Phalcon\Di;
 use Phwoolcon\Queue\AdapterInterface;
 use Phwoolcon\Queue\AdapterTrait;
-use Phwoolcon\Queue\Exception;
+use Phwoolcon\Exception\QueueException;
 use Phwoolcon\Queue\FailedLoggerDb;
 
 class Queue
@@ -48,7 +48,7 @@ class Queue
         $instance = new $class(static::$di, $options, $name);
         // @codeCoverageIgnoreStart
         if (!$instance instanceof AdapterInterface) {
-            throw new Exception('Queue adapter class should implement ' . AdapterInterface::class);
+            throw new QueueException('Queue adapter class should implement ' . AdapterInterface::class);
         }
         // @codeCoverageIgnoreEnd
         return $instance;
