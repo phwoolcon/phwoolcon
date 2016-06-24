@@ -129,7 +129,9 @@ class Migrate extends Command
         $migrated = false;
         foreach (glob(migrationPath('*.php')) as $file) {
             $filename = basename($file);
-            if ($this->migrationExecuted($filename)) continue;
+            if ($this->migrationExecuted($filename)) {
+                continue;
+            }
             $migrated = true;
             $this->logAndShowInfo(sprintf('Start migration "%s"', $filename));
             $db->begin();

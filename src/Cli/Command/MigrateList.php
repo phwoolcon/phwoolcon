@@ -47,7 +47,9 @@ class MigrateList extends Migrate
         $found = false;
         foreach (glob(migrationPath('*.php')) as $file) {
             $filename = basename($file);
-            if ($this->migrationExecuted($filename)) continue;
+            if ($this->migrationExecuted($filename)) {
+                continue;
+            }
             $found or $this->comment('Following migrations are ready for install:');
             $found = true;
             $this->info($filename);
