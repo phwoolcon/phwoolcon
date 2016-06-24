@@ -25,7 +25,12 @@ class Beanstalkd implements AdapterInterface
             return;
         }
         // @codeCoverageIgnoreEnd
-        $this->connection = new Pheanstalk($options['host'], $options['port'], $options['connect_timeout'], $options['persistence']);
+        $this->connection = new Pheanstalk(
+            $options['host'],
+            $options['port'],
+            $options['connect_timeout'],
+            $options['persistence']
+        );
     }
 
     public function pop($queue = null)

@@ -56,7 +56,8 @@ class Order extends Model
 
     public function generateOrderId($prefix = '')
     {
-        $orderId = $prefix . (date('Y') - 2004) . date('md') . substr(time(), -5) . substr(microtime(), 2, 3) . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
+        $orderId = $prefix . (date('Y') - 2004) . date('md') . substr(time(), -5) . substr(microtime(), 2, 3) .
+            static::$_distributedOptions['node_id'] . mt_rand(100, 999);
         $hasOrderId = $this->findFirst([
             'id = :id:',
             'bind' => [
@@ -174,7 +175,10 @@ class Order extends Model
         foreach ($order->toArray() as $attribute => $oldValue) {
             $newValue = fnGet($data, $attribute);
             if (isset($keyFields[$attribute]) && $oldValue && $oldValue != $newValue) {
-                throw new OrderException(__('Order crucial attribute [%attribute%] changed', compact('attribute')), OrderException::ERROR_CODE_KEY_PARAMETERS_CHANGED);
+                throw new OrderException(
+                    __('Order crucial attribute [%attribute%] changed', compact('attribute')),
+                    OrderException::ERROR_CODE_KEY_PARAMETERS_CHANGED
+                );
             }
             $newValue === null or $order->setData($attribute, $newValue);
         }

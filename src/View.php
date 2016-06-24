@@ -48,7 +48,8 @@ class View extends PhalconView
     protected function _engineRender($engines, $viewPath, $silence, $mustClean, BackendInterface $cache = null)
     {
         $silence = $silence && !$this->config['debug'];
-        $this->config['debug'] and $this->_options['debug_wrapper'] = ($viewPath == $this->_mainView ? false : $this->getDebugWrapper($viewPath));
+        $this->_options['debug_wrapper'] = $this->config['debug'] ?
+            ($viewPath == $this->_mainView ? null : $this->getDebugWrapper($viewPath)) : null;
         $viewPath == $this->_mainView or $viewPath = trim($this->_theme . '/' . $viewPath, '/');
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }

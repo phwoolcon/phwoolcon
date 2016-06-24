@@ -43,7 +43,7 @@ class UserProfile extends Model
         parent::prepareSave();
     }
 
-    public function setExtraData($key , $value = null)
+    public function setExtraData($key, $value = null)
     {
         is_array($key) ? $this->extra_data = $key : array_set($this->extra_data, $key, $value);
         return $this;

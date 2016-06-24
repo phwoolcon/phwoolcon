@@ -123,9 +123,14 @@ trait AdapterTrait
             }
             $this->set('_cookie_renewed_at', $this->cookieRenewedAt = $now);
         }
-        Cookies::set($cookieName = $this->getName(), $this->getId(), $now + $this->_options['lifetime'],
-            $this->_options['cookies']['path'], $this->_options['cookies']['secure'],
-            $this->_options['cookies']['domain'], $this->_options['cookies']['http_only']
+        Cookies::set(
+            $cookieName = $this->getName(),
+            $this->getId(),
+            $now + $this->_options['lifetime'],
+            $this->_options['cookies']['path'],
+            $this->_options['cookies']['secure'],
+            $this->_options['cookies']['domain'],
+            $this->_options['cookies']['http_only']
         );
         Cookies::get($cookieName)->useEncryption(false);
         return $this;

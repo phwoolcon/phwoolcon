@@ -18,8 +18,14 @@ class Cookie extends PhalconCookie
     public function delete()
     {
         $this->_value = null;
-        Cookies::set($this->_name, $this->_value, time() - Cache::TTL_ONE_MONTH,
-            $this->_path, $this->_secure, $this->_domain, $this->_httpOnly
+        Cookies::set(
+            $this->_name,
+            $this->_value,
+            time() - Cache::TTL_ONE_MONTH,
+            $this->_path,
+            $this->_secure,
+            $this->_domain,
+            $this->_httpOnly
         )->get($this->_name)->useEncryption(false);
     }
 }

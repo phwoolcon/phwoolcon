@@ -61,7 +61,9 @@ class Db extends PhalconDb
         $connection = $this->config['connections'][$name];
         $class = $connection['adapter'];
         isset($connection['charset']) and static::$defaultTableCharset[$name] = $connection['charset'];
-        isset($connection['default_table_charset']) and static::$defaultTableCharset[$name] = $connection['default_table_charset'];
+        if (isset($connection['default_table_charset'])) {
+            static::$defaultTableCharset[$name] = $connection['default_table_charset'];
+        }
         unset($connection['adapter'], $connection['default_table_charset']);
         strpos($class, '\\') === false and $class = 'Phalcon\\Db\\Adapter\\Pdo\\' . $class;
         return new $class($connection);

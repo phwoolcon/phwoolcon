@@ -67,8 +67,15 @@ class Cookies
      * @param bool   $httpOnly
      * @return PhalconCookies
      */
-    public static function set($name, $value = null, $expire = 0, $path = null, $secure = null, $domain = null, $httpOnly = null)
-    {
+    public static function set(
+        $name,
+        $value = null,
+        $expire = 0,
+        $path = null,
+        $secure = null,
+        $domain = null,
+        $httpOnly = null
+    ) {
         $options = static::$options;
         $path === null and $path = $options['path'];
         $domain === null and $domain = $options['domain'];
