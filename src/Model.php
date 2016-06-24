@@ -39,7 +39,7 @@ abstract class Model extends PhalconModel
             if ((null !== $result = $this->getData($property)) || $this->checkDataColumn($property)) {
                 return $result;
             }
-        } else if ($prefix == 'set') {
+        } elseif ($prefix == 'set') {
             $property = Text::uncamelize(substr($method, 3));
             return $this->setData($property, fnGet($arguments, 0));
         }
@@ -364,7 +364,7 @@ abstract class Model extends PhalconModel
         }
         if (is_int($limit)) {
             $params['limit'] = $limit;
-        } else if (is_string($limit) && strpos($limit, ',')) {
+        } elseif (is_string($limit) && strpos($limit, ',')) {
             list($limit, $offset) = explode(',', $limit);
             $params['limit'] = (int)trim($limit);
             $params['offset'] = (int)trim($offset);

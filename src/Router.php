@@ -145,7 +145,7 @@ class Router extends PhalconRouter
         if (is_string($handler)) {
             list($controller, $action) = explode('::', $handler);
             $handler = compact('controller', 'action');
-        } else if ($handler instanceof Closure) {
+        } elseif ($handler instanceof Closure) {
             $handler = ['controller' => $handler];
         }
         $method == 'ANY' and $method = null;

@@ -137,7 +137,7 @@ class I18n extends Adapter
     {
         if ($package && isset($this->locale[$this->currentLocale]['packages'][$package][$string])) {
             $translation = $this->locale[$this->currentLocale]['packages'][$package][$string];
-        } else if (isset($this->locale[$this->currentLocale]['combined'][$string])) {
+        } elseif (isset($this->locale[$this->currentLocale]['combined'][$string])) {
             $translation = $this->locale[$this->currentLocale]['combined'][$string];
         } else {
             Log::warning("I18n: locale string not found: '{$string}'");

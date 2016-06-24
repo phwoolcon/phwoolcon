@@ -76,10 +76,10 @@ trait JobTrait
         if (is_string($worker)) {
             if (strpos($worker, $separator = '::')) {
                 $worker = explode($separator, $worker, 2);
-            } else if (strpos($worker, $separator = '@')) {
+            } elseif (strpos($worker, $separator = '@')) {
                 $worker = explode($separator, $worker, 2);
                 $worker[0] = $this->queue->getDi()->getShared($worker[0]);
-            } else if (strpos($worker, $separator = '->')) {
+            } elseif (strpos($worker, $separator = '->')) {
                 $worker = explode($separator, $worker, 2);
                 $worker[0] = new $worker[0];
             }

@@ -22,7 +22,7 @@ class MigrateList extends Migrate
         $this->checkMigrationsTable();
         if ($this->input->getOption('installed')) {
             $this->listMigrated();
-        } else if ($this->input->getOption('all')) {
+        } elseif ($this->input->getOption('all')) {
             $this->listMigrated();
             $this->listToBeMigrated();
         } else {
