@@ -8,7 +8,8 @@ trait Api
 {
 
     public function initialize()
-    {}
+    {
+    }
 
     public function missingMethod()
     {
