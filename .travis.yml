@@ -39,8 +39,11 @@ before_script:
   - composer update --no-interaction --prefer-source
   - mysql -uroot -e 'CREATE DATABASE `phwoolcon_test` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;'
   - phpenv config-add php-ext.ini
+  - pear install PHP_CodeSniffer
+  - phpenv rehash
 
 script:
+  - phpcs
   - phpunit --verbose --coverage-clover=coverage.xml
 
 after_success:
