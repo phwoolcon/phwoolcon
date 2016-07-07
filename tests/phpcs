@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+cd "$(dirname "$( dirname "${BASH_SOURCE[0]}" )")"
+phpcs --report-full=tests/root/storage/phpcs.txt
