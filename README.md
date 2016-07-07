@@ -25,6 +25,8 @@ mode, you loose some speed (but still fast) to gain more stability,
 fix your bugs and apply service mode again.
 
 # Usage
+
+## Installation
 This is the Phwoolcon library, you may use [Phwoolcon Bootstrap](https://github.com/phwoolcon/bootstrap)  
 to start a new project.
 
@@ -33,6 +35,46 @@ Or add this library to your project by composer:
 ```
 composer require "phwoolcon/phwoolcon":"dev-master"
 ```
+
+## Code Style Checking
+
+### Requirements
+Code style checking depends on `phpcs`.  
+If you don't have `phpcs` installed, please run:
+```
+pear install PHP_CodeSniffer
+```
+
+### Run Checking
+Please run the following script:
+```
+tests/phpcs
+```
+Any warnings or errors will be reported in file:
+```
+tests/root/storage/phpcs.txt
+```
+
+## Testing
+
+### Requirements
+Testings depends on `phpunit`.  
+If you don't have `phpunit` installed, please run:
+```
+wget https://phar.phpunit.de/phpunit.phar -O /usr/local/bin/phpunit
+chmod +x /usr/local/bin/phpunit
+```
+
+### Run Testings
+Please run the following script:
+```
+tests/phpunit
+```
+The code coverage report in HTML format will be generated in folder:
+```
+tests/root/storage/coverage/
+```
+To read the report, please open `index.html` in a web browser.
 
 # Spirits
 * Aimed at performance

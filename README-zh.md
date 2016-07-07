@@ -17,6 +17,8 @@ Phalcon + Swoole
 仍然很快）换取稳定性，待 Bug 修复后再启用服务模式。
 
 # 使用
+
+## 安装
 这是 Phwoolcon 库，你可能是要用 [Phwoolcon Bootstrap](https://github.com/phwoolcon/bootstrap) 来创建新项目。
 
 你也可以用 composer 把 Phwoolcon 库加入到你的项目中：
@@ -24,6 +26,44 @@ Phalcon + Swoole
 ```
 composer require "phwoolcon/phwoolcon":"dev-master"
 ```
+
+## 代码风格检查
+
+### 系统要求
+代码风格检查依赖于 `phpcs`。如果你还没有安装 `phpcs`，请运行：
+```
+pear install PHP_CodeSniffer
+```
+
+### 进行检查
+请运行以下脚本：
+```
+tests/phpcs
+```
+警告和错误报告会被保存在这个文件里：
+```
+tests/root/storage/phpcs.txt
+```
+
+## 测试
+
+### 系统要求
+测试依赖于 `phpunit`。如果你还没有安装 `phpunit`，请运行：
+```
+wget https://phar.phpunit.de/phpunit.phar -O /usr/local/bin/phpunit
+chmod +x /usr/local/bin/phpunit
+```
+
+### 进行测试
+请运行以下脚本：
+```
+tests/phpunit
+```
+代码覆盖率报告会以 HTML 格式被保存在这个文件夹里：
+```
+tests/root/storage/coverage/
+```
+用浏览器打开 `index.html` 即可阅读报告。
 
 # 主旨
 * 关注性能
