@@ -1,10 +1,8 @@
 <?php
 namespace Phwoolcon;
 
-use Exception;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\ModelInterface;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
 
 /**
