@@ -122,8 +122,14 @@ class Order extends Model
     {
         /* @var Order $order */
         $order = Di::getDefault()->get(static::class);
+        if (!$tradeId = fnGet($data, 'trade_id')) {
+            throw new OrderException(__('Invalid trade_id'), OrderException::ERROR_CODE_BAD_PARAMETERS);
+        }
+        if (!$clientId = fnGet($data, 'client_id')) {
+            throw new OrderException(__('Invalid client_id'), OrderException::ERROR_CODE_BAD_PARAMETERS);
+        }
         // Load existing order if any
-        $existingOrder = $order->getByTradeId(fnGet($data, 'trade_id'), fnGet($data, 'client_id'));
+        $existingOrder = $order->getByTradeId($tradeId, $clientId);
         if (isset($existingOrder->id)) {
             $order = $existingOrder;
             $status = $order->getStatus();
