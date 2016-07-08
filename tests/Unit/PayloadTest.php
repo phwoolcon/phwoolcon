@@ -1,7 +1,8 @@
 <?php
 namespace Phwoolcon\Tests\Unit;
 
-use ErrorException, Exception;
+use ErrorException;
+use Exception;
 use Phwoolcon\Payload;
 use Phwoolcon\Tests\Helper\TestCase;
 
