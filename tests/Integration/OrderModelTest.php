@@ -59,6 +59,44 @@ class OrderModelTest extends TestCase
     {
         $tradeId = md5(microtime());
 
+        // Fail if trade_id not set
+        $e = null;
+        try {
+            Order::prepareOrder([
+                'order_prefix' => 'TEST',
+                'amount' => '1',
+                'product_name' => 'Test product',
+                'user_identifier' => 'Test User',
+                'client_id' => 'test_client',
+                'payment_agent' => 'alipay',
+                'payment_method' => 'mobile_web',
+                'currency' => 'CNY',
+                'amount_in_currency' => '1',
+            ]);
+        } catch (OrderException $e) {
+        }
+        $this->assertInstanceOf(OrderException::class, $e);
+        $this->assertEquals($e::ERROR_CODE_BAD_PARAMETERS, $e->getCode());
+
+        // Fail if client_id not set
+        $e = null;
+        try {
+            Order::prepareOrder([
+                'order_prefix' => 'TEST',
+                'amount' => '1',
+                'trade_id' => $tradeId,
+                'product_name' => 'Test product',
+                'user_identifier' => 'Test User',
+                'payment_agent' => 'alipay',
+                'payment_method' => 'mobile_web',
+                'currency' => 'CNY',
+                'amount_in_currency' => '1',
+            ]);
+        } catch (OrderException $e) {
+        }
+        $this->assertInstanceOf(OrderException::class, $e);
+        $this->assertEquals($e::ERROR_CODE_BAD_PARAMETERS, $e->getCode());
+
         // Fail if amount <= 0
         $e = null;
         try {
@@ -100,6 +138,7 @@ class OrderModelTest extends TestCase
         $this->assertInstanceOf(OrderException::class, $e);
         $this->assertEquals($e::ERROR_CODE_BAD_PARAMETERS, $e->getCode());
 
+        // Success
         $order = Order::prepareOrder([
             'order_prefix' => 'TEST',
             'amount' => '1',
