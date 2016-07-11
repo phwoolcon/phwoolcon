@@ -45,7 +45,7 @@ class TestOrderModel extends Order
                     'size' => 50,
                     'notNull' => true,
                 ]),
-                new Column('payment_agent', [
+                new Column('payment_gateway', [
                     'type' => Column::TYPE_VARCHAR,
                     'size' => 50,
                     'notNull' => false,
