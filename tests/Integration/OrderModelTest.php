@@ -97,6 +97,25 @@ class OrderModelTest extends TestCase
         $this->assertInstanceOf(OrderException::class, $e);
         $this->assertEquals($e::ERROR_CODE_BAD_PARAMETERS, $e->getCode());
 
+        // Fail if product_name not set
+        $e = null;
+        try {
+            Order::prepareOrder([
+                'order_prefix' => 'TEST',
+                'amount' => '1',
+                'trade_id' => $tradeId,
+                'user_identifier' => 'Test User',
+                'client_id' => 'test_client',
+                'payment_agent' => 'alipay',
+                'payment_method' => 'mobile_web',
+                'currency' => 'CNY',
+                'amount_in_currency' => '1',
+            ]);
+        } catch (OrderException $e) {
+        }
+        $this->assertInstanceOf(OrderException::class, $e);
+        $this->assertEquals($e::ERROR_CODE_BAD_PARAMETERS, $e->getCode());
+
         // Fail if amount <= 0
         $e = null;
         try {

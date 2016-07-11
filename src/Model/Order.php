@@ -128,6 +128,9 @@ class Order extends Model
         if (!$clientId = fnGet($data, 'client_id')) {
             throw new OrderException(__('Invalid client_id'), OrderException::ERROR_CODE_BAD_PARAMETERS);
         }
+        if (!fnGet($data, 'product_name')) {
+            throw new OrderException(__('Invalid product_name'), OrderException::ERROR_CODE_BAD_PARAMETERS);
+        }
         // Load existing order if any
         $existingOrder = $order->getByTradeId($tradeId, $clientId);
         if (isset($existingOrder->id)) {
