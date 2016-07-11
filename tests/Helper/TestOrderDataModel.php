@@ -34,15 +34,6 @@ class TestOrderDataModel extends OrderData
                     'notNull' => false,
                 ]),
             ],
-            'references' => [
-                new Reference('order_data_orders_order_id', [
-                    'referencedTable' => 'orders',
-                    'columns' => ['order_id'],
-                    'referencedColumns' => ['id'],
-                    'onDelete' => 'CASCADE',
-                    'onUpdate' => 'CASCADE',
-                ]),
-            ],
             'options' => [
                 'TABLE_COLLATION' => Db::getDefaultTableCharset(),
             ],
