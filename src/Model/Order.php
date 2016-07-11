@@ -118,7 +118,7 @@ class Order extends Model
         parent::initialize();
     }
 
-    public static function prepareOrder($data)
+    public static function prepare($data)
     {
         /* @var Order $order */
         $order = Di::getDefault()->get(Order::class);

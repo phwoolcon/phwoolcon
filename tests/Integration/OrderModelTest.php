@@ -29,7 +29,7 @@ class OrderModelTest extends TestCase
         if ($tmp = $order->getByTradeId($tradeId = 'TEST-TRADE-ID', 'test_client')) {
             $order = $tmp;
         } else {
-            $order = Order::prepareOrder([
+            $order = Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '1',
                 'trade_id' => $tradeId,
@@ -62,7 +62,7 @@ class OrderModelTest extends TestCase
         // Fail if trade_id not set
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '1',
                 'product_name' => 'Test product',
@@ -81,7 +81,7 @@ class OrderModelTest extends TestCase
         // Fail if client_id not set
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '1',
                 'trade_id' => $tradeId,
@@ -100,7 +100,7 @@ class OrderModelTest extends TestCase
         // Fail if product_name not set
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '1',
                 'trade_id' => $tradeId,
@@ -119,7 +119,7 @@ class OrderModelTest extends TestCase
         // Fail if amount <= 0
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '0',
                 'trade_id' => $tradeId,
@@ -139,7 +139,7 @@ class OrderModelTest extends TestCase
         // Fail if cash_to_pay < 0
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '1',
                 'cash_to_pay' => '-1',
@@ -158,7 +158,7 @@ class OrderModelTest extends TestCase
         $this->assertEquals($e::ERROR_CODE_BAD_PARAMETERS, $e->getCode());
 
         // Success
-        $order = Order::prepareOrder([
+        $order = Order::prepare([
             'order_prefix' => 'TEST',
             'amount' => '1',
             'trade_id' => $tradeId,
@@ -199,7 +199,7 @@ class OrderModelTest extends TestCase
         $order = $this->getTestOrder();
 
         // Success if crucial attributes are not changed and status is pending
-        $order = Order::prepareOrder([
+        $order = Order::prepare([
             'order_prefix' => 'TEST',
             'amount' => '1',
             'trade_id' => $order->getTradeId(),
@@ -215,7 +215,7 @@ class OrderModelTest extends TestCase
         // Fail if crucial attributes are changed
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '2',
                 'trade_id' => $order->getTradeId(),
@@ -238,7 +238,7 @@ class OrderModelTest extends TestCase
         // Fail if status is not pending
         $e = null;
         try {
-            Order::prepareOrder([
+            Order::prepare([
                 'order_prefix' => 'TEST',
                 'amount' => '1',
                 'trade_id' => $order->getTradeId(),
