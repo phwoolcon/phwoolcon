@@ -121,7 +121,7 @@ class Order extends Model
     public static function prepareOrder($data)
     {
         /* @var Order $order */
-        $order = Di::getDefault()->get(static::class);
+        $order = Di::getDefault()->get(Order::class);
         if (!$tradeId = fnGet($data, 'trade_id')) {
             throw new OrderException(__('Invalid trade_id'), OrderException::ERROR_CODE_BAD_PARAMETERS);
         }
