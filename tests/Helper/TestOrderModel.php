@@ -117,6 +117,18 @@ class TestOrderModel extends Order
                     'unsigned' => true,
                     'notNull' => false,
                 ]),
+                new Column('canceled_at', [
+                    'type' => Column::TYPE_BIGINTEGER,
+                    'size' => 20,
+                    'unsigned' => true,
+                    'notNull' => false,
+                ]),
+                new Column('failed_at', [
+                    'type' => Column::TYPE_BIGINTEGER,
+                    'size' => 20,
+                    'unsigned' => true,
+                    'notNull' => false,
+                ]),
                 new Column('callback_url', [
                     'type' => Column::TYPE_VARCHAR,
                     'size' => 255,
