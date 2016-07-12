@@ -63,7 +63,7 @@ trait OrderFsmTrait
 
     public function complete($comment = null)
     {
-        if ($this->canComplete()) {
+        if (!$this->canComplete()) {
             throw new OrderException(__('Order has been completed'), OrderException::ERROR_CODE_ORDER_COMPLETED);
         }
         $status = $this->getFsm()->doAction('complete');
@@ -88,7 +88,7 @@ trait OrderFsmTrait
 
     public function getFsmHistory()
     {
-        return $this->getOrderData('fsm_history');
+        return $this->getOrderData('fsm_history') ?: [];
     }
 
     /**

@@ -112,6 +112,10 @@ class Order extends Model
         return $key ? fnGet($data, $key) : $this->orderData;
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return array
+     */
     public function getProtectedFieldsOnPreparation()
     {
         return $this->protectedFieldsOnPreparation;

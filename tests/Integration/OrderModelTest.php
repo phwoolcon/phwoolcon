@@ -232,7 +232,7 @@ class OrderModelTest extends TestCase
         $this->assertInstanceOf(OrderException::class, $e);
         $this->assertEquals($e::ERROR_CODE_KEY_PARAMETERS_CHANGED, $e->getCode());
 
-        $order->updateStatus(Order::STATUS_COMPLETE, 'Mark Order Complete');
+        $order->complete('Mark Order Complete');
         $this->assertTrue($order->save(), $order->getStringMessages());
 
         // Fail if status is not pending
