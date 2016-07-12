@@ -2,8 +2,6 @@
 namespace Phwoolcon\Model;
 
 use Phalcon\Di;
-use Phwoolcon\Events;
-use Phwoolcon\Exception\OrderException;
 use Phwoolcon\Model;
 
 /**
@@ -18,7 +16,10 @@ use Phwoolcon\Model;
  */
 class Order extends Model
 {
+    use OrderFsmTrait;
+
     const STATUS_CANCELED = 'canceled';
+    const STATUS_CANCELING = 'canceling';
     const STATUS_COMPLETE = 'complete';
     const STATUS_FAILED = 'failed';
     const STATUS_PENDING = 'pending';
@@ -41,6 +42,12 @@ class Order extends Model
         'created_at',
         'completed_at',
         'status',
+    ];
+
+    protected $requiredFieldsOnPreparation = [
+        'trade_id',
+        'client_id',
+        'product_name',
     ];
 
     protected $orderData;
@@ -75,7 +82,7 @@ class Order extends Model
 
     public function getByTradeId($tradeId, $clientId)
     {
-        return $this->findFirst([
+        return static::findFirst([
             'trade_id = :tradeId: AND client_id = :clientId:',
             'bind' => compact('tradeId', 'clientId'),
         ]);
@@ -116,90 +123,6 @@ class Order extends Model
         $this->_dependencyInjector->has($class) and $class = $this->_dependencyInjector->getRaw($class);
         $this->hasOne('id', $class, 'order_id', ['alias' => 'order_data']);
         parent::initialize();
-    }
-
-    public static function prepare($data)
-    {
-        /* @var Order $order */
-        $order = Di::getDefault()->get(Order::class);
-        if (!$tradeId = fnGet($data, 'trade_id')) {
-            throw new OrderException(__('Invalid trade_id'), OrderException::ERROR_CODE_BAD_PARAMETERS);
-        }
-        if (!$clientId = fnGet($data, 'client_id')) {
-            throw new OrderException(__('Invalid client_id'), OrderException::ERROR_CODE_BAD_PARAMETERS);
-        }
-        if (!fnGet($data, 'product_name')) {
-            throw new OrderException(__('Invalid product_name'), OrderException::ERROR_CODE_BAD_PARAMETERS);
-        }
-        // Load existing order if any
-        $existingOrder = $order->getByTradeId($tradeId, $clientId);
-        if (isset($existingOrder->id)) {
-            $order = $existingOrder;
-            $status = $order->getStatus();
-            if ($status != static::STATUS_PENDING) {
-                $failureMessages = [
-                    static::STATUS_PROCESSING => 'Order is under processing, please do not submit repeatedly',
-                    static::STATUS_COMPLETE => 'Order has been completed, please do not submit repeatedly',
-                    static::STATUS_CANCELED => 'Order has been canceled, please do not submit repeatedly',
-                    static::STATUS_FAILED => 'Order has been failed, please do not submit repeatedly',
-                ];
-                $message = isset($failureMessages[$status]) ? $failureMessages[$status] :
-                    $failureMessages[static::STATUS_PROCESSING];
-                throw new OrderException(__($message), OrderException::ERROR_CODE_ORDER_PROCESSING);
-            }
-        }
-
-        // Fire before_prepare_order_data event
-        $data = Events::fire('order:before_prepare_order_data', $order, $data) ?: $data;
-
-        // Filter protected fields
-        foreach ($order->getProtectedFieldsOnPreparation() as $field) {
-            unset($data[$field]);
-        }
-
-        // Remove objects in $data
-        $objectKeys = [];
-        foreach ($data as $k => $v) {
-            is_object($v) and $objectKeys[] = $k;
-        }
-        // @codeCoverageIgnoreStart
-        foreach ($objectKeys as $key) {
-            unset($data[$key]);
-        }
-        // @codeCoverageIgnoreEnd
-
-        // Verify order data
-        $amount = $data['amount'] = fnGet($data, 'amount') * 1;
-        if ($amount <= 0) {
-            throw new OrderException(__('Invalid order amount'), OrderException::ERROR_CODE_BAD_PARAMETERS);
-        }
-        $cashToPay = fnGet($data, 'cash_to_pay', $amount);
-        if ($cashToPay < 0) {
-            throw new OrderException(__('Invalid order cash to pay'), OrderException::ERROR_CODE_BAD_PARAMETERS);
-        }
-        $data['cash_to_pay'] = $cashToPay;
-
-        // Set order attributes
-        $keyFields = $order->getKeyFields();
-        foreach ($order->toArray() as $attribute => $oldValue) {
-            $newValue = fnGet($data, $attribute);
-            if (isset($keyFields[$attribute]) && $oldValue && $oldValue != $newValue) {
-                throw new OrderException(
-                    __('Order crucial attribute [%attribute%] changed', compact('attribute')),
-                    OrderException::ERROR_CODE_KEY_PARAMETERS_CHANGED
-                );
-            }
-            $newValue === null or $order->setData($attribute, $newValue);
-        }
-
-        // Fire after_prepare_order_data event
-        $data = Events::fire('order:after_prepare_order_data', $order, $data) ?: $data;
-        // Generate order id
-        $order->getId() or $order->generateOrderId(fnGet($data, 'order_prefix'));
-        unset($data['order_prefix']);
-        $order->setOrderData($data);
-        $order->updateStatus(static::STATUS_PENDING, __('Order initialized'));
-        return $order;
     }
 
     public function setOrderData($key, $value = null)
