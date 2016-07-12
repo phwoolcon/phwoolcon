@@ -1,6 +1,8 @@
 <?php
 return [
     'debug' => true,
+    'name' => 'Phwoolcon',
+    'version' => '1.0.x-dev',
     'cache_config' => false,
     'enable_https' => false,
     'secure_routes' => [],

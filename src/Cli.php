@@ -11,7 +11,7 @@ class Cli
 
     public static function register(Di $di)
     {
-        $app = new Application('Phwoolcon', '0.0.1');
+        $app = new Application(Config::get('app.name'), Config::get('app.version'));
         foreach (Config::get('commands') as $name => $class) {
             $app->add(new $class($name, $di));
         }
