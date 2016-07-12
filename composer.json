@@ -37,6 +37,9 @@
         },
         "files": ["functions.php"]
     },
+    "bin": [
+        "phwoolcon-package/phwoolcon-package-phwoolcon.php"
+    ],
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
