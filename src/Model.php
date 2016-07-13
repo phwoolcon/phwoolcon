@@ -2,8 +2,10 @@
 namespace Phwoolcon;
 
 use Phalcon\Db as PhalconDb;
+use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
+use Phwoolcon\Tests\Helper\TestModel;
 
 /**
  * Class Model
@@ -45,6 +47,24 @@ abstract class Model extends PhalconModel
         // @codeCoverageIgnoreStart
         return parent::__call($method, $arguments);
         // @codeCoverageIgnoreEnd
+    }
+
+    protected function _exists(PhalconModel\MetaDataInterface $metaData, AdapterInterface $connection, $table = null)
+    {
+        if ($this->_isNew) {
+            return parent::_exists($metaData, $connection, $table);
+        }
+        // Be able to update primary keys
+        $primaryValues = [];
+        foreach ($metaData->getPrimaryKeyAttributes($this) as $field) {
+            $primaryValues[$field] = [$oldValue = fnGet($this->_snapshot, $field), $this->$field];
+            $this->$field = $oldValue;
+        }
+        $result = parent::_exists($metaData, $connection, $table);
+        foreach ($primaryValues as $field => $values) {
+            $this->$field = $values[1];
+        }
+        return $result;
     }
 
     protected function _preSave(PhalconModel\MetaDataInterface $metaData, $exists, $identityField)

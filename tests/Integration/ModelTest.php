@@ -62,7 +62,7 @@ class ModelTest extends TestCase
             'key' => $key = 'test-key',
             'value' => ['foo' => 'bar'],
         ]);
-        $model->save();
+        $this->assertTrue($model->save(), $model->getStringMessages());
         $found = $model::findFirstSimple(compact('key'));
         $this->assertInstanceOf(get_class($model), $found, 'Unable to load model from db');
         $value['default_value'] = $model->default_value;
@@ -78,7 +78,7 @@ class ModelTest extends TestCase
             'key' => $key = 'test-key2',
             'value' => ['foo' => 'bar'],
         ]);
-        $model->save();
+        $this->assertTrue($model->save(), $model->getStringMessages());
 
         // Test findSimple
         $list = $model::findSimple(['key' => ['LIKE', 'test%']], [], 'key ASC', '*', 10);
@@ -97,6 +97,20 @@ class ModelTest extends TestCase
         $this->assertGreaterThan(0, $model::countSimple('key LIKE "test%"'), 'Unable to get model count from db');
     }
 
+    public function testMutablePrimaryKey()
+    {
+        $model = $this->getModelInstance();
+        $model->setData($value = [
+            'key' => $key = 'test-mutable-key',
+            'value' => ['foo' => 'bar'],
+        ]);
+        $this->assertTrue($model->save(), $model->getStringMessages());
+        $this->assertInstanceOf(get_class($model) , $found = $model::findFirstSimple(compact('key')));
+        $found->key = $key = 'test-mutated-key';
+        $this->assertTrue($found->save(), $found->getStringMessages());
+        $this->assertInstanceOf(get_class($model) , $found = $model::findFirstSimple(compact('key')));
+    }
+
     public function testExecuteSql()
     {
         $model = $this->getModelInstance();
@@ -104,7 +118,7 @@ class ModelTest extends TestCase
             'key' => $key = 'test-key3',
             'value' => ['foo' => 'bar'],
         ]);
-        $model->save();
+        $this->assertTrue($model->save(), $model->getStringMessages());
         $table = $model->getSource();
 
         // Test sqlFetchAll
@@ -166,7 +180,7 @@ class ModelTest extends TestCase
     {
         $model = $this->getModelInstance();
         $model->setId('1');
-        $model->save();
+        $this->assertFalse($model->save());
         $this->assertNotEmpty($model->getStringMessages(), 'Model pre save validation not triggered');
     }
 }

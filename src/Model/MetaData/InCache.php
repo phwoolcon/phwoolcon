@@ -3,6 +3,7 @@
 namespace Phwoolcon\Model\MetaData;
 
 use Phwoolcon\Cache;
+use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\MetaData;
 use Phalcon\Mvc\Model\Exception;
 
@@ -19,6 +20,11 @@ class InCache extends MetaData
 {
     protected $_metaData = [];
     protected $_cachedData = [];
+
+    public function getNonPrimaryKeyAttributes(ModelInterface $model)
+    {
+        return $this->getAttributes($model);
+    }
 
     /**
      * Reads meta-data from files
