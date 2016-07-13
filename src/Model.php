@@ -329,10 +329,10 @@ abstract class Model extends PhalconModel
     }
 
     /**
-     * @param array | string | int $conditions
-     * @param array                $bind
-     * @param string               $order
-     * @param string               $columns
+     * @param array|string $conditions
+     * @param array        $bind
+     * @param string       $order
+     * @param string       $columns
      * @return $this|false
      */
     public static function findFirstSimple($conditions, $bind = [], $order = null, $columns = null)
