@@ -31,4 +31,5 @@ return [
         'node_id' => '001',
         'start_time' => 1362931200,
     ],
+    'query_log' => true,
 ];
