@@ -105,10 +105,10 @@ class ModelTest extends TestCase
             'value' => ['foo' => 'bar'],
         ]);
         $this->assertTrue($model->save(), $model->getStringMessages());
-        $this->assertInstanceOf(get_class($model) , $found = $model::findFirstSimple(compact('key')));
+        $this->assertInstanceOf(get_class($model), $found = $model::findFirstSimple(compact('key')));
         $found->key = $key = 'test-mutated-key';
         $this->assertTrue($found->save(), $found->getStringMessages());
-        $this->assertInstanceOf(get_class($model) , $found = $model::findFirstSimple(compact('key')));
+        $this->assertInstanceOf(get_class($model), $found = $model::findFirstSimple(compact('key')));
     }
 
     public function testExecuteSql()
