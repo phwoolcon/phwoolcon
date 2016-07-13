@@ -2,6 +2,7 @@
 
 namespace Phwoolcon;
 
+use Phalcon\Events\Event;
 use Phwoolcon\Model\MetaData\InCache;
 use Phalcon\Di;
 use Phalcon\Db as PhalconDb;
@@ -33,6 +34,14 @@ class Db extends PhalconDb
         Model::setup([
             'distributed' => $config['distributed'],
         ]);
+        if (fnGet($this->config, 'query_log')) {
+            Events::attach('db:beforeQuery', function (Event $event) {
+                /* @var Adapter $adapter */
+                $adapter = $event->getSource();
+                $binds = (array)$event->getData();
+                Log::debug($adapter->getSQLStatement() . '; binds = ' . var_export($binds, 1));
+            });
+        }
     }
 
     public static function clearMetadata()
@@ -85,7 +94,8 @@ class Db extends PhalconDb
         // @codeCoverageIgnoreEnd
 
         if (!isset($db->connections[$name])) {
-            $db->connections[$name] = $db->connect($name);
+            $db->connections[$name] = $adapter = $db->connect($name);
+            $adapter->setEventsManager(static::$di->getShared('eventsManager'));
         }
 
         return $db->connections[$name];
