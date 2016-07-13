@@ -39,6 +39,7 @@ class ModelTest extends TestCase
         ]);
         $storedData = $data;
         unset($storedData['non-existing']);
+        $storedData['default_value'] = $model->default_value;
         $storedData['created_at'] = $model->created_at;
         $storedData['updated_at'] = $model->updated_at;
         $this->assertEquals($storedData, $model->getData());
@@ -64,6 +65,7 @@ class ModelTest extends TestCase
         $model->save();
         $found = $model::findFirstSimple(compact('key'));
         $this->assertInstanceOf(get_class($model), $found, 'Unable to load model from db');
+        $value['default_value'] = $model->default_value;
         $value['created_at'] = $model->created_at;
         $value['updated_at'] = $model->updated_at;
         $this->assertEquals($value, $found->getData(), 'Bad db loaded value');
@@ -147,16 +149,16 @@ class ModelTest extends TestCase
     public function testReset()
     {
         $model = $this->getModelInstance();
-        $value = $model->getData();
+        $defaultData = $model->getData();
         $model->setData([
             'key' => $key = 'test-key',
             'value' => ['foo' => 'bar'],
         ]);
-        $this->assertNotEquals($value, $model->getData(), 'Unable to set data');
-        $model->save();
+        $this->assertNotEquals($defaultData, $model->getData(), 'Unable to set data');
+        $this->assertTrue($model->save(), $model->getStringMessages());
         $this->assertFalse($model->isNew(), 'Unable to set isNew after save');
         $model->reset();
-        $this->assertEquals($value, $model->getData(), 'Unable to reset');
+        $this->assertEquals($defaultData, $model->getData(), 'Unable to reset');
         $this->assertTrue($model->isNew(), 'Unable to reset isNew status');
     }
 

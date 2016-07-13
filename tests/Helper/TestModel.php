@@ -36,6 +36,11 @@ class TestModel extends Model
                 new Column('value', [
                     'type' => Column::TYPE_TEXT,
                 ]),
+                new Column('default_value', [
+                    'type' => Column::TYPE_VARCHAR,
+                    'notNull' => true,
+                    'default' => '',
+                ]),
                 new Column('created_at', [
                     'type' => Column::TYPE_BIGINTEGER,
                     'size' => 20,

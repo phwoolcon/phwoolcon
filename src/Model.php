@@ -19,6 +19,7 @@ abstract class Model extends PhalconModel
         'start_time' => 1362931200,
     ];
     protected static $_dataColumns = [];
+    protected static $_defaultValues = [];
     protected $_additionalData = [];
     protected $_jsonFields = [];
     protected $_table;
@@ -44,6 +45,23 @@ abstract class Model extends PhalconModel
         // @codeCoverageIgnoreStart
         return parent::__call($method, $arguments);
         // @codeCoverageIgnoreEnd
+    }
+
+    protected function _preSave(PhalconModel\MetaDataInterface $metaData, $exists, $identityField)
+    {
+        // Fix phalcon bug: attributeField . " is required" on empty values, it should detect null values instead
+        $emptyFields = [];
+        foreach ($this->defaultValues() as $k => $v) {
+            if (!$v) {
+                $emptyFields[$k] = $this->$k;
+                $this->$k = 1;
+            }
+        }
+        $result = parent::_preSave($metaData, $exists, $identityField);
+        foreach ($emptyFields as $k => $v) {
+            $this->$k = $v;
+        }
+        return $result;
     }
 
     public function addData(array $data)
@@ -83,6 +101,20 @@ abstract class Model extends PhalconModel
         }
         $this->_additionalData = [];
         return $this;
+    }
+
+    protected function defaultValues()
+    {
+        if (!isset(static::$_defaultValues[$key = get_class($this)])) {
+            $defaultValues = $this->getModelsMetaData()->getDefaultValues($this) ?: [];
+            foreach ($defaultValues as $k => $v) {
+                if ($v === null) {
+                    unset($defaultValues[$k]);
+                }
+            }
+            static::$_defaultValues[$key] = $defaultValues;
+        }
+        return static::$_defaultValues[$key];
     }
 
     public function generateDistributedId()
@@ -168,9 +200,8 @@ abstract class Model extends PhalconModel
         }
 
         // Process default values on null fields
-        $defaultValues = $this->getModelsMetaData()->getDefaultValues($this);
-        foreach ($defaultValues as $k => $v) {
-            if ($v !== null && $this->$k === null) {
+        foreach ($this->defaultValues() as $k => $v) {
+            if ($this->$k === null) {
                 $this->$k = $v;
             }
         }
