@@ -54,15 +54,15 @@ class Config
 
     public static function register(Di $di)
     {
+        $environment = isset($_SERVER['PHWOOLCON_ENV']) ? $_SERVER['PHWOOLCON_ENV'] : 'production';
         // @codeCoverageIgnoreStart
-        if (is_file($cacheFile = storagePath('cache/config.php'))) {
+        if (is_file($cacheFile = storagePath('cache/config-' . $environment . '.php'))) {
             static::$config = include $cacheFile;
             Config::get('app.cache_config') or static::clearCache();
             return;
         }
         // @codeCoverageIgnoreEnd
         $defaultFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/*.php');
-        $environment = isset($_SERVER['PHWOOLCON_ENV']) ? $_SERVER['PHWOOLCON_ENV'] : 'production';
         $environmentFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/' . $environment . '/*.php');
 
         $config = new PhalconConfig(static::loadFiles($defaultFiles));
