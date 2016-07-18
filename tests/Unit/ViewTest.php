@@ -71,6 +71,6 @@ class ViewTest extends TestCase
         $this->assertStringStartsWith('<link rel="stylesheet" type="text/css" ', View::generateIeHack());
         $this->assertStringStartsWith('<script type="text/javascript" ', View::generateBodyJs());
         $this->assertStringStartsWith('<script type="text/javascript" ', View::generateIeHackBodyJs());
-        $this->assertEmpty(View::assets('non-existing-remote-js'));
+        $this->assertStringStartsWith('<script type="text/javascript" ', View::assets('non-existing-remote-js'));
     }
 }

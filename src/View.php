@@ -12,6 +12,7 @@ use Phalcon\Di;
 use Phalcon\Mvc\View as PhalconView;
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Mvc\View\Exception as ViewException;
+use Phwoolcon\Assets\ResourceTrait;
 
 class View extends PhalconView
 {
@@ -24,6 +25,7 @@ class View extends PhalconView
      */
     protected static $instance;
     protected static $cachedAssets = [];
+    protected static $runningUnitTest = false;
     protected $config = [];
     protected $_theme;
     protected $_loadedThemes = [];
@@ -43,6 +45,10 @@ class View extends PhalconView
         $this->_layout = $config['default_layout'];
         $this->config = $config;
         $this->registerEngines($config['engines']);
+
+        $basePath = $this->config['options']['assets_options']['base_path'];
+        ResourceTrait::setBasePath($basePath);
+        ResourceTrait::setRunningUnitTests(static::$runningUnitTest);
     }
 
     protected function _engineRender($engines, $viewPath, $silence, $mustClean, BackendInterface $cache = null)
@@ -211,7 +217,11 @@ class View extends PhalconView
         }
         $this->_loadedThemes[$prefix . $theme] = true;
         $applyFilter = $this->config['options']['assets_options']['apply_filter'];
+
+        // The base path, usually the public directory
         $basePath = $this->config['options']['assets_options']['base_path'];
+
+        // The assets dir inside base path
         $assetsDir = '/' . $this->config['options']['assets_options']['assets_dir'] . '/';
         $resourcePath = $assetsDir . ($isAdmin ? 'admin/' . $theme : $theme) . '/';
         $compiledPath = $assetsDir . 'compiled/';
@@ -220,14 +230,14 @@ class View extends PhalconView
             $collectionName = $theme . '-' . $collectionName;
             $collectionName = $prefix . $collectionName;
             $collection = $this->assets->collection($collectionName);
-            $collection->setSourcePath($basePath)
-                ->setTargetPath($basePath . $targetUri = $compiledPath . $collectionName . '.' . $resourceType)
-                ->setTargetUri(url($targetUri));
+            $collection->setSourcePath($basePath);
+            $contentHash = '';
             switch ($resourceType) {
                 case 'css':
                     foreach ($resources as $item) {
                         $isLocal = !isHttpUrl($item);
                         $resource = new Css($isLocal ? $resourcePath . $item : $item, $isLocal);
+                        $applyFilter and $contentHash = $resource->concatenateHash($contentHash);
                         $collection->add($resource);
                     }
                     $applyFilter and $collection->addFilter(new Cssmin());
@@ -236,11 +246,17 @@ class View extends PhalconView
                     foreach ($resources as $item) {
                         $isLocal = !isHttpUrl($item);
                         $resource = new Js($isLocal ? $resourcePath . $item : $item, $isLocal);
+                        $applyFilter and $contentHash = $resource->concatenateHash($contentHash);
                         $collection->add($resource);
                     }
                     $applyFilter and $collection->addFilter(new Jsmin());
                     break;
             }
+            $targetUri = $compiledPath . substr($collectionName, 0, -1 - strlen($resourceType));
+            $contentHash and $targetUri .= '.' . $contentHash;
+            $targetUri .= '.' . $resourceType;
+            $collection->setTargetPath($basePath . $targetUri)
+                ->setTargetUri(url($targetUri));
         }
         return $this;
     }
@@ -268,6 +284,7 @@ class View extends PhalconView
     public static function register(Di $di)
     {
         static::$di = $di;
+        static::$runningUnitTest = Config::runningUnitTest();
         $di->setShared('view', function () {
             return new static(Config::get('view'));
         });
