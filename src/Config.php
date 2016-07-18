@@ -10,8 +10,9 @@ class Config
 
     public static function clearCache()
     {
-        is_file($cacheFile = storagePath('cache/config.php')) and unlink($cacheFile);
-        Cache::delete('db_configs');
+        $environment = static::environment();
+        is_file($cacheFile = storagePath('cache/config-' . $environment . '.php')) and unlink($cacheFile);
+        Cache::delete('db_configs_' . $environment);
     }
 
     public static function environment()

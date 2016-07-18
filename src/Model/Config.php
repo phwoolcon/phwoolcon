@@ -14,7 +14,8 @@ class Config extends Model
 
     public static function all()
     {
-        if (null === $config = Cache::get($key = 'db_configs')) {
+        $environment = PhwoolconConfig::environment();
+        if (null === $config = Cache::get($key = 'db_configs_' . $environment)) {
             $db = Db::connection();
             $db->tableExists('config') or static::createConfigTable();
 
