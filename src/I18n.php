@@ -126,7 +126,7 @@ class I18n extends Adapter
         $combined = [];
         foreach (glob($this->localePath . '/' . $this->currentLocale . '/*.php') as $file) {
             $package = pathinfo($file, PATHINFO_FILENAME);
-            $combined = array_merge($combined, $packages[$package] = include $file);
+            $combined = array_merge($combined, $packages[$package] = (array)include $file);
         }
         $this->locale[$locale] = compact('combined', 'packages');
         $useCache and Cache::set($cacheKey, $this->locale[$locale]);
