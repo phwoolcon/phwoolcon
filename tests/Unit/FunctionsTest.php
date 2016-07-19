@@ -86,7 +86,6 @@ class FunctionsTest extends TestCase
 
     public function testUrl()
     {
-        $_SERVER['SCRIPT_NAME'] = '/index.php';
         $baseUrl = Config::get('app.url');
         $uri = 'test/done';
         $expected = rtrim($baseUrl, '/') . '/' . ltrim($uri, '/');

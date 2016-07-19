@@ -24,6 +24,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
         /* @var Di $di */
         $di = $this->di = Di::getDefault();
         Events::register($di);
