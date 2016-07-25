@@ -15,4 +15,5 @@ return [
             'zip_code' => '/^\d{6}$/',
         ],
     ],
+    'undefined_strings_log' => 'logs/undefined_strings_log.php',
 ];
