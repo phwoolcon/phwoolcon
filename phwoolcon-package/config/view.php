@@ -29,7 +29,7 @@ return [
             '../base/css/ie-hack.css',
         ],
         'ie-hack-js' => [
-            '../base/js/ie/function-bind.min.js.js',
+            '../base/js/ie/function-bind.min.js',
             '../base/js/ie/json2-20160501.min.js',
             '../base/js/ie/html5shiv-3.7.3.min.js',
         ],
@@ -55,7 +55,7 @@ return [
             'head-js' => [
                 '../../base/js/jquery-1.12.3.min.js',
                 '../../base/js/jquery.cookie-1.4.1.min.js',
-                '../../base/js/ie/simpleStorage-0.2.1.min.js',
+                '../../base/js/simpleStorage-0.2.1.min.js',
                 '../../base/js/phwoolcon.js',
             ],
             'body-js' => [
@@ -65,7 +65,7 @@ return [
                 '../../base/css/ie-hack.css',
             ],
             'ie-hack-js' => [
-                '../../base/js/ie/function-bind.min.js.js',
+                '../../base/js/ie/function-bind.min.js',
                 '../../base/js/ie/json2-20160501.min.js',
                 '../../base/js/ie/html5shiv-3.7.3.min.js',
             ],
