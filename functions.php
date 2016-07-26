@@ -153,6 +153,11 @@ function migrationPath($path = null)
     return $_SERVER['PHWOOLCON_MIGRATION_PATH'] . ($path ? '/' . $path : '');
 }
 
+function price($amount, $currency = 'CNY')
+{
+    return I18n::formatPrice($amount, $currency);
+}
+
 if (!function_exists('random_bytes')) {
     function random_bytes($length)
     {

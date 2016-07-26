@@ -105,6 +105,16 @@ class I18n extends Adapter
         static::$instance->undefinedStrings = [];
     }
 
+    public static function formatPrice($amount, $currency = 'CNY')
+    {
+        // TODO Use I18n config
+        $symbol = '￥';
+        $precision = 2;
+        $number = number_format($amount, $precision);
+        $sequence = 'symbolFirst';
+        return $sequence == 'symbolFirst' ? $symbol . $number : $number . $symbol;
+    }
+
     public static function getAvailableLocales()
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
