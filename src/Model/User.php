@@ -13,6 +13,7 @@ use Phwoolcon\Model;
  * @method string getMobile()
  * @method string getUsername()
  * @method UserProfile|false getUserProfile()
+ * @method $this setUsername(string $username)
  * @method $this setUserProfile(UserProfile $profile)
  */
 class User extends Model
