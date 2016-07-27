@@ -90,4 +90,10 @@ class I18nTest extends TestCase
         $mobile = '13579246801';
         $this->assertTrue(I18n::checkMobile($mobile, 'CN'), 'Bad check mobile result');
     }
+
+    public function testFormatPrice()
+    {
+        $amount = '1234.5';
+        $this->assertEquals('￥1,234.50', price($amount));
+    }
 }
