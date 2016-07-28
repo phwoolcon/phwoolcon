@@ -148,10 +148,13 @@ class RouterTest extends TestCase
     {
         $response = $this->dispatch('/api/404');
         $this->assertInstanceOf(NotFoundException::class, $response);
-        $this->assertEquals(json_encode([
-            'error_code' => 404,
-            'error_msg' => '404 Not Found',
-        ]), $response->toResponse()->getContent());
+        $content = $response->toResponse()->getContent();
+        $this->assertContains(json_encode([
+            'status' => 404,
+            'code' => 404,
+            'title' => '404 Not Found',
+        ]), $content);
+        $this->assertContains('jsonapi', $content);
         $this->assertFalse($this->getView()->isAdmin());
     }
 

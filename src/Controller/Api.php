@@ -57,7 +57,8 @@ trait Api
      * Returns JSON API error
      * @see http://jsonapi.org/format/#errors
      *
-     * @param array $errors Each error SHOULD contain `code` and `title`, MAY contain `id`, `status`, `links`, `detail`, `source`
+     * @param array $errors Each error SHOULD contain `code` and `title`,
+     *                      MAY contain `id`, `status`, `links`, `detail`, `source`
      * @param array $meta
      * @param array $extraData
      * @param int   $status
