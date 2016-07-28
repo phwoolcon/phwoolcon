@@ -64,7 +64,7 @@ trait Api
      * @param int   $status
      * @return \Phalcon\Http\Response
      */
-    public function jsonApiReturnErrors(array $errors, array $meta = [], array $extraData = [], $status = 200)
+    public function jsonApiReturnErrors(array $errors, array $meta = [], array $extraData = [], $status = 400)
     {
         foreach ($errors as &$error) {
             isset($error['code']) and $error['code'] = (string)$error['code'];

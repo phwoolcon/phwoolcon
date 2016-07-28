@@ -144,6 +144,49 @@ class RouterTest extends TestCase
         $this->assertFalse($this->getView()->isAdmin());
     }
 
+    public function testApiDataRoutes()
+    {
+        $response = $this->dispatch('/api/test-json-api-data');
+        $this->assertInstanceOf(Response::class, $response);
+        $content = $response->getContent();
+        $this->assertContains(json_encode([
+            'id' => 1,
+            'type' => 'entity',
+            'attributes' => [
+                'foo' => 'bar',
+            ],
+        ]), $content);
+        $this->assertContains('jsonapi', $content);
+        $this->assertFalse($this->getView()->isAdmin());
+    }
+
+    public function testApiErrorRoutes()
+    {
+        $response = $this->dispatch('/api/test-json-api-error');
+        $this->assertInstanceOf(Response::class, $response);
+        $content = $response->getContent();
+        $this->assertContains(json_encode([
+            [
+                'code' => 'foo',
+                'title' => 'bar',
+            ],
+        ]), $content);
+        $this->assertContains('jsonapi', $content);
+        $this->assertFalse($this->getView()->isAdmin());
+    }
+
+    public function testApiMetaRoutes()
+    {
+        $response = $this->dispatch('/api/test-json-api-meta');
+        $this->assertInstanceOf(Response::class, $response);
+        $content = $response->getContent();
+        $this->assertContains(json_encode([
+            'meta_foo' => 'bar',
+        ]), $content);
+        $this->assertContains('jsonapi', $content);
+        $this->assertFalse($this->getView()->isAdmin());
+    }
+
     public function testApi404Routes()
     {
         $response = $this->dispatch('/api/404');

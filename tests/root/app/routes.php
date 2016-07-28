@@ -12,6 +12,9 @@ $this->prefix('/prefix', [
     'GET' => [
         '/:params' => 'Phwoolcon\Tests\Helper\TestApiController::missingMethod',
         'test-route' => 'Phwoolcon\Tests\Helper\TestApiController::getTestRoute',
+        'test-json-api-data' => 'Phwoolcon\Tests\Helper\TestApiController::getJsonApiData',
+        'test-json-api-error' => 'Phwoolcon\Tests\Helper\TestApiController::getJsonApiError',
+        'test-json-api-meta' => 'Phwoolcon\Tests\Helper\TestApiController::getJsonApiMeta',
     ],
 ], MultiFilter::instance()
     ->add(DisableSessionFilter::instance())
