@@ -91,13 +91,14 @@ abstract class Controller extends PhalconController
     /**
      * response json content
      *
-     * @param array $array
-     * @param int   $httpCode
+     * @param array  $array
+     * @param int    $httpCode
+     * @param string $contentType
      * @return \Phalcon\Http\Response
      */
-    protected function jsonReturn(array $array, $httpCode = 200)
+    protected function jsonReturn(array $array, $httpCode = 200, $contentType = 'application/json')
     {
-        return $this->response->setHeader("Content-Type", "application/json")
+        return $this->response->setHeader('Content-Type', $contentType)
             ->setStatusCode($httpCode)
             ->setJsonContent($array);
     }
