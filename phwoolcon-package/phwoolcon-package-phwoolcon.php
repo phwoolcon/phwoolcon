@@ -8,6 +8,7 @@ return [
             'database.php',
             'i18n.php',
             'queue.php',
+            'service.php',
             'session.php',
             'view.php',
         ],
