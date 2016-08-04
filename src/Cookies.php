@@ -1,6 +1,7 @@
 <?php
 namespace Phwoolcon;
 
+use ReflectionProperty;
 use Phalcon\Di;
 use Phalcon\Events\Event;
 use Phalcon\Http\Cookie;
@@ -24,6 +25,10 @@ class Cookies
      * @var PhalconCookies
      */
     protected static $cookies;
+    /**
+     * @var ReflectionProperty
+     */
+    protected static $cookiesReflection;
     protected static $options;
 
     public static function __callStatic($name, $arguments)
@@ -80,5 +85,17 @@ class Cookies
         $path === null and $path = $options['path'];
         $domain === null and $domain = $options['domain'];
         return static::$cookies->set($name, $value, $expire, $path, $secure, $domain, $httpOnly);
+    }
+
+    /**
+     * @return Http\Cookie[]
+     */
+    public static function toArray()
+    {
+        if (static::$cookiesReflection === null) {
+            static::$cookiesReflection = new ReflectionProperty(static::$cookies, '_cookies');
+            static::$cookiesReflection->setAccessible(true);
+        }
+        return static::$cookiesReflection->getValue(static::$cookies);
     }
 }
