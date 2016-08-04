@@ -7,6 +7,7 @@ use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Router as PhalconRouter;
 use Phalcon\Mvc\Router\Route;
+use Phwoolcon\Daemon\ServiceAwareInterface;
 use Phwoolcon\Exception\Http\CsrfException;
 use Phwoolcon\Exception\Http\NotFoundException;
 use Phwoolcon\Exception\HttpException;
@@ -17,7 +18,7 @@ use Phwoolcon\Exception\HttpException;
  *
  * @method Route add($pattern, $paths = null, $httpMethods = null, $position = Router::POSITION_LAST)
  */
-class Router extends PhalconRouter
+class Router extends PhalconRouter implements ServiceAwareInterface
 {
     /**
      * @var Di
@@ -33,6 +34,14 @@ class Router extends PhalconRouter
     protected $_uriSource = self::URI_SOURCE_SERVER_REQUEST_URI;
     protected $_sitePathPrefix;
     protected $_sitePathLength;
+    /**
+     * @var Response\Cookies
+     */
+    protected $cookies;
+    /**
+     * @var Response
+     */
+    protected $response;
 
     public function __construct()
     {
@@ -47,6 +56,8 @@ class Router extends PhalconRouter
         $this->removeExtraSlashes(true);
         $routes = is_file($file = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/app/routes.php') ? include $file : [];
         is_array($routes) and $this->addRoutes($routes);
+        $this->cookies = static::$di->getShared('cookies');
+        $this->response = static::$di->getShared('response');
     }
 
     public function addRoutes(array $routes, $prefix = null, $filter = null)
@@ -95,6 +106,7 @@ class Router extends PhalconRouter
                 }
             }
             // @codeCoverageIgnoreEnd
+            Events::fire('router:before_dispatch', $router, ['uri' => $uri]);
             $router->handle($uri);
             ($route = $router->getMatchedRoute()) or static::throw404Exception();
             static::$disableSession or Session::start();
@@ -115,6 +127,7 @@ class Router extends PhalconRouter
                 $controller->{$method}();
                 $response = $controller->response;
             }
+            Events::fire('router:after_dispatch', $router, ['response' => $response]);
             Session::end();
             return $response;
         } catch (HttpException $e) {
@@ -167,10 +180,17 @@ class Router extends PhalconRouter
         });
     }
 
-    public static function reset()
+    public function reset()
     {
         static::$disableSession = false;
         static::$disableCsrfCheck = false;
+        $this->cookies->reset();
+    }
+
+    public static function staticReset()
+    {
+        static::$router === null and static::$router = static::$di->getShared('router');
+        static::$router->reset();
     }
 
     public static function throw404Exception($content = null, $contentType = 'text/html')

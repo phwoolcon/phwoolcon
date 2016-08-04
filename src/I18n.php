@@ -4,8 +4,9 @@ namespace Phwoolcon;
 use Phalcon\Di;
 use Phalcon\Events\Event;
 use Phalcon\Translate\Adapter;
+use Phwoolcon\Daemon\ServiceAwareInterface;
 
-class I18n extends Adapter
+class I18n extends Adapter implements ServiceAwareInterface
 {
     /**
      * @var Di
@@ -42,36 +43,7 @@ class I18n extends Adapter
         $this->loadLocale($this->defaultLocale);
         $this->undefinedStringsLogFile = storagePath($options['undefined_strings_log']);
         is_file($this->undefinedStringsLogFile) and $this->undefinedStrings = include $this->undefinedStringsLogFile;
-        $this->_reset();
-    }
-
-    protected function _reset()
-    {
-        if (!$this->multiLocale) {
-            return;
-        }
-        $this->request or $this->request = static::$di->getShared('request');
-        if ($locale = $this->request->get('_locale')) {
-            $this->_setLocale($locale);
-            return;
-        }
-        if (($cookie = Cookies::get('locale')) && $locale = $cookie->useEncryption(false)->getValue()) {
-            $this->_setLocale($locale);
-            $cookie->setHttpOnly(false)
-                ->delete();
-            return;
-        }
-        if ($locale = Session::get('current_locale')) {
-            $this->loadLocale($this->currentLocale = $locale);
-            return;
-        }
-        // @codeCoverageIgnoreStart
-        if ($this->detectClientLocale) {
-            $this->_setLocale($this->request->getBestLanguage());
-            return;
-        }
-        // @codeCoverageIgnoreEnd
-        $this->loadLocale($this->currentLocale = $this->defaultLocale);
+        $this->reset();
     }
 
     protected function _setLocale($locale)
@@ -191,10 +163,39 @@ class I18n extends Adapter
         });
     }
 
-    public static function reset()
+    public function reset()
+    {
+        if (!$this->multiLocale) {
+            return;
+        }
+        $this->request or $this->request = static::$di->getShared('request');
+        if ($locale = $this->request->get('_locale')) {
+            $this->_setLocale($locale);
+            return;
+        }
+        if (($cookie = Cookies::get('locale')) && $locale = $cookie->useEncryption(false)->getValue()) {
+            $this->_setLocale($locale);
+            $cookie->setHttpOnly(false)
+                ->delete();
+            return;
+        }
+        if ($locale = Session::get('current_locale')) {
+            $this->loadLocale($this->currentLocale = $locale);
+            return;
+        }
+        // @codeCoverageIgnoreStart
+        if ($this->detectClientLocale) {
+            $this->_setLocale($this->request->getBestLanguage());
+            return;
+        }
+        // @codeCoverageIgnoreEnd
+        $this->loadLocale($this->currentLocale = $this->defaultLocale);
+    }
+
+    public static function staticReset()
     {
         static::$instance or static::$instance = static::$di->getShared('i18n');
-        static::$instance->_reset();
+        static::$instance->reset();
     }
 
     public static function setLocale($locale)
