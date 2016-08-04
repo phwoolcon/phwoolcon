@@ -27,6 +27,9 @@ class FailedLoggerDb
         $this->db->tableExists($this->table) or $this->createTable();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function createTable()
     {
         $this->db->createTable($this->table, null, [

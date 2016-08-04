@@ -14,6 +14,7 @@ use Phwoolcon\Events;
 use Phwoolcon\I18n;
 use Phwoolcon\Log;
 use Phwoolcon\Session;
+use Phwoolcon\Util\Timer;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
@@ -42,12 +43,14 @@ class TestCase extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $class = get_class($this);
-        Log::debug("Running {$class}::{$this->getName()}() ...");
+        Log::debug("================== Running {$class}::{$this->getName()}() ... ==================");
+        Timer::start();
     }
 
     public function tearDown()
     {
+        $elapsed = Timer::stop();
         parent::tearDown();
-        Log::debug("Finished.\n");
+        Log::debug("================== Finished, time elapsed: {$elapsed}. ==================");
     }
 }

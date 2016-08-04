@@ -52,7 +52,7 @@ class RouterTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = $method;
         $router = $this->getRouter();
-        $router::reset();
+        $router::staticReset();
         Cookies::reset();
         $this->getView()->reset();
         try {
