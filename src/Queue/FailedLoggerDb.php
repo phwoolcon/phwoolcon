@@ -23,7 +23,7 @@ class FailedLoggerDb
         $this->options = $options;
         $this->table = $options['table'];
         $this->db = Db::connection($options['connection']);
-        Config::runningUnitTest() and $this->db->dropTable($this->table);
+        Config::runningUnitTest() and $this->db->delete($this->table);
         $this->db->tableExists($this->table) or $this->createTable();
     }
 
