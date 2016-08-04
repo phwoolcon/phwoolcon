@@ -27,7 +27,7 @@
         "techpivot/phalcon-ci-installer": "~1.0"
     },
     "suggest": {
-        "ext-phalcon": ">=2.0.11",
+        "ext-phalcon": ">=3.0.0",
         "ext-swoole": "*"
     },
     "autoload": {
