@@ -13,8 +13,9 @@ use Phalcon\Mvc\View as PhalconView;
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Mvc\View\Exception as ViewException;
 use Phwoolcon\Assets\ResourceTrait;
+use Phwoolcon\Daemon\ServiceAwareInterface;
 
-class View extends PhalconView
+class View extends PhalconView implements ServiceAwareInterface
 {
     /**
      * @var Di

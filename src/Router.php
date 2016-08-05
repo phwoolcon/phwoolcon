@@ -185,6 +185,8 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         static::$disableSession = false;
         static::$disableCsrfCheck = false;
         $this->cookies->reset();
+        $this->response->setContent('')
+            ->resetHeaders();
     }
 
     public static function staticReset()
