@@ -238,10 +238,8 @@ class Service
         $headers['status'] = 'HTTP/1.1 ' . $response->getStatusCode();
 
         // headers
-        foreach ($response->getHeaders() as $name => $values) {
-            foreach ($values as $value) {
-                $headers['headers'][] = $name . ': ' . $value;
-            }
+        foreach ($response->getHeaders()->toArray() as $name => $value) {
+            $headers['headers'][] = $name . ($value === null ? '' : ': ' . $value);
         }
 
         // cookies
