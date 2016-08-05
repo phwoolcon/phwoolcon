@@ -23,8 +23,9 @@ class FailedLoggerDb
         $this->options = $options;
         $this->table = $options['table'];
         $this->db = Db::connection($options['connection']);
-        Config::runningUnitTest() and $this->db->delete($this->table);
-        $this->db->tableExists($this->table) or $this->createTable();
+        $tableExists = $this->db->tableExists($this->table);
+        Config::runningUnitTest() && $tableExists and $this->db->delete($this->table);
+        $tableExists or $this->createTable();
     }
 
     /**
