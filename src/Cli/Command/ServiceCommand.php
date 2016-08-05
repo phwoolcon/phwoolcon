@@ -2,17 +2,10 @@
 
 namespace Phwoolcon\Cli\Command;
 
-use Exception;
-use Phalcon\Db\Column;
 use Phalcon\Di;
 use Phwoolcon\Cli\Command;
-use Phwoolcon\Config;
 use Phwoolcon\Daemon\Service;
-use Phwoolcon\Db;
-use Phwoolcon\Log;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ServiceCommand extends Command
 {

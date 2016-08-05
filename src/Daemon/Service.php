@@ -2,18 +2,17 @@
 namespace Phwoolcon\Daemon;
 
 use Closure;
+use ErrorException;
+use swoole_server;
+use Phalcon\Di;
 use Phalcon\Events\Event;
 use Phalcon\Http\Response;
 use Phwoolcon\Cli\Command;
+use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\Events;
 use Phwoolcon\Router;
 use Phwoolcon\Session;
-use Phwoolcon\View;
-use swoole_server;
-use ErrorException;
-use Phalcon\Di;
-use Phwoolcon\Config;
 
 class Service
 {
