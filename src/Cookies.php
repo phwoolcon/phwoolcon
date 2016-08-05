@@ -4,7 +4,6 @@ namespace Phwoolcon;
 use ReflectionProperty;
 use Phalcon\Di;
 use Phalcon\Events\Event;
-use Phalcon\Http\Cookie;
 use Phalcon\Http\Response\Cookies as PhalconCookies;
 
 /**
@@ -12,7 +11,7 @@ use Phalcon\Http\Response\Cookies as PhalconCookies;
  * @package Phwoolcon
  *
  * @method static bool delete(string $name)
- * @method static Cookie get(string $name)
+ * @method static Http\Cookie get(string $name)
  * @method static PhalconCookies reset()
  */
 class Cookies
