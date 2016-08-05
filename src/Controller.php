@@ -107,13 +107,12 @@ abstract class Controller extends PhalconController
      * redirect url
      *
      * @param null $location
-     * @param bool $externalRedirect
      * @param int  $statusCode
      * @return \Phalcon\Http\Response
      */
-    protected function redirect($location = null, $statusCode = 302, $externalRedirect = false)
+    protected function redirect($location = null, $statusCode = 302)
     {
-        return $this->response->redirect(url($location), $externalRedirect, $statusCode);
+        return $this->response->redirect(url($location), true, $statusCode);
     }
 
     /**
