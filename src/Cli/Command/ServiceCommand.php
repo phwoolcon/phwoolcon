@@ -27,7 +27,7 @@ start | stop | restart | reload | status | install | uninstall"
         Service::register($this->di);
         /* @var Service $service */
         $service = $this->di->getShared('service');
-        $service->setServiceCommand($this);
+        $service->setCliCommand($this);
         $serviceName = $service->getName();
         switch (strtolower($this->input->getArgument('action'))) {
             case 'start':

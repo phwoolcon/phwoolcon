@@ -23,7 +23,7 @@ class Service
     /**
      * @var Command
      */
-    protected $serviceCommand;
+    protected $cliCommand;
     protected $config;
     protected $runDir = '/tmp/phwoolcon/';
     protected $debug = false;
@@ -98,6 +98,16 @@ class Service
         $this->sockFile = $this->runDir . 'service-' . $port . '.sock';
         $portSaved or file_put_contents($portFile, sprintf('<?php return %d;', $port));
         return $previousPort;
+    }
+
+    /**
+     * @param $type
+     * @param $message
+     * @codeCoverageIgnore
+     */
+    protected function cliOutput($type, $message)
+    {
+        $this->cliCommand and $this->cliCommand->{$type}($message);
     }
 
     protected function getDebugInfo(swoole_server $server)
@@ -221,8 +231,8 @@ class Service
             'manager_pid' => $this->managerPid,
             'port' => $this->swoolePort,
         ]);
-        $this->serviceCommand->info("pid = {$this->pid}; port = {$this->swoolePort}");
-        $this->serviceCommand->info('Service started.');
+        $this->cliOutput('info', "pid = {$this->pid}; port = {$this->swoolePort}");
+        $this->cliOutput('info', 'Service started.');
     }
 
     public function onWorkerStart(swoole_server $server, $workerId)
@@ -366,9 +376,9 @@ class Service
         }
     }
 
-    public function setServiceCommand(Command $command)
+    public function setCliCommand(Command $command)
     {
-        $this->serviceCommand = $command;
+        $this->cliCommand = $command;
         return $this;
     }
 
@@ -387,7 +397,7 @@ class Service
     public function showStatus()
     {
         $response = $this->sendCommand('status', null, $error);
-        $error ? $this->serviceCommand->error('Service not started.') : $this->serviceCommand->info($response);
+        $error ? $this->cliOutput('error', 'Service not started.') : $this->cliOutput('info', $response);
         exit($error ? 3 : 0);
     }
 
@@ -396,7 +406,7 @@ class Service
         $port = $this->choosePort();
         $this->sendCommand('status', $port, $error);
         if (!$error) {
-            $this->serviceCommand->error('Service already started');
+            $this->cliOutput('error', 'Service already started');
             return;
         }
         $this->prepareServiceAwareComponents();
@@ -411,7 +421,7 @@ class Service
         file_exists($sockFile) and unlink($sockFile);
         ini_set('html_errors', 0);
         if (!$this->commandServer = stream_socket_server('unix://' . $sockFile, $errNo, $errStr)) {
-            $this->serviceCommand->error("Command handler start failed: {$errStr} ({$errNo})");
+            $this->cliOutput('error', "Command handler start failed: {$errStr} ({$errNo})");
         } else {
             swoole_event_add($this->commandServer, function () {
                 $conn = stream_socket_accept($this->commandServer, 0);
@@ -422,7 +432,7 @@ class Service
                     swoole_event_del($conn);
                 });
             });
-            $this->serviceCommand->info('Command handler started.');
+            $this->cliOutput('info', 'Command handler started.');
         }
     }
 
@@ -449,7 +459,7 @@ class Service
                 posix_kill($pid, SIGKILL);
             }
         }
-        $this->serviceCommand->info('Service stopped.');
+        $this->cliOutput('info', 'Service stopped.');
     }
 
     protected function updateServiceInfo($key, $data = null)
