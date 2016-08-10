@@ -97,6 +97,16 @@ function base62encode($val)
 }
 
 /**
+ * @param string $filename
+ * @param array  $array
+ * @return int
+ */
+function fileSaveArray($filename, $array)
+{
+    return file_put_contents($filename, '<?php return ' . var_export($array, true) . ';');
+}
+
+/**
  * Safely get child value from an array or an object
  *
  * Usage:

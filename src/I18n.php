@@ -130,10 +130,7 @@ class I18n extends Adapter implements ServiceAwareInterface
         Log::warning("I18n: locale string not found: '{$string}'");
         is_file($this->undefinedStringsLogFile) and $this->undefinedStrings = include $this->undefinedStringsLogFile;
         $this->undefinedStrings[$this->currentLocale][$package][$string] = true;
-        file_put_contents(
-            $this->undefinedStringsLogFile,
-            sprintf('<?php return %s;', var_export($this->undefinedStrings, true))
-        );
+        fileSaveArray($this->undefinedStringsLogFile, $this->undefinedStrings);
     }
 
     public function query($string, $params = null, $package = null)

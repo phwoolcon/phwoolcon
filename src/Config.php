@@ -79,7 +79,7 @@ class Config
         // @codeCoverageIgnoreStart
         if (Config::get('app.cache_config')) {
             is_dir($cacheDir = dirname($cacheFile)) or mkdir($cacheDir, 0777, true);
-            file_put_contents($cacheFile, sprintf('<?php return %s;', var_export(static::$config, true)));
+            fileSaveArray($cacheFile, static::$config);
         }
         // @codeCoverageIgnoreEnd
     }
