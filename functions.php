@@ -98,7 +98,7 @@ function base62encode($val)
 
 /**
  * @param string $filename
- * @param array  $array
+ * @param mixed  $array
  * @return int
  */
 function fileSaveArray($filename, $array)
