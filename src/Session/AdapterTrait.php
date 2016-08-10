@@ -80,7 +80,7 @@ trait AdapterTrait
     {
         if (!$this->_started && $this->status() !== self::SESSION_ACTIVE) {
             $this->isValidSid($sid = Cookies::get($this->getName())->useEncryption(false)->getValue()) ?
-                $this->setId($sid) : $this->setId(Text::token());
+                $this->setId($sid) : $this->regenerateId();
             session_start();
             $this->_options['cookie_lazy_renew_interval'] and $this->cookieRenewedAt = $this->get('_cookie_renewed_at');
             $this->_started = true;
@@ -91,7 +91,6 @@ trait AdapterTrait
 
     public function regenerateId($deleteOldSession = true)
     {
-        session_regenerate_id($deleteOldSession);
         $this->setId(Text::token());
         $this->cookieRenewedAt = 0;
         return $this;
