@@ -7,6 +7,7 @@ use Phwoolcon\Cookies;
 use Phwoolcon\Exception\Http\CsrfException;
 use Phwoolcon\Exception\Http\ForbiddenException;
 use Phwoolcon\Exception\Http\NotFoundException;
+use Phwoolcon\Log;
 use Phwoolcon\Router;
 use Phwoolcon\Tests\Helper\TestCase;
 use Phwoolcon\View;
@@ -58,6 +59,7 @@ class RouterTest extends TestCase
         try {
             return $router->dispatch($uri);
         } catch (Exception $e) {
+            Log::exception($e);
             return $e;
         }
     }
