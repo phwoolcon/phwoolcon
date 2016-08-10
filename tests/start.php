@@ -21,3 +21,4 @@ $_SERVER['PHWOOLCON_CONFIG_PATH'] = TEST_ROOT_PATH . '/app/config';
 include __DIR__ . '/../vendor/autoload.php';
 
 is_file($logFile = TEST_ROOT_PATH . '/storage/logs/phwoolcon.log') and file_put_contents($logFile, '');
+is_file($logFile = TEST_ROOT_PATH . '/storage/logs/service.log') and file_put_contents($logFile, '');
