@@ -49,6 +49,7 @@ class Service
      */
     protected $serviceAwareComponents = [];
     protected $debugData = [];
+    protected $dryRun = false;
 
     public function __construct($config)
     {
@@ -100,11 +101,6 @@ class Service
         return $previousPort;
     }
 
-    /**
-     * @param $type
-     * @param $message
-     * @codeCoverageIgnore
-     */
     protected function cliOutput($type, $message)
     {
         $this->cliCommand and $this->cliCommand->{$type}($message);
@@ -120,6 +116,10 @@ class Service
         ] + $this->debugData;
     }
 
+    /**
+     * @return string
+     * @codeCoverageIgnore
+     */
     public function getName()
     {
         return $this->name;
@@ -270,7 +270,7 @@ class Service
     {
         Events::attach('router:after_dispatch', function (Event $event) {
             $this->debugData['session-id'] = json_encode(Session::getId());
-            $this->debugData['session-data'] = json_encode($_SESSION);
+            $this->debugData['session-data'] = json_encode(isset($_SESSION) ? $_SESSION : null);
         });
     }
 
@@ -329,9 +329,10 @@ class Service
                 $stats = $server->stats();
                 $result = $stats['connection_num'];
                 break;
-            case 'shutdown':
+            // @codeCoverageIgnoreStart
             default:
                 $result = 'Bad command';
+            // @codeCoverageIgnoreEnd
         }
         return $result;
     }
@@ -376,9 +377,20 @@ class Service
         }
     }
 
+    /**
+     * @param Command $command
+     * @return $this
+     * @codeCoverageIgnore
+     */
     public function setCliCommand(Command $command)
     {
         $this->cliCommand = $command;
+        return $this;
+    }
+
+    public function setDryRun($flag = true)
+    {
+        $this->dryRun = $flag;
         return $this;
     }
 
@@ -394,11 +406,16 @@ class Service
         return $this;
     }
 
-    public function showStatus()
+    public function showStatus($exit = true, &$error = null)
     {
         $response = $this->sendCommand('status', null, $error);
         $error ? $this->cliOutput('error', 'Service not started.') : $this->cliOutput('info', $response);
-        exit($error ? 3 : 0);
+        // @codeCoverageIgnoreStart
+        if ($exit) {
+            exit($error ? 3 : 0);
+        }
+        // @codeCoverageIgnoreEnd
+        return $response;
     }
 
     public function start()
@@ -407,12 +424,15 @@ class Service
         $this->sendCommand('status', $port, $error);
         if (!$error) {
             $this->cliOutput('error', 'Service already started');
-            return;
+            return false;
         }
         $this->prepareServiceAwareComponents();
         $this->debug and $this->prepareDebugObservers();
         $this->initSwoole();
-        $this->swoole->start();
+        if (!$this->dryRun) {
+            $this->swoole->start();
+        }
+        return true;
     }
 
     protected function startCommandHandler()
@@ -421,8 +441,10 @@ class Service
         file_exists($sockFile) and unlink($sockFile);
         ini_set('html_errors', 0);
         if (!$this->commandServer = stream_socket_server('unix://' . $sockFile, $errNo, $errStr)) {
+            // @codeCoverageIgnoreStart
             $this->cliOutput('error', "Command handler start failed: {$errStr} ({$errNo})");
-        } else {
+        } // @codeCoverageIgnoreEnd
+        else {
             swoole_event_add($this->commandServer, function () {
                 $conn = stream_socket_accept($this->commandServer, 0);
                 swoole_event_add($conn, function ($conn) {
@@ -447,17 +469,23 @@ class Service
             list($pid, $managerPid, $port) = array_values($serviceInfo);
             // Get serving connection numbers
             $connections = $this->sendCommand('connections', $port, $error);
+
+            // Wait while all connections are served
             while (!$error && $connections > 0) {
                 usleep(5e5);
                 $connections = $this->sendCommand('connections', $port, $error);
             }
+
             // Send TERM signal to master process to stop service
             posix_kill($pid, SIGTERM);
+
             // Kill master process in Mac OS
+            // @codeCoverageIgnoreStart
             if (PHP_OS == 'Darwin') {
                 sleep(1);
                 posix_kill($pid, SIGKILL);
             }
+            // @codeCoverageIgnoreEnd
         }
         $this->cliOutput('info', 'Service stopped.');
     }
@@ -476,7 +504,7 @@ class Service
             $info[$key] = $data;
         }
         $file = $this->runDir . 'service-info.php';
-        file_put_contents($file, sprintf('<?php return %s;', var_export($info, true)));
+        fileSaveArray($file, $info);
         // Reset opcache and stat cache
         opcache_reset();
         clearstatcache();
