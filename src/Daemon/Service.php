@@ -3,7 +3,8 @@ namespace Phwoolcon\Daemon;
 
 use Closure;
 use ErrorException;
-use swoole_server;
+use Phwoolcon\Db;
+use Swoole\Server as SwooleServer;
 use Phalcon\Di;
 use Phalcon\Events\Event;
 use Phalcon\Http\Response;
@@ -16,6 +17,9 @@ use Phwoolcon\Session;
 
 class Service
 {
+    const OUTPUT_BUFFER_SIZE = 2097152;
+    const OUTPUT_CHUNK_SIZE = 1048576;
+
     /**
      * @var Di
      */
@@ -32,7 +36,7 @@ class Service
     protected $name;
 
     /**
-     * @var swoole_server
+     * @var SwooleServer
      */
     protected $swoole;
     protected $swoolePort;
@@ -49,7 +53,6 @@ class Service
      */
     protected $serviceAwareComponents = [];
     protected $debugData = [];
-    protected $dryRun = false;
 
     public function __construct($config)
     {
@@ -57,7 +60,7 @@ class Service
         if (PHP_SAPI != 'cli') {
             throw new ErrorException('Service is designed to be run in CLI mode only.');
         }
-        if (!class_exists('swoole_server', false)) {
+        if (!class_exists('Swoole\Server', false)) {
             throw new ErrorException('PHP extension swoole not installed!');
         }
         // @codeCoverageIgnoreEnd
@@ -106,7 +109,7 @@ class Service
         $this->cliCommand and $this->cliCommand->{$type}($message);
     }
 
-    protected function getDebugInfo(swoole_server $server)
+    protected function getDebugInfo(SwooleServer $server)
     {
         return [
             'service' => 1,
@@ -142,7 +145,7 @@ class Service
     protected function initSwoole()
     {
         $this->choosePort();
-        $server = $this->swoole = new swoole_server($this->sockFile, 0, SWOOLE_PROCESS, SWOOLE_UNIX_STREAM);
+        $server = $this->swoole = new SwooleServer($this->sockFile, 0, SWOOLE_PROCESS, SWOOLE_UNIX_STREAM);
         $config = array_merge([
             /**
              * Dispatch mode
@@ -160,6 +163,7 @@ class Service
             'package_length_type' => 'N',
             'package_length_offset' => 0,
             'package_body_offset' => 4,
+            'buffer_output_size' => static::OUTPUT_BUFFER_SIZE,
         ], $this->config);
         unset($config['run_dir'], $config['linux_init_script'], $config['debug'], $config['start_on_boot']);
         unset($config['profiler']);
@@ -173,12 +177,12 @@ class Service
         $server->on('Receive', [$this, $enableProfiler ? 'profileReceive' : 'onReceive']);
     }
 
-    public function onManagerStart(swoole_server $server)
+    public function onManagerStart(SwooleServer $server)
     {
         @cli_set_process_title($this->name . ': manager process');
     }
 
-    public function onReceive(swoole_server $server, $fd, $fromId, $data)
+    public function onReceive(SwooleServer $server, $fd, $fromId, $data)
     {
         $length = unpack('N', $data)[1];
         $data = unserialize(substr($data, -$length));
@@ -203,20 +207,26 @@ class Service
             'meta' => $this->debug ? $this->getDebugInfo($server) : ['service' => 1],
         ]);
 
-        $packageHead = pack('N', strlen($result));
-        $server->send($fd, $packageHead . $result, $fromId);
+        $server->send($fd, pack('N', $outputLength = strlen($result)), $fromId);
+        if ($outputLength >= static::OUTPUT_BUFFER_SIZE) {
+            foreach (str_split($result, static::OUTPUT_CHUNK_SIZE) as $chunk) {
+                $server->send($fd, $chunk, $fromId);
+            }
+        } else {
+            $server->send($fd, $result, $fromId);
+        }
     }
 
-    public function onShutdown(swoole_server $server)
+    public function onShutdown(SwooleServer $server)
     {
         swoole_event_del($this->commandServer);
     }
 
     /**
      * Callback after service started
-     * @param swoole_server $server
+     * @param SwooleServer $server
      */
-    public function onStart(swoole_server $server)
+    public function onStart(SwooleServer $server)
     {
         @cli_set_process_title($this->name . ': master process/reactor threads; port=' . $this->swoolePort);
         // Send SIGTERM to master pid to shutdown service
@@ -235,8 +245,9 @@ class Service
         $this->cliOutput('info', 'Service started.');
     }
 
-    public function onWorkerStart(swoole_server $server, $workerId)
+    public function onWorkerStart(SwooleServer $server, $workerId)
     {
+        Db::reconnect();
         @cli_set_process_title($this->name . ': worker process ' . $workerId);
     }
 
@@ -388,12 +399,6 @@ class Service
         return $this;
     }
 
-    public function setDryRun($flag = true)
-    {
-        $this->dryRun = $flag;
-        return $this;
-    }
-
     /**
      * Mark running instance as old
      *
@@ -406,9 +411,9 @@ class Service
         return $this;
     }
 
-    public function showStatus($exit = true, &$error = null)
+    public function showStatus($port = null, $exit = true, &$error = null)
     {
-        $response = $this->sendCommand('status', null, $error);
+        $response = $this->sendCommand('status', $port, $error);
         $error ? $this->cliOutput('error', 'Service not started.') : $this->cliOutput('info', $response);
         // @codeCoverageIgnoreStart
         if ($exit) {
@@ -418,18 +423,20 @@ class Service
         return $response;
     }
 
-    public function start()
+    public function start($dryRun = false)
     {
         $port = $this->choosePort();
         $this->sendCommand('status', $port, $error);
+        // @codeCoverageIgnoreStart
         if (!$error) {
             $this->cliOutput('error', 'Service already started');
             return false;
         }
+        // @codeCoverageIgnoreEnd
         $this->prepareServiceAwareComponents();
         $this->debug and $this->prepareDebugObservers();
-        $this->initSwoole();
-        if (!$this->dryRun) {
+        if (!$dryRun) {
+            $this->initSwoole();
             $this->swoole->start();
         }
         return true;
@@ -471,10 +478,12 @@ class Service
             $connections = $this->sendCommand('connections', $port, $error);
 
             // Wait while all connections are served
+            // @codeCoverageIgnoreStart
             while (!$error && $connections > 0) {
                 usleep(5e5);
                 $connections = $this->sendCommand('connections', $port, $error);
             }
+            // @codeCoverageIgnoreEnd
 
             // Send TERM signal to master process to stop service
             posix_kill($pid, SIGTERM);
@@ -498,8 +507,6 @@ class Service
                 $info['old'] = $info['current'];
                 unset($info['current']);
             }
-        } elseif ($data === null) {
-            unset($info[$key]);
         } else {
             $info[$key] = $data;
         }
