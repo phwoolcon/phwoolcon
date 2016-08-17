@@ -29,7 +29,9 @@ class Log extends Logger
 
     public static function exception(Exception $e)
     {
-        static::error($e instanceof HttpException ? get_class($e) : "\n" . $e->__toString());
+        $message = get_class($e);
+        $e instanceof HttpException or $message .= "\n" . $e->__toString();
+        static::error($message);
     }
 
     public static function info($message = null, array $context = [])
