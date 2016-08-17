@@ -15,6 +15,7 @@ use Phwoolcon\I18n;
 use Phwoolcon\Log;
 use Phwoolcon\Session;
 use Phwoolcon\Util\Timer;
+use Swoole\Process as SwooleProcess;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
@@ -22,6 +23,34 @@ class TestCase extends PHPUnit_Framework_TestCase
      * @var Di
      */
     protected $di;
+
+    public function appendRemoteCoverage()
+    {
+        foreach ($this->getRemoteCoverageFiles() as $coverageFile) {
+            $this->getTestResultObject()->getCodeCoverage()->append(include $coverageFile);
+            unlink($coverageFile);
+        }
+    }
+
+    public function generateRemoteCoverageFile()
+    {
+        return tempnam(storagePath('remote-coverage'), 'cov-' . time() . '-');
+    }
+
+    public function getRemoteCoverageFiles()
+    {
+        return glob(storagePath('remote-coverage/cov-*'));
+    }
+
+    /*public function runIsolate($realMethod)
+    {
+        $serverProcess = new SwooleProcess(function () use ($realMethod) {
+            $this->{$realMethod}();
+            $this->writeRemoteCoverage();
+        }, true);
+        $serverProcess->start();
+        Db::reconnect();
+    }*/
 
     public function setUp()
     {
@@ -52,5 +81,20 @@ class TestCase extends PHPUnit_Framework_TestCase
         $elapsed = Timer::stop();
         parent::tearDown();
         Log::debug("================== Finished, time elapsed: {$elapsed}. ==================");
+    }
+
+    public function writeRemoteCoverage()
+    {
+        $coverage = $this->getTestResultObject()->getCodeCoverage();
+        $coverage->stop();
+        $data = $coverage->getData(true);
+        foreach ($data as $file => &$lines) {
+            foreach ($lines as $line => &$executed) {
+                $executed and $executed = 1;
+            }
+            unset($executed);
+        }
+        unset($lines);
+        fileSaveArray($this->generateRemoteCoverageFile(), $data);
     }
 }
