@@ -36,7 +36,6 @@
 
                 <!-- TODO Implement service tests -->
                 <file>src/Cli/Command/ServiceCommand.php</file>
-                <file>src/Daemon/Service.php</file>
             </exclude>
         </whitelist>
     </filter>
