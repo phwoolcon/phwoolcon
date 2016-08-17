@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 cd "$(dirname "$( dirname "${BASH_SOURCE[0]}" )")"
+> tests/root/storage/logs/phwoolcon.log
+> tests/root/storage/logs/service.log
 phpunit --coverage-html tests/root/storage/coverage
