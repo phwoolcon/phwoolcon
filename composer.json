@@ -28,7 +28,7 @@
     },
     "suggest": {
         "ext-phalcon": ">=3.0.0",
-        "ext-swoole": "*"
+        "ext-swoole": ">=1.8.9"
     },
     "autoload": {
         "psr-4": {
