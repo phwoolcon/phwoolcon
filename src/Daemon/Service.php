@@ -379,13 +379,12 @@ class Service
         if (!$socket = @stream_socket_client('unix://' . $sockFile, $errNo, $errStr, 5)) {
             $error = ['err' => $errNo, 'message' => $errStr];
             return "$errStr ($errNo)";
-        } else {
-            $error = false;
-            fwrite($socket, $command, strlen($command));
-            $response = fread($socket, 8192);
-            fclose($socket);
-            return $response;
         }
+        $error = false;
+        fwrite($socket, $command, strlen($command));
+        $response = fread($socket, 8192);
+        fclose($socket);
+        return $response;
     }
 
     /**

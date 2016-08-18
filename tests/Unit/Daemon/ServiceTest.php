@@ -44,10 +44,6 @@ class ServiceTest extends TestCase
         $this->assertEquals($port, $service->choosePort());
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testStartAndStop()
     {
         $service = $this->service;
@@ -75,10 +71,6 @@ class ServiceTest extends TestCase
         $this->assertContains(fnGet($error, 'err'), [2, 111], fnGet($error, 'message'));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testReceive()
     {
         $service = $this->service;
@@ -98,10 +90,6 @@ class ServiceTest extends TestCase
         $this->assertContains(fnGet($error, 'err'), [2, 111], fnGet($error, 'message'));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testReload()
     {
         $service = $this->service;
