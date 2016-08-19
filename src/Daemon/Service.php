@@ -4,6 +4,7 @@ namespace Phwoolcon\Daemon;
 use Closure;
 use ErrorException;
 use Phwoolcon\Db;
+use Phwoolcon\Util\Timer;
 use Swoole\Server as SwooleServer;
 use Phalcon\Di;
 use Phalcon\Events\Event;
@@ -14,6 +15,7 @@ use Phwoolcon\Cookies;
 use Phwoolcon\Events;
 use Phwoolcon\Router;
 use Phwoolcon\Session;
+use XHProfRuns_Default;
 
 class Service
 {
@@ -31,6 +33,7 @@ class Service
     protected $config;
     protected $runDir = '/tmp/phwoolcon/';
     protected $debug = false;
+    protected $profiler;
     protected $profilerDir;
     protected $initScript;
     protected $name;
@@ -116,6 +119,7 @@ class Service
             'mem' => round(memory_get_usage() / 1024 / 1024, 2) . 'M',
             'worker-id' => $server->worker_id,
             'status' => json_encode($server->stats()),
+            'cost-ms' => Timer::stop() * 1000,
         ] + $this->debugData;
     }
 
@@ -159,7 +163,12 @@ class Service
              * @see http://wiki.swoole.com/wiki/page/484.html
              */
             'open_length_check' => true,
-            'package_max_length' => 262144,
+
+            /**
+             * Max upload size
+             * @see http://wiki.swoole.com/wiki/page/301.html
+             */
+            'package_max_length' => 8388608,
             'package_length_type' => 'N',
             'package_length_offset' => 0,
             'package_body_offset' => 4,
@@ -184,6 +193,10 @@ class Service
 
     public function onReceive(SwooleServer $server, $fd, $fromId, $data)
     {
+        if ($this->debug) {
+            $this->debugData = [];
+            Timer::start();
+        }
         $length = unpack('N', $data)[1];
         $data = unserialize(substr($data, -$length));
 
@@ -195,7 +208,6 @@ class Service
             $_SERVER[$k] = $v;
         }
         $this->reset();
-        $this->debug and $this->debugData = [];
         ob_start();
         $response = Router::dispatch();
         $extraContent = ob_get_clean();
@@ -346,6 +358,31 @@ class Service
             // @codeCoverageIgnoreEnd
         }
         return $result;
+    }
+
+    /**
+     * @param SwooleServer $server
+     * @param              $fd
+     * @param              $fromId
+     * @param              $data
+     * @codeCoverageIgnore
+     */
+    public function profileReceive(SwooleServer $server, $fd, $fromId, $data)
+    {
+        xhprof_enable(0, [
+            'ignored_functions' => [
+                'call_user_func',
+                'call_user_func_array',
+            ],
+        ]);
+        $this->onReceive($server, $fd, $fromId, $data);
+        $microTime = explode(' ', microtime());
+        /* @var Router $router */
+        $router = static::$di->getShared('router');
+        $pathInfo = strtr($router->getRewriteUri(), ['/' => '|']);
+        $reportFile = $microTime[1] . '-' . substr($microTime[0], 2) . '-' . $_SERVER['REQUEST_METHOD'] . $pathInfo;
+        $this->profiler or $this->profiler = new XHProfRuns_Default($this->profilerDir);
+        $this->profiler->save_run(xhprof_disable(), 'service', $reportFile);
     }
 
     public static function register(Di $di)
