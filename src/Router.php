@@ -58,6 +58,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         is_array($routes) and $this->addRoutes($routes);
         $this->cookies = static::$di->getShared('cookies');
         $this->response = static::$di->getShared('response');
+        $this->response->setStatusCode(200);
     }
 
     public function addRoutes(array $routes, $prefix = null, $filter = null)
@@ -186,7 +187,8 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         static::$disableCsrfCheck = false;
         $this->cookies->reset();
         $this->response->setContent('')
-            ->resetHeaders();
+            ->resetHeaders()
+            ->setStatusCode(200);
     }
 
     public static function staticReset()
