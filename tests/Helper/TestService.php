@@ -132,16 +132,17 @@ class TestService extends Service
     public function stop($instance = 'current')
     {
         parent::stop($instance);
-        $serviceInfo = $this->getServiceInfo($instance);
-        list(, , $port) = array_values($serviceInfo);
+        if ($serviceInfo = $this->getServiceInfo($instance)) {
+            list(, , $port) = array_values($serviceInfo);
 
-        $this->showStatus($port, false, $error);
-        $retry = 10;
-        while (!$error) {
-            usleep(1e5);
             $this->showStatus($port, false, $error);
-            --$retry;
+            $retry = 10;
+            while (!$error) {
+                usleep(1e5);
+                $this->showStatus($port, false, $error);
+                --$retry;
+            }
+            $error or Log::error('Unable to stop instance: ' . $instance);
         }
-        $error or Log::error('Unable to stop instance: ' . $instance);
     }
 }
