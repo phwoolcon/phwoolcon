@@ -5,6 +5,7 @@ use Phwoolcon\Db;
 use Phwoolcon\Log;
 use Phwoolcon\Tests\Helper\TestService as Service;
 use Phwoolcon\Tests\Helper\TestCase;
+use Swoole\Client;
 use Swoole\Process;
 
 class ServiceTest extends TestCase
@@ -13,6 +14,46 @@ class ServiceTest extends TestCase
      * @var Service
      */
     protected $service;
+
+    protected function request($request)
+    {
+        $runDir = $this->service->getRunDir();
+
+        $port = include($runDir . 'service-port.php');
+
+        $sockFile = $runDir . 'service-' . $port . '.sock';
+        $client = new Client(SWOOLE_UNIX_STREAM);
+        $client->set([
+            'open_length_check' => true,
+            'package_length_type' => 'N',
+            'package_length_offset' => 0,
+            'package_body_offset' => 4,
+        ]);
+
+        if (!@$client->connect($sockFile, 0, 20)) {
+            return false;
+        }
+
+        $request = serialize($request);
+        $client->send(pack('N', $length = strlen($request)));
+
+        if ($length > 2097152) {
+            foreach (str_split($request, 1048576) as $chunk) {
+                $client->send($chunk);
+            }
+        } else {
+            $client->send($request);
+        }
+        $response = $client->recv();
+        $client->close();
+
+        if ($response === false) {
+            return false;
+        }
+
+        $length = unpack('N', $response)[1];
+        return unserialize(substr($response, -$length));
+    }
 
     public function setUp()
     {
@@ -25,7 +66,8 @@ class ServiceTest extends TestCase
     public function tearDown()
     {
         $this->appendRemoteCoverage();
-        Process::wait();
+        $this->service->stop();
+        $this->service->stop('old');
         parent::tearDown();
     }
 
@@ -81,6 +123,48 @@ class ServiceTest extends TestCase
         $status = $service->showStatus(null, false, $error);
         $this->assertFalse($error);
         $this->assertStringStartsWith('Service is running. PID: ' . $serverProcess->pid, $status);
+
+        // Test request
+        $request = [
+            'request' => ['foo' => 'bar'],
+            'cookies' => [],
+            'server' => array_merge($_SERVER, ['REQUEST_URI' => '/test-controller-route', 'REQUEST_METHOD' => 'GET']),
+            'files' => [],
+        ];
+        $response = $this->request($request);
+        $this->assertArrayHasKey('headers', $response);
+        $this->assertArrayHasKey('body', $response);
+        $this->assertArrayHasKey('meta', $response);
+        $this->assertEquals('HTTP/1.1 200 OK', $response['headers']['status']);
+        $this->assertEquals('Test Controller Route Content', $response['body']);
+
+        // Test request for json api
+        $request = [
+            'request' => ['foo' => 'bar'],
+            'cookies' => [],
+            'server' => array_merge($_SERVER, ['REQUEST_URI' => '/api/test-json-api-data', 'REQUEST_METHOD' => 'GET']),
+            'files' => [],
+        ];
+        $response = $this->request($request);
+        $this->assertArrayHasKey('headers', $response);
+        $this->assertArrayHasKey('body', $response);
+        $this->assertArrayHasKey('meta', $response);
+        $this->assertEquals('HTTP/1.1 200 OK', $response['headers']['status']);
+        $this->assertJson($response['body']);
+
+        // Test request for large body
+        $request = [
+            'request' => ['key' => $value = str_repeat('ABC', 1e6)],
+            'cookies' => [],
+            'server' => array_merge($_SERVER, ['REQUEST_URI' => '/test-controller-input', 'REQUEST_METHOD' => 'GET']),
+            'files' => [],
+        ];
+        $response = $this->request($request);
+        $this->assertArrayHasKey('headers', $response);
+        $this->assertArrayHasKey('body', $response);
+        $this->assertArrayHasKey('meta', $response);
+        $this->assertEquals('HTTP/1.1 200 OK', $response['headers']['status']);
+        $this->assertEquals($value, $response['body']);
 
         // Should be able to stop
         $service->stop();

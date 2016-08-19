@@ -31,6 +31,7 @@ return [
             return 'Test Closure Route Content';
         },
         'test-controller-route' => 'Phwoolcon\Tests\Helper\TestController::getTestRoute',
+        'test-controller-input' => 'Phwoolcon\Tests\Helper\TestController::getTestInput',
         'test-exception-filter-route' => [
             'controller' => function () {
                 return 'Wont be executed';

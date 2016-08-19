@@ -16,6 +16,11 @@ class TestController extends Controller
         $this->response->setContent('Test Prefixed Route Content');
     }
 
+    public function getTestInput()
+    {
+        $this->response->setContent($this->input('key'));
+    }
+
     public function testJsonReturn($data)
     {
         $this->jsonReturn($data);

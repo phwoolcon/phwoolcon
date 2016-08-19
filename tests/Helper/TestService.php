@@ -28,6 +28,11 @@ class TestService extends Service
         is_file($this->sockFile) and unlink($this->sockFile);
     }
 
+    public function getRunDir()
+    {
+        return $this->runDir;
+    }
+
     public function isWorkerStarted()
     {
         return include($this->workerStarted);
