@@ -19,9 +19,9 @@
         "ext-openssl": "*",
         "ext-PDO": "*",
         "phwoolcon/fsm": "~1.0",
-        "symfony/console": "3.0.*",
-        "pda/pheanstalk": "3.1.0",
-        "swiftmailer/swiftmailer": "5.4.2"
+        "symfony/console": "~3.0.0",
+        "pda/pheanstalk": "~3.1.0",
+        "swiftmailer/swiftmailer": "~5.4.2"
     },
     "require-dev": {
         "techpivot/phalcon-ci-installer": "~1.0"
