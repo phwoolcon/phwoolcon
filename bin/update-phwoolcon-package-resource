@@ -11,6 +11,9 @@ use Phwoolcon\DiFix;
 use Phwoolcon\Events;
 
 $baseDir = dirname(dirname(__DIR__));
+if (!is_dir($baseDir . '/vendor/phwoolcon')) {
+    $baseDir = $_SERVER['PWD'];
+}
 $vendorDir = $baseDir . '/vendor';
 
 ob_start();
