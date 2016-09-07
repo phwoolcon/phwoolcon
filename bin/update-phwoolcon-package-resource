@@ -1,0 +1,109 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file will be copied into directory "vendor/bin" after installation
+ */
+
+use Phwoolcon\Cache;
+use Phwoolcon\Config;
+use Phwoolcon\Db;
+use Phwoolcon\DiFix;
+use Phwoolcon\Events;
+
+$baseDir = dirname(dirname(__DIR__));
+$vendorDir = $baseDir . '/vendor';
+
+ob_start();
+try {
+    include $baseDir . '/bootstrap/start.php';
+    $firstRun = false;
+} catch (Exception $e) {
+    $firstRun = true;
+}
+ob_end_clean();
+
+if ($firstRun) {
+    $assetsBasePath = $baseDir . '/public';
+    $assetsDir = 'assets';
+    $replaceConfig = true;
+} else {
+    Events::register($di);
+    DiFix::register($di);
+    Db::register($di);
+    Cache::register($di);
+    Config::register($di);
+    $assetsBasePath = Config::get('view.options.assets_options.base_path', $baseDir . '/public');
+    $assetsDir = Config::get('view.options.assets_options.assets_dir', 'assets');
+    $replaceConfig = Config::get('app.on_phwoolcon_update.replace_config');
+}
+
+$configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
+$assetsPath = $assetsBasePath . '/' . $assetsDir . '/base/packages';
+is_dir($configPath) or mkdir($configPath, 0777, true);
+is_dir($assetsPath) or mkdir($assetsPath, 0777, true);
+
+$packages = [];
+$packageFiles = glob($vendorDir . '/bin/phwoolcon-package-*.php');
+
+foreach ($packageFiles as $file) {
+    if (!is_array($package = include($file))) {
+        continue;
+    }
+    foreach ($package as $name => $resources) {
+        $path = $vendorDir . '/' . $name;
+        foreach ($resources as $type => $value) {
+            switch ($type) {
+                case 'config':
+                    installConfig($name, $path, $value, $configPath, $replaceConfig);
+                    break;
+                case 'assets':
+                    installAssets($name, $path, $value, $assetsPath);
+                    break;
+            }
+        }
+    }
+}
+
+function installConfig($package, $path, $file, $configPath, $replaceConfig = false)
+{
+    if (is_array($file)) {
+        foreach ($file as $subFile) {
+            installConfig($package, $path, $subFile, $configPath, $replaceConfig);
+        }
+        return;
+    }
+    if ([strpos($file, '..'), strpos($file, '/'), strpos($file, '\\')] != [false, false, false]) {
+        return;
+    }
+    if (!is_file($source = $path . '/phwoolcon-package/config/' . $file)) {
+        return;
+    }
+    $destination = $configPath . '/' . $file;
+    $installed = is_file($destination);
+    if (($replaceConfig || !$installed) && copy($source, $destination)) {
+        $spaces = str_repeat(' ', 20 - strlen($package));
+        echo sprintf('[%s]%s Installed config file %s', $package, $spaces, $file), PHP_EOL;
+    }
+}
+
+function installAssets($package, $path, $file, $assetsPath)
+{
+    if (is_array($file)) {
+        foreach ($file as $subFile) {
+            installAssets($package, $path, $subFile, $assetsPath);
+        }
+        return;
+    }
+    if (strpos($file, '..') !== false) {
+        return;
+    }
+    if (!is_file($source = $path . '/phwoolcon-package/assets/' . $file)) {
+        return;
+    }
+    $destination = $assetsPath . '/' . $file;
+    is_dir($dir = dirname($destination)) or mkdir($dir, 0777, true);
+    if (copy($source, $destination)) {
+        $spaces = str_repeat(' ', 20 - strlen($package));
+        echo sprintf('[%s]%s Updated assets file %s', $package, $spaces, $file), PHP_EOL;
+    }
+}

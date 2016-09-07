@@ -41,6 +41,7 @@
         "files": ["functions.php"]
     },
     "bin": [
+        "bin/update-phwoolcon-package-resource",
         "phwoolcon-package/phwoolcon-package-phwoolcon.php"
     ],
     "extra": {
