@@ -12,5 +12,8 @@ return [
             'session.php',
             'view.php',
         ],
+        'di' => [
+            0 => 'di.php',
+        ],
     ],
 ];
