@@ -8,16 +8,12 @@ return [
     'secure_routes' => [],
     'autoload' => [
         'namespaces' => [
-            'Admin' => ROOT_PATH . '/app/Admin',
-            'Auth' => ROOT_PATH . '/app/Auth',
-            'Commands' => ROOT_PATH . '/bin/commands',
         ],
     ],
     'timezone' => 'UTC',
     'url' => 'http://localhost',
     'site_path' => '',
     'class_aliases' => [
-        'Auth' => 'Phwoolcon\Auth\Auth',
         'Config' => 'Phwoolcon\Config',
         'Db' => 'Phwoolcon\Db',
         'I18n' => 'Phwoolcon\I18n',
