@@ -36,6 +36,6 @@ return [
         'file' => 'phwoolcon.log',
     ],
     'on_phwoolcon_update' => [
-        'replace_config' => false,
+        'replace_config' => true,
     ],
 ];
