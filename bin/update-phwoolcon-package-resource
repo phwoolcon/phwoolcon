@@ -10,6 +10,8 @@ use Phwoolcon\Db;
 use Phwoolcon\DiFix;
 use Phwoolcon\Events;
 
+error_reporting(-1);
+
 $baseDir = dirname(dirname(__DIR__));
 if (!is_dir($baseDir . '/vendor/phwoolcon')) {
     $baseDir = $_SERVER['PWD'];
@@ -40,6 +42,18 @@ if ($firstRun) {
     $replaceConfig = Config::get('app.on_phwoolcon_update.replace_config');
 }
 
+if (!function_exists('fileSaveArray')) {
+    /**
+     * @param string $filename
+     * @param mixed  $array
+     * @return int
+     */
+    function fileSaveArray($filename, $array)
+    {
+        return file_put_contents($filename, '<?php return ' . var_export($array, true) . ';');
+    }
+}
+
 $configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
 $assetsPath = $assetsBasePath . '/' . $assetsDir . '/base/packages';
 is_dir($configPath) or mkdir($configPath, 0777, true);
@@ -50,6 +64,7 @@ $packageFiles = glob($vendorDir . '/bin/phwoolcon-package-*.php');
 
 $diFiles = [];
 $routeFiles = [];
+$commands = [];
 
 foreach ($packageFiles as $file) {
     if (!is_array($package = include($file))) {
@@ -68,15 +83,19 @@ foreach ($packageFiles as $file) {
                 case 'di':
                     installDi($name, $path, $value, $diFiles);
                     break;
-                case 'route':
-                    installRoute($name, $path, $value, $routeFiles);
+                case 'routes':
+                    installRoutes($name, $path, $value, $routeFiles);
+                    break;
+                case 'commands':
                     break;
             }
         }
+        installCommands($name, $path, $commands);
     }
 }
 writeDi($diFiles);
 writeRoutes($routeFiles);
+writeCommands($commands);
 
 function installConfig($package, $path, $file, $configPath, $replaceConfig = false)
 {
@@ -102,6 +121,7 @@ function installConfig($package, $path, $file, $configPath, $replaceConfig = fal
 
 function installAssets($package, $path, $file, $assetsPath)
 {
+    static $fileCount;
     if (is_array($file)) {
         foreach ($file as $subFile) {
             installAssets($package, $path, $subFile, $assetsPath);
@@ -111,14 +131,30 @@ function installAssets($package, $path, $file, $assetsPath)
     if (strpos($file, '..') !== false) {
         return;
     }
-    if (!is_file($source = $path . '/phwoolcon-package/assets/' . $file)) {
+    $source = $path . '/phwoolcon-package/assets/' . $file;
+    if (is_dir($source)) {
+        foreach (scandir($source) as $subFile) {
+            if ($subFile == '.' || $subFile == '..') {
+                continue;
+            }
+            installAssets($package, $path, $file . '/' . $subFile, $assetsPath);
+        }
+        return;
+    }
+    if (!is_file($source)) {
         return;
     }
     $destination = $assetsPath . '/' . $file;
     is_dir($dir = dirname($destination)) or mkdir($dir, 0777, true);
     if (copy($source, $destination)) {
         $spaces = str_repeat(' ', 20 - strlen($package));
-        echo sprintf('[%s]%s Updated assets file %s', $package, $spaces, $file), PHP_EOL;
+        isset($fileCount[$package]) or $fileCount[$package] = 0;
+        ++$fileCount[$package];
+        if ($fileCount[$package] < 3) {
+            echo sprintf('[%s]%s Updated assets file %s', $package, $spaces, $file), PHP_EOL;
+        } else if ($fileCount[$package] < 6) {
+            echo str_repeat(' ', 23), '.', PHP_EOL;
+        }
     }
 }
 
@@ -135,17 +171,30 @@ function installDi($package, $path, $file, &$diFiles = [], $sort = null)
     $diFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
 }
 
-function installRoute($package, $path, $file, &$routeFiles = [], $sort = null)
+function installRoutes($package, $path, $file, &$routeFiles = [], $sort = null)
 {
     if (is_array($file)) {
         foreach ($file as $realSort => $realFile) {
-            installRoute($package, $path, $realFile, $routeFiles, $realSort);
+            installRoutes($package, $path, $realFile, $routeFiles, $realSort);
         }
         return;
     }
     $spaces = str_repeat(' ', 20 - strlen($package));
     echo sprintf('[%s]%s Routes registered', $package, $spaces), PHP_EOL;
     $routeFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
+}
+
+function installCommands($package, $path, &$commands = [])
+{
+    if (!is_file($commandsFile = $path . '/phwoolcon-package/commands.php')) {
+        return;
+    }
+    if (!is_array($detected = include $commandsFile)) {
+        return;
+    }
+    $spaces = str_repeat(' ', 20 - strlen($package));
+    $commands = array_merge($commands, $detected);
+    echo sprintf('[%s]%s Installed commands', $package, $spaces), PHP_EOL;
 }
 
 function writeDi($diFiles)
@@ -166,6 +215,12 @@ function writeRoutes($routeFiles)
         $flatFiles = array_merge($flatFiles, $realFiles);
     }
     fileSaveInclude($GLOBALS['vendorDir'] . '/phwoolcon/routes.php', $flatFiles);
+}
+
+function writeCommands($commands)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/commands.php';
+    fileSaveArray($target, $commands);
 }
 
 function fileSaveInclude($target, array $includes)
