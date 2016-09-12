@@ -4,6 +4,7 @@ return [
         'config' => [
             'app.php',
             'cache.php',
+            'commands.php',
             'cookies.php',
             'database.php',
             'i18n.php',
