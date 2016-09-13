@@ -114,8 +114,7 @@ function installConfig($package, $path, $file, $configPath, $replaceConfig = fal
     $destination = $configPath . '/' . $file;
     $installed = is_file($destination);
     if (($replaceConfig || !$installed) && copy($source, $destination)) {
-        $spaces = str_repeat(' ', 20 - strlen($package));
-        echo sprintf('[%s]%s Installed config file %s', $package, $spaces, $file), PHP_EOL;
+        echo sprintf('[%s]%s Installed config file %s', $package, spacePad($package), $file), PHP_EOL;
     }
 }
 
@@ -147,11 +146,10 @@ function installAssets($package, $path, $file, $assetsPath)
     $destination = $assetsPath . '/' . $file;
     is_dir($dir = dirname($destination)) or mkdir($dir, 0777, true);
     if (copy($source, $destination)) {
-        $spaces = str_repeat(' ', 20 - strlen($package));
         isset($fileCount[$package]) or $fileCount[$package] = 0;
         ++$fileCount[$package];
         if ($fileCount[$package] < 3) {
-            echo sprintf('[%s]%s Updated assets file %s', $package, $spaces, $file), PHP_EOL;
+            echo sprintf('[%s]%s Updated assets file %s', $package, spacePad($package), $file), PHP_EOL;
         } else if ($fileCount[$package] < 6) {
             echo str_repeat(' ', 23), '.', PHP_EOL;
         }
@@ -166,8 +164,7 @@ function installDi($package, $path, $file, &$diFiles = [], $sort = null)
         }
         return;
     }
-    $spaces = str_repeat(' ', 20 - strlen($package));
-    echo sprintf('[%s]%s DI registered', $package, $spaces), PHP_EOL;
+    echo sprintf('[%s]%s DI registered', $package, spacePad($package)), PHP_EOL;
     $diFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
 }
 
@@ -179,8 +176,7 @@ function installRoutes($package, $path, $file, &$routeFiles = [], $sort = null)
         }
         return;
     }
-    $spaces = str_repeat(' ', 20 - strlen($package));
-    echo sprintf('[%s]%s Routes registered', $package, $spaces), PHP_EOL;
+    echo sprintf('[%s]%s Routes registered', $package, spacePad($package)), PHP_EOL;
     $routeFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
 }
 
@@ -192,9 +188,8 @@ function installCommands($package, $path, &$commands = [])
     if (!is_array($detected = include $commandsFile)) {
         return;
     }
-    $spaces = str_repeat(' ', 20 - strlen($package));
     $commands = array_merge($commands, $detected);
-    echo sprintf('[%s]%s Installed commands', $package, $spaces), PHP_EOL;
+    echo sprintf('[%s]%s Installed commands', $package, spacePad($package)), PHP_EOL;
 }
 
 function writeDi($diFiles)
@@ -230,4 +225,10 @@ function fileSaveInclude($target, array $includes)
         $content .= "include '{$file}';" . PHP_EOL;
     }
     file_put_contents($target, $content);
+}
+
+function spacePad($str, $length = 20)
+{
+    $spaces = $length - strlen($str);
+    return $spaces > 0 ? str_repeat(' ', $spaces) : ' ';
 }
