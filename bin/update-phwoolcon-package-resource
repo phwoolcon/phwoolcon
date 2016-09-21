@@ -65,6 +65,7 @@ $packageFiles = glob($vendorDir . '/bin/phwoolcon-package-*.php');
 $diFiles = [];
 $routeFiles = [];
 $commands = [];
+$aliases = [];
 
 foreach ($packageFiles as $file) {
     if (!is_array($package = include($file))) {
@@ -87,15 +88,25 @@ foreach ($packageFiles as $file) {
                     installRoutes($name, $path, $value, $routeFiles);
                     break;
                 case 'commands':
+                    if (is_array($value)) {
+                        $commands = array_merge_recursive($commands, $value);
+                        echo sprintf('[%s]%s Installed commands', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
+                case 'class_aliases':
+                    if (is_array($value)) {
+                        $aliases = array_merge_recursive($aliases, $value);
+                        echo sprintf('[%s]%s Registered class aliases', $name, spacePad($name)), PHP_EOL;
+                    }
                     break;
             }
         }
-        installCommands($name, $path, $commands);
     }
 }
 writeDi($diFiles);
 writeRoutes($routeFiles);
 writeCommands($commands);
+writeAliases($aliases);
 
 function installConfig($package, $path, $file, $configPath, $replaceConfig = false)
 {
@@ -180,42 +191,50 @@ function installRoutes($package, $path, $file, &$routeFiles = [], $sort = null)
     $routeFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
 }
 
-function installCommands($package, $path, &$commands = [])
+function installCommands($package, $detected, &$commands = [])
 {
-    if (!is_file($commandsFile = $path . '/phwoolcon-package/commands.php')) {
-        return;
-    }
-    if (!is_array($detected = include $commandsFile)) {
-        return;
-    }
     $commands = array_merge($commands, $detected);
+    echo sprintf('[%s]%s Installed commands', $package, spacePad($package)), PHP_EOL;
+}
+
+function installClassAliases($package, $detected, &$aliases = [])
+{
+    $aliases = array_merge($aliases, $detected);
     echo sprintf('[%s]%s Installed commands', $package, spacePad($package)), PHP_EOL;
 }
 
 function writeDi($diFiles)
 {
-    ksort($diFiles);
-    $flatFiles = [];
-    foreach ($diFiles as $realFiles) {
-        $flatFiles = array_merge($flatFiles, $realFiles);
-    }
-    fileSaveInclude($GLOBALS['vendorDir'] . '/phwoolcon/di.php', $flatFiles);
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
+    fileSaveInclude($target, sortAndFlattenArray($diFiles));
 }
 
 function writeRoutes($routeFiles)
 {
-    ksort($routeFiles);
-    $flatFiles = [];
-    foreach ($routeFiles as $realFiles) {
-        $flatFiles = array_merge($flatFiles, $realFiles);
-    }
-    fileSaveInclude($GLOBALS['vendorDir'] . '/phwoolcon/routes.php', $flatFiles);
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/routes.php';
+    fileSaveInclude($target, sortAndFlattenArray($routeFiles));
 }
 
 function writeCommands($commands)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/commands.php';
-    fileSaveArray($target, $commands);
+    fileSaveArray($target, sortAndFlattenArray($commands));
+}
+
+function writeAliases($aliases)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
+    fileSaveArray($target, sortAndFlattenArray($aliases));
+}
+
+function sortAndFlattenArray($array)
+{
+    ksort($array);
+    $flatArray = [];
+    foreach ($array as $item) {
+        $flatArray = array_merge($flatArray, $item);
+    }
+    return $flatArray;
 }
 
 function fileSaveInclude($target, array $includes)
