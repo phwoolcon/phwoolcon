@@ -97,6 +97,72 @@ function base62encode($val)
 }
 
 /**
+ * Copy dir, keep destination files, if exists
+ *
+ * @param string $source
+ * @param string $destination
+ */
+function copyDirMerge($source, $destination)
+{
+    if (is_dir($source)) {
+        is_dir($destination) or mkdir($destination, 0755, true);
+        $files = scandir($source);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                copyDirMerge("$source/$file", "$destination/$file");
+            }
+        }
+    } elseif (file_exists($source) && !file_exists($destination)) {
+        copy($source, $destination);
+    }
+}
+
+/**
+ * Copy dir, override destination files, if exists
+ *
+ * @param string $source
+ * @param string $destination
+ */
+function copyDirOverride($source, $destination)
+{
+    if (is_dir($source)) {
+        is_dir($destination) or mkdir($destination, 0755, true);
+        $files = scandir($source);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                copyDirOverride("$source/$file", "$destination/$file");
+            }
+        }
+    } elseif (file_exists($source)) {
+        copy($source, $destination);
+    }
+}
+
+/**
+ * Copy dir, delete entire destination dir first, if exists
+ *
+ * @param string $source
+ * @param string $destination
+ */
+function copyDirReplace($source, $destination)
+{
+    if (file_exists($destination)) {
+        removeDir($destination);
+    }
+    if (is_dir($source)) {
+        mkdir($destination, 0755, true);
+        $files = scandir($source);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                copyDirReplace("$source/$file", "$destination/$file");
+            }
+        }
+    } elseif (file_exists($source)) {
+        copy($source, $destination);
+    }
+}
+
+/**
  * @param string $filename
  * @param mixed  $array
  * @return int
@@ -104,6 +170,15 @@ function base62encode($val)
 function fileSaveArray($filename, $array)
 {
     return file_put_contents($filename, '<?php return ' . var_export($array, true) . ';');
+}
+
+function fileSaveInclude($target, array $includes)
+{
+    $content = '<?php' . PHP_EOL;
+    foreach ($includes as $file) {
+        $content .= "include '{$file}';" . PHP_EOL;
+    }
+    file_put_contents($target, $content);
 }
 
 /**
@@ -175,6 +250,26 @@ if (!function_exists('random_bytes')) {
     }
 }
 
+function removeDir($dir)
+{
+    if (is_dir($dir)) {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                removeDir("$dir/$file");
+            }
+        }
+        rmdir($dir);
+    } elseif (file_exists($dir)) {
+        unlink($dir);
+    }
+}
+
+function secureUrl($path, $queries = [])
+{
+    return url($path, $queries, true);
+}
+
 /**
  * Show execution trace for debugging
  *
@@ -194,6 +289,44 @@ function showTrace($exit = true, $print = true)
         exit;
     }
     return $e->getTraceAsString();
+}
+
+/**
+ * Return sorted and merged result of a given array, which contains sort orders as top level keys.
+ * Values with smaller sort order will be overridden by bigger ones.
+ *
+ * Example:
+ *
+ *  $array = [
+ *      10 => [                 // 10 is a sort order
+ *          'foo' => 'bar',     // Holds value 'bar' in key 'foo'
+ *          'who' => 'me',
+ *      ],
+ *      20 => [                 // 20 is a bigger sort order
+ *          'foo' => 'baz',     // This will override the key 'foo' with value 'baz'
+ *          'hello' => 'world', // New values will be merged
+ *      ],
+ *  ];
+ *  var_export($result = arraySortedMerge($array));
+ *
+ * Will produce:
+ *  $result = [
+ *      'foo' => 'baz',
+ *      'who' => 'me',
+ *      'hello' => 'world',
+ *  ];
+ *
+ * @param array $array
+ * @return array
+ */
+function arraySortedMerge(array $array)
+{
+    ksort($array);
+    $mergedArray = [];
+    foreach ($array as $item) {
+        $mergedArray = array_merge($mergedArray, $item);
+    }
+    return $mergedArray;
 }
 
 function storagePath($path = null)

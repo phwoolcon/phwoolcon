@@ -31,7 +31,9 @@ if ($firstRun) {
     $viewPath = $baseDir . '/app/views/';
     $assetsBasePath = $baseDir . '/public';
     $assetsDir = 'assets';
+    $localePath = $baseDir . '/app/locale';
     $replaceConfig = true;
+    include $baseDir . '/vendor/phwoolcon/phwoolcon/functions.php';
 } else {
     Events::register($di);
     DiFix::register($di);
@@ -41,19 +43,8 @@ if ($firstRun) {
     $viewPath = Config::get('view.path');
     $assetsBasePath = Config::get('view.options.assets_options.base_path', $baseDir . '/public');
     $assetsDir = Config::get('view.options.assets_options.assets_dir', 'assets');
+    $localePath = Config::get('i18n.locale_path', $baseDir . '/app/locale');
     $replaceConfig = Config::get('app.on_phwoolcon_update.replace_config');
-}
-
-if (!function_exists('fileSaveArray')) {
-    /**
-     * @param string $filename
-     * @param mixed  $array
-     * @return int
-     */
-    function fileSaveArray($filename, $array)
-    {
-        return file_put_contents($filename, '<?php return ' . var_export($array, true) . ';');
-    }
 }
 
 $configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
@@ -78,6 +69,7 @@ foreach ($packageFiles as $file) {
         installConfig($name, $path, $configPath, $replaceConfig);
         installViews($name, $path, $viewPath);
         installAssets($name, $path, $assetsPath);
+        installLocale($name, $path, $localePath);
         foreach ($resources as $type => $value) {
             switch ($type) {
                 case 'di':
@@ -88,14 +80,18 @@ foreach ($packageFiles as $file) {
                     break;
                 case 'commands':
                     if (is_array($value)) {
-                        $commands = array_merge_recursive($commands, $value);
-                        echo sprintf('[%s]%s Installed commands', $name, spacePad($name)), PHP_EOL;
+                        foreach ($value as $sort => $detectedCommands) {
+                            $commands[$sort . '-' . $name] = $detectedCommands;
+                        }
+                        echo sprintf('[%s]%s Commands installed', $name, spacePad($name)), PHP_EOL;
                     }
                     break;
                 case 'class_aliases':
                     if (is_array($value)) {
-                        $aliases = array_merge_recursive($aliases, $value);
-                        echo sprintf('[%s]%s Registered class aliases', $name, spacePad($name)), PHP_EOL;
+                        foreach ($value as $sort => $detectedAliases) {
+                            $aliases[$sort . '-' . $name] = $detectedAliases;
+                        }
+                        echo sprintf('[%s]%s Class aliases registered', $name, spacePad($name)), PHP_EOL;
                     }
                     break;
             }
@@ -118,7 +114,7 @@ function installConfig($package, $path, $configPath, $replaceConfig = false)
                 copy($source, $destination);
             }
         }
-        echo sprintf('[%s]%s Installed config files', $package, spacePad($package)), PHP_EOL;
+        echo sprintf('[%s]%s Config files installed', $package, spacePad($package)), PHP_EOL;
     }
 }
 
@@ -127,9 +123,9 @@ function installViews($package, $path, $viewPath)
     if ($items = glob($path . '/phwoolcon-package/views/*')) {
         foreach ($items as $source) {
             $destination = $viewPath . basename($source);
-            copyDirNoDelete($source, $destination);
+            copyDirOverride($source, $destination);
         }
-        echo sprintf('[%s]%s Updated views', $package, spacePad($package)), PHP_EOL;
+        echo sprintf('[%s]%s Views updated', $package, spacePad($package)), PHP_EOL;
     }
 }
 
@@ -138,9 +134,20 @@ function installAssets($package, $path, $assetsPath)
     if ($items = glob($path . '/phwoolcon-package/assets/*')) {
         foreach ($items as $source) {
             $destination = $assetsPath . '/' . basename($source);
-            copyDir($source, $destination);
+            copyDirReplace($source, $destination);
         }
-        echo sprintf('[%s]%s Updated assets', $package, spacePad($package)), PHP_EOL;
+        echo sprintf('[%s]%s Assets updated', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installLocale($package, $path, $viewPath)
+{
+    if ($items = glob($path . '/phwoolcon-package/locale/*')) {
+        foreach ($items as $source) {
+            $destination = $viewPath . basename($source);
+            copyDirOverride($source, $destination);
+        }
+        echo sprintf('[%s]%s Locale updated', $package, spacePad($package)), PHP_EOL;
     }
 }
 
@@ -168,111 +175,32 @@ function installRoutes($package, $path, $file, &$routeFiles = [], $sort = null)
     $routeFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
 }
 
-function installCommands($package, $detected, &$commands = [])
-{
-    $commands = array_merge($commands, $detected);
-    echo sprintf('[%s]%s Installed commands', $package, spacePad($package)), PHP_EOL;
-}
-
-function installClassAliases($package, $detected, &$aliases = [])
-{
-    $aliases = array_merge($aliases, $detected);
-    echo sprintf('[%s]%s Installed commands', $package, spacePad($package)), PHP_EOL;
-}
-
 function writeDi($diFiles)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
-    fileSaveInclude($target, sortAndFlattenArray($diFiles));
+    fileSaveInclude($target, arraySortedMerge($diFiles));
 }
 
 function writeRoutes($routeFiles)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/routes.php';
-    fileSaveInclude($target, sortAndFlattenArray($routeFiles));
+    fileSaveInclude($target, arraySortedMerge($routeFiles));
 }
 
 function writeCommands($commands)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/commands.php';
-    fileSaveArray($target, sortAndFlattenArray($commands));
+    fileSaveArray($target, arraySortedMerge($commands));
 }
 
 function writeAliases($aliases)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
-    fileSaveArray($target, sortAndFlattenArray($aliases));
-}
-
-function sortAndFlattenArray($array)
-{
-    ksort($array);
-    $flatArray = [];
-    foreach ($array as $item) {
-        $flatArray = array_merge($flatArray, $item);
-    }
-    return $flatArray;
-}
-
-function fileSaveInclude($target, array $includes)
-{
-    $content = '<?php' . PHP_EOL;
-    foreach ($includes as $file) {
-        $content .= "include '{$file}';" . PHP_EOL;
-    }
-    file_put_contents($target, $content);
+    fileSaveArray($target, arraySortedMerge($aliases));
 }
 
 function spacePad($str, $length = 20)
 {
     $spaces = $length - strlen($str);
     return $spaces > 0 ? str_repeat(' ', $spaces) : ' ';
-}
-
-function removeDir($dir)
-{
-    if (is_dir($dir)) {
-        $files = scandir($dir);
-        foreach ($files as $file) {
-            if ($file != '.' && $file != '..') {
-                removeDir("$dir/$file");
-            }
-        }
-        rmdir($dir);
-    } elseif (file_exists($dir)) {
-        unlink($dir);
-    }
-}
-
-function copyDir($source, $destination)
-{
-    if (file_exists($destination)) {
-        removeDir($destination);
-    }
-    if (is_dir($source)) {
-        mkdir($destination, 0755, true);
-        $files = scandir($source);
-        foreach ($files as $file) {
-            if ($file != '.' && $file != '..') {
-                copyDir("$source/$file", "$destination/$file");
-            }
-        }
-    } elseif (file_exists($source)) {
-        copy($source, $destination);
-    }
-}
-
-function copyDirNoDelete($source, $destination)
-{
-    if (is_dir($source)) {
-        is_dir($destination) or mkdir($destination, 0755, true);
-        $files = scandir($source);
-        foreach ($files as $file) {
-            if ($file != '.' && $file != '..') {
-                copyDirNoDelete("$source/$file", "$destination/$file");
-            }
-        }
-    } elseif (file_exists($source)) {
-        copy($source, $destination);
-    }
 }
