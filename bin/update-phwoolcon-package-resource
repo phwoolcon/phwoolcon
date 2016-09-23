@@ -80,8 +80,6 @@ foreach ($packageFiles as $file) {
         installAssets($name, $path, $assetsPath);
         foreach ($resources as $type => $value) {
             switch ($type) {
-                case 'assets':
-                    break;
                 case 'di':
                     installDi($name, $path, $value, $diFiles);
                     break;
