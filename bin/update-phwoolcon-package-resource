@@ -69,7 +69,7 @@ foreach ($packageFiles as $file) {
         installConfig($name, $path, $configPath, $replaceConfig);
         installViews($name, $path, $viewPath);
         installAssets($name, $path, $assetsPath);
-        installLocale($name, $path, $localePath);
+        installLocale($name, $path, $localePath . '/');
         foreach ($resources as $type => $value) {
             switch ($type) {
                 case 'di':
