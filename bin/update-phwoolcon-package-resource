@@ -61,6 +61,10 @@ $diFiles = [];
 $routeFiles = [];
 $commands = [];
 $aliases = [];
+if (is_file($migrationCandidatesFile = $vendorDir . '/phwoolcon/migrations.php')) {
+    $migrationCandidates = include $migrationCandidatesFile;
+}
+$migrationCandidates['candidates'] = [];
 
 foreach ($packageFiles as $file) {
     if (!is_array($package = include($file))) {
@@ -73,6 +77,9 @@ foreach ($packageFiles as $file) {
         installAssets($name, $path, $assetsPath);
         installLocale($name, $path, $localePath . '/');
         installMigrations($name, $path, $migrationPath . '/');
+        if (is_dir($packageMigrationPath = $path . '/phwoolcon-package/migrations')) {
+            $migrationCandidates['candidates'][$name] = $packageMigrationPath;
+        }
         foreach ($resources as $type => $value) {
             switch ($type) {
                 case 'di':
@@ -105,6 +112,7 @@ writeDi($diFiles);
 writeRoutes($routeFiles);
 writeCommands($commands);
 writeAliases($aliases);
+writeMigrationCandidates($migrationCandidates);
 
 $ideHelperContent = '<?php' . PHP_EOL;
 $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
@@ -220,6 +228,12 @@ function writeAliases($aliases)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
     fileSaveArray($target, arraySortedMerge($aliases));
+}
+
+function writeMigrationCandidates($migrationCandidates)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/migrations.php';
+    fileSaveArray($target, $migrationCandidates);
 }
 
 function spacePad($str, $length = 20)
