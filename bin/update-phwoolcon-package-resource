@@ -103,6 +103,15 @@ writeRoutes($routeFiles);
 writeCommands($commands);
 writeAliases($aliases);
 
+$ideHelperContent = '<?php' . PHP_EOL;
+$classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
+ksort($classAliases);
+foreach ($classAliases as $alias => $class) {
+    $ideHelperContent .= PHP_EOL . "class {$alias} extends {$class}{}" . PHP_EOL;
+}
+file_put_contents($baseDir . '/ignore/_ide_helper.php', $ideHelperContent);
+echo 'IDE helper generated', PHP_EOL;
+
 function installConfig($package, $path, $configPath, $replaceConfig = false)
 {
     if ($files = glob($path . '/phwoolcon-package/config/*.php')) {
