@@ -33,6 +33,7 @@ if ($firstRun) {
     $assetsDir = 'assets';
     $localePath = $baseDir . '/app/locale';
     $replaceConfig = true;
+    $migrationPath = $baseDir . '/bin/migrations';
     include $baseDir . '/vendor/phwoolcon/phwoolcon/functions.php';
 } else {
     Events::register($di);
@@ -45,6 +46,7 @@ if ($firstRun) {
     $assetsDir = Config::get('view.options.assets_options.assets_dir', 'assets');
     $localePath = Config::get('i18n.locale_path', $baseDir . '/app/locale');
     $replaceConfig = Config::get('app.on_phwoolcon_update.replace_config');
+    $migrationPath = migrationPath();
 }
 
 $configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
@@ -70,6 +72,7 @@ foreach ($packageFiles as $file) {
         installViews($name, $path, $viewPath);
         installAssets($name, $path, $assetsPath);
         installLocale($name, $path, $localePath . '/');
+        installMigrations($name, $path, $migrationPath . '/');
         foreach ($resources as $type => $value) {
             switch ($type) {
                 case 'di':
@@ -157,6 +160,17 @@ function installLocale($package, $path, $viewPath)
             copyDirOverride($source, $destination);
         }
         echo sprintf('[%s]%s Locale updated', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installMigrations($package, $path, $migrationPath)
+{
+    if ($items = glob($path . '/phwoolcon-package/migrations/*')) {
+        foreach ($items as $source) {
+            $destination = $migrationPath . basename($source);
+            copy($source, $destination);
+        }
+        echo sprintf('[%s]%s Migrations updated', $package, spacePad($package)), PHP_EOL;
     }
 }
 
