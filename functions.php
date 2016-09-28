@@ -2,6 +2,7 @@
 use Phalcon\Di;
 use Phwoolcon\Config;
 use Phwoolcon\I18n;
+use Phwoolcon\Text;
 
 /**
  * Translate
@@ -176,7 +177,12 @@ function fileSaveInclude($target, array $includes)
 {
     $content = '<?php' . PHP_EOL;
     foreach ($includes as $file) {
-        $content .= "include '{$file}';" . PHP_EOL;
+        if (Text::startsWith($file, $_SERVER['PHWOOLCON_ROOT_PATH'])) {
+            $relativePath = str_replace($_SERVER['PHWOOLCON_ROOT_PATH'], '', $file);
+            $content .= "include ROOT_PATH . '{$relativePath}';" . PHP_EOL;
+        } else {
+            $content .= "include '{$file}';" . PHP_EOL;
+        }
     }
     file_put_contents($target, $content);
 }
