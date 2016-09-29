@@ -370,7 +370,8 @@ function url($path, $queries = [], $secure = null)
     $path = trim($path, '/');
     if (Config::get('app.enable_https')) {
         $secure === null && (null !== $configValue = Config::get('app.secure_routes.' . $path)) and $secure = $configValue;
-        $secure === null and $secure = Di::getDefault()['request']->isSecureRequest();
+        // TODO Detection https via proxy
+        $secure === null and $secure = Di::getDefault()['request']->getScheme() === 'https';
     } else {
         $secure = false;
     }
