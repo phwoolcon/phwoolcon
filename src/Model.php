@@ -6,6 +6,7 @@ use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
 use Phwoolcon\Tests\Helper\TestModel;
+use Phalcon\Version;
 
 /**
  * Class Model
@@ -69,6 +70,10 @@ abstract class Model extends PhalconModel
 
     protected function _preSave(PhalconModel\MetaDataInterface $metaData, $exists, $identityField)
     {
+        // Phalcon prepareSave() Polyfill
+        if (Version::getId() < '2001100') {
+            $this->prepareSave();
+        }
         // Fix phalcon bug: attributeField . " is required" on empty values, it should detect null values instead
         $emptyFields = [];
         foreach ($this->defaultValues() as $k => $v) {
