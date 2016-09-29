@@ -1,6 +1,5 @@
 <?php
 return [
-    'fetch' => PDO::FETCH_CLASS,
     'default' => '',
     'connections' => [
         'mysql' => [
