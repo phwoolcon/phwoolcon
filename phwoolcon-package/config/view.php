@@ -44,7 +44,7 @@ return [
     ],
     'admin' => [
         'title_suffix' => 'Admin',
-        'theme' => 'admin',
+        'theme' => 'default',
         'layout' => 'default',
         'assets' => [
             'head-css' => [

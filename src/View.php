@@ -205,7 +205,7 @@ class View extends PhalconView implements ServiceAwareInterface
     {
         if ($flag !== null) {
             $this->_options['is_admin'] = $flag = (bool)$flag;
-            $this->_theme = $flag ? $this->config['admin']['theme'] : $this->config['theme'];
+            $this->_theme = $flag ? 'admin/' . $this->config['admin']['theme'] : $this->config['theme'];
         }
         return !empty($this->_options['is_admin']);
     }
