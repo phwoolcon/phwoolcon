@@ -1,8 +1,8 @@
 <?php
 use Phalcon\Di;
+use Phalcon\Text;
 use Phwoolcon\Config;
 use Phwoolcon\I18n;
-use Phwoolcon\Text;
 
 /**
  * Translate
