@@ -131,7 +131,8 @@ function installConfig($package, $path, $configPath, $replaceConfig = false)
             $destination = $configPath . '/' . $file;
             $installed = is_file($destination);
             if (($replaceConfig || !$installed)) {
-                copy($source, $destination);
+                is_file($destination) and unlink($destination);
+                symlink($source, $destination);
             }
         }
         echo sprintf('[%s]%s Config files installed', $package, spacePad($package)), PHP_EOL;
@@ -143,7 +144,7 @@ function installViews($package, $path, $viewPath)
     if ($items = glob($path . '/phwoolcon-package/views/*')) {
         foreach ($items as $source) {
             $destination = $viewPath . basename($source);
-            copyDirOverride($source, $destination);
+            symlinkDirOverride($source, $destination);
         }
         echo sprintf('[%s]%s Views updated', $package, spacePad($package)), PHP_EOL;
     }
@@ -154,7 +155,7 @@ function installAssets($package, $path, $assetsPath)
     if ($items = glob($path . '/phwoolcon-package/assets/*')) {
         foreach ($items as $source) {
             $destination = $assetsPath . '/' . basename($source);
-            copyDirReplace($source, $destination);
+            symlinkDirOverride($source, $destination);
         }
         echo sprintf('[%s]%s Assets updated', $package, spacePad($package)), PHP_EOL;
     }
@@ -165,7 +166,7 @@ function installLocale($package, $path, $viewPath)
     if ($items = glob($path . '/phwoolcon-package/locale/*')) {
         foreach ($items as $source) {
             $destination = $viewPath . basename($source);
-            copyDirOverride($source, $destination);
+            symlinkDirOverride($source, $destination);
         }
         echo sprintf('[%s]%s Locale updated', $package, spacePad($package)), PHP_EOL;
     }
@@ -176,7 +177,8 @@ function installMigrations($package, $path, $migrationPath)
     if ($items = glob($path . '/phwoolcon-package/migrations/*')) {
         foreach ($items as $source) {
             $destination = $migrationPath . basename($source);
-            copy($source, $destination);
+            is_file($destination) and unlink($destination);
+            symlink($source, $destination);
         }
         echo sprintf('[%s]%s Migrations updated', $package, spacePad($package)), PHP_EOL;
     }

@@ -340,6 +340,28 @@ function storagePath($path = null)
     return $_SERVER['PHWOOLCON_ROOT_PATH'] . '/storage' . ($path ? '/' . $path : '');
 }
 
+/**
+ * Copy dir by symlink files, override destination files, if exists
+ *
+ * @param string $source
+ * @param string $destination
+ */
+function symlinkDirOverride($source, $destination)
+{
+    if (is_dir($source)) {
+        is_dir($destination) or mkdir($destination, 0755, true);
+        $files = scandir($source);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                symlinkDirOverride("$source/$file", "$destination/$file");
+            }
+        }
+    } elseif (is_file($source)) {
+        is_file($destination) and unlink($destination);
+        symlink($source, $destination);
+    }
+}
+
 function url($path, $queries = [], $secure = null)
 {
     if (isHttpUrl($path)) {
