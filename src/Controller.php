@@ -54,7 +54,7 @@ abstract class Controller extends PhalconController
     public function render($path, $view, array $params = [])
     {
         $params['page_title'] = $this->pageTitles;
-        $this->view->render($path, $view, $params);
+        return $this->view->render($path, $view, $params);
     }
 
     public function setBrowserCache($pageId = null, $type = null, $ttl = Cache::TTL_ONE_WEEK)
