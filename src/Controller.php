@@ -124,6 +124,6 @@ abstract class Controller extends PhalconController
      */
     protected function input($key = null, $defaultValue = null)
     {
-        return fnGet($_REQUEST, $key, $defaultValue);
+        return is_null($key) ? $_REQUEST : fnGet($_REQUEST, $key, $defaultValue);
     }
 }
