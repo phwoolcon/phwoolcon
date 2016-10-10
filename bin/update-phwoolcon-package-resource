@@ -61,6 +61,8 @@ $diFiles = [];
 $routeFiles = [];
 $commands = [];
 $aliases = [];
+$assetsGroups = [];
+$adminAssetsGroups = [];
 if (is_file($migrationCandidatesFile = $vendorDir . '/phwoolcon/migrations.php')) {
     $migrationCandidates = include $migrationCandidatesFile;
 }
@@ -104,6 +106,18 @@ foreach ($packageFiles as $file) {
                         echo sprintf('[%s]%s Class aliases registered', $name, spacePad($name)), PHP_EOL;
                     }
                     break;
+                case 'assets':
+                    if (is_array($value)) {
+                        $assetsGroups = array_merge_recursive($assetsGroups, $value);
+                        echo sprintf('[%s]%s Assets groups registered', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
+                case 'admin_assets':
+                    if (is_array($value)) {
+                        $adminAssetsGroups = array_merge_recursive($adminAssetsGroups, $value);
+                        echo sprintf('[%s]%s Admin assets groups registered', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
             }
         }
     }
@@ -113,6 +127,8 @@ writeRoutes($routeFiles);
 writeCommands($commands);
 writeAliases($aliases);
 writeMigrationCandidates($migrationCandidates);
+writeAssetsGroups($assetsGroups);
+writeAdminAssetsGroups($adminAssetsGroups);
 
 $ideHelperContent = '<?php' . PHP_EOL;
 $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
@@ -236,6 +252,18 @@ function writeMigrationCandidates($migrationCandidates)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/migrations.php';
     fileSaveArray($target, $migrationCandidates);
+}
+
+function writeAssetsGroups($assetsGroups)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/assets.php';
+    fileSaveArray($target, $assetsGroups);
+}
+
+function writeAdminAssetsGroups($assetsGroups)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/admin_assets.php';
+    fileSaveArray($target, $assetsGroups);
 }
 
 function spacePad($str, $length = 20)
