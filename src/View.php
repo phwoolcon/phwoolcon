@@ -71,14 +71,13 @@ class View extends PhalconView implements ServiceAwareInterface
             $useCache and static::$cachedAssets = Cache::get('assets');
         }
         $type = substr($collectionName, strrpos($collectionName, '-') + 1);
-        $collectionName = $view->_theme . '-' . $collectionName;
         $view->isAdmin() and $collectionName = 'admin-' . $collectionName;
         if ($useCache && isset(static::$cachedAssets[$collectionName])) {
             return static::$cachedAssets[$collectionName];
         }
 
-        $view->loadAssets($view->config['assets'], $view->_theme);
-        $view->loadAssets($view->config['admin']['assets'], $view->_theme, true);
+        $view->loadAssets($view->config['assets']);
+        $view->loadAssets($view->config['admin']['assets'], true);
         ob_start();
         try {
             switch ($type) {
@@ -210,13 +209,13 @@ class View extends PhalconView implements ServiceAwareInterface
         return !empty($this->_options['is_admin']);
     }
 
-    public function loadAssets($assets, $theme, $isAdmin = false)
+    public function loadAssets($assets, $isAdmin = false)
     {
         $prefix = $isAdmin ? 'admin-' : '';
-        if (isset($this->_loadedThemes[$prefix . $theme])) {
+        if (isset($this->_loadedThemes[$prefix])) {
             return $this;
         }
-        $this->_loadedThemes[$prefix . $theme] = true;
+        $this->_loadedThemes[$prefix] = true;
         $applyFilter = $this->config['options']['assets_options']['apply_filter'];
 
         // The base path, usually the public directory
@@ -224,11 +223,10 @@ class View extends PhalconView implements ServiceAwareInterface
 
         // The assets dir inside base path
         $assetsDir = '/' . $this->config['options']['assets_options']['assets_dir'] . '/';
-        $resourcePath = $assetsDir . ($isAdmin ? 'admin/' . $theme : $theme) . '/';
+        $resourcePath = $assetsDir . 'packages/';
         $compiledPath = $assetsDir . 'compiled/';
         foreach ($assets as $collectionName => $resources) {
             $resourceType = substr($collectionName, strrpos($collectionName, '-') + 1);
-            $collectionName = $theme . '-' . $collectionName;
             $collectionName = $prefix . $collectionName;
             $collection = $this->assets->collection($collectionName);
             $collection->setSourcePath($basePath);

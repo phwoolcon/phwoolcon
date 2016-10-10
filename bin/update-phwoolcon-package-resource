@@ -50,7 +50,7 @@ if ($firstRun) {
 }
 
 $configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
-$assetsPath = $assetsBasePath . '/' . $assetsDir . '/base/packages';
+$assetsPath = $assetsBasePath . '/' . $assetsDir . '/packages';
 is_dir($configPath) or mkdir($configPath, 0755, true);
 is_dir($assetsPath) or mkdir($assetsPath, 0755, true);
 
