@@ -21,6 +21,7 @@ class MigrateCreate extends Command
     {
         $filename = date('Y-m-d-His-') . $this->input->getArgument('name') . '.php';
         $path = migrationPath($filename);
+        // @codeCoverageIgnoreStart
         if (is_file($migrationCandidates = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolcon/migrations.php')) {
             $candidates = include $migrationCandidates;
             $chooseTarget = $this->input->getOption('choose-target');
@@ -40,6 +41,7 @@ class MigrateCreate extends Command
                 $path = $candidates['candidates'][$choose] . '/' . $filename;
             }
         }
+        // @codeCoverageIgnoreEnd
         file_put_contents($path, $this->template());
         $this->output->writeln("<info>Created Migration:</info> {$filename}");
     }

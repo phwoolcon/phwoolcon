@@ -71,9 +71,11 @@ abstract class Model extends PhalconModel
     protected function _preSave(PhalconModel\MetaDataInterface $metaData, $exists, $identityField)
     {
         // Phalcon prepareSave() Polyfill
+        // @codeCoverageIgnoreStart
         if (Version::getId() < '2001100') {
             $this->prepareSave();
         }
+        // @codeCoverageIgnoreEnd
         // Fix phalcon bug: attributeField . " is required" on empty values, it should detect null values instead
         $emptyFields = [];
         foreach ($this->defaultValues() as $k => $v) {
