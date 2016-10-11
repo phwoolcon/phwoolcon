@@ -71,6 +71,8 @@ class Service
         foreach ($_SERVER as $k => $v) {
             substr($k, 0, 10) == 'PHWOOLCON_' and $this->environmentVariables[$k] = $v;
         }
+        isset($config['buffer_output_size']) or $config['buffer_output_size'] = static::OUTPUT_BUFFER_SIZE;
+        isset($config['chunk_output_size']) or $config['chunk_output_size'] = static::OUTPUT_CHUNK_SIZE;
 
         $this->config = $config;
         $this->runDir = $config['run_dir'];
@@ -172,7 +174,6 @@ class Service
             'package_length_type' => 'N',
             'package_length_offset' => 0,
             'package_body_offset' => 4,
-            'buffer_output_size' => static::OUTPUT_BUFFER_SIZE,
         ], $this->config);
         unset($config['run_dir'], $config['linux_init_script'], $config['debug'], $config['start_on_boot']);
         unset($config['profiler']);
@@ -220,8 +221,8 @@ class Service
         ]);
 
         $server->send($fd, pack('N', $outputLength = strlen($result)), $fromId);
-        if ($outputLength >= static::OUTPUT_BUFFER_SIZE) {
-            foreach (str_split($result, static::OUTPUT_CHUNK_SIZE) as $chunk) {
+        if ($outputLength >= $this->config['buffer_output_size']) {
+            foreach (str_split($result, $this->config['chunk_output_size']) as $chunk) {
                 $server->send($fd, $chunk, $fromId);
             }
         } else {
