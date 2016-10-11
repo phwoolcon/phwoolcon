@@ -2,6 +2,7 @@
 namespace Phwoolcon\View\Engine;
 
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
+use Phalcon\Mvc\View\Exception;
 use Phwoolcon\View;
 
 /**
@@ -34,15 +35,23 @@ class Php extends PhpEngine
 
     public function processInclude($path, $params = [])
     {
+        if (!is_file($fullPath = $this->_view->getAbsoluteViewPath($path . '.phtml'))) {
+            // @codeCoverageIgnoreStart
+            if ($this->_debug) {
+                throw new Exception("View file '{$fullPath}' was not found");
+            }
+            return;
+            // @codeCoverageIgnoreEnd
+        }
         // @codeCoverageIgnoreStart
         if ($this->_debug) {
             $wrapper = $this->_view->getDebugWrapper($path);
             echo $wrapper[0];
-            $this->render($this->_view->getAbsoluteViewPath($path . '.phtml'), $params);
+            $this->render($fullPath, $params);
             echo $wrapper[1];
             return;
         }
         // @codeCoverageIgnoreEnd
-        $this->render($this->_view->getAbsoluteViewPath($path . '.phtml'), $params);
+        $this->render($fullPath, $params);
     }
 }
