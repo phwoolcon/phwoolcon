@@ -57,6 +57,7 @@ return [
         'assets_options' => [
             'base_path' => TEST_ROOT_PATH . '/public',
             'assets_dir' => 'assets',
+            'compiled_dir' => 'static',
             'cache_assets' => true,
             'apply_filter' => true,
         ],

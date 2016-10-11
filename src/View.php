@@ -216,15 +216,15 @@ class View extends PhalconView implements ServiceAwareInterface
             return $this;
         }
         $this->_loadedThemes[$prefix] = true;
-        $applyFilter = $this->config['options']['assets_options']['apply_filter'];
+        $assetsOptions = $this->config['options']['assets_options'];
+        $applyFilter = $assetsOptions['apply_filter'];
 
         // The base path, usually the public directory
-        $basePath = $this->config['options']['assets_options']['base_path'];
+        $basePath = $assetsOptions['base_path'];
 
         // The assets dir inside base path
-        $assetsDir = '/' . $this->config['options']['assets_options']['assets_dir'] . '/';
-        $resourcePath = $assetsDir . 'packages/';
-        $compiledPath = $assetsDir . 'compiled/';
+        $resourcePath = '/' . $assetsOptions['assets_dir'] . '/';
+        $compiledPath = '/' . $assetsOptions['compiled_dir'] . '/';
         foreach ($assets as $collectionName => $resources) {
             $resourceType = substr($collectionName, strrpos($collectionName, '-') + 1);
             $collectionName = $prefix . $collectionName;

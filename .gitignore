@@ -3,4 +3,4 @@
 /ignore/
 /tests/root/app/config/testing/
 /tests/root/storage/
-/tests/root/public/assets/compiled/
+/tests/root/public/static/
