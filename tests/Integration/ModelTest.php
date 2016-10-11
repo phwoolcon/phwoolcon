@@ -1,6 +1,8 @@
 <?php
 namespace Phwoolcon\Tests\Integration;
 
+use Exception;
+use Phalcon\Mvc\Model\ValidationFailed;
 use Phwoolcon\Db;
 use Phwoolcon\Tests\Helper\TestCase;
 use Phwoolcon\Tests\Helper\TestModel;
@@ -180,7 +182,12 @@ class ModelTest extends TestCase
     {
         $model = $this->getModelInstance();
         $model->setId('1');
-        $this->assertFalse($model->save());
+        $e = false;
+        try {
+            $model->save();
+        } catch (Exception $e) {
+        }
+        $this->assertInstanceOf(ValidationFailed::class, $e);
         $this->assertNotEmpty($model->getStringMessages(), 'Model pre save validation not triggered');
     }
 }

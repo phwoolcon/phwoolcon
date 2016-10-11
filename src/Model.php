@@ -68,6 +68,16 @@ abstract class Model extends PhalconModel
         return $result;
     }
 
+    protected function _postSave($success, $exists)
+    {
+        // @codeCoverageIgnoreStart
+        if (!$success) {
+            throw new PhalconModel\Exception($this->getStringMessages());
+        }
+        // @codeCoverageIgnoreEnd
+        return parent::_postSave($success, $exists);
+    }
+
     protected function _preSave(PhalconModel\MetaDataInterface $metaData, $exists, $identityField)
     {
         // Phalcon prepareSave() Polyfill

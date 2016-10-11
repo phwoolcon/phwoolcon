@@ -31,9 +31,9 @@ class Db extends PhalconDb
     public function __construct($config)
     {
         $this->config = $config;
-        Model::setup([
-            'distributed' => $config['distributed'],
-        ]);
+        $ormOptions = $config['orm_options'];
+        $ormOptions['distributed'] = $config['distributed'];
+        Model::setup($ormOptions);
         if (fnGet($this->config, 'query_log')) {
             Events::attach('db:beforeQuery', function (Event $event) {
                 /* @var Adapter $adapter */

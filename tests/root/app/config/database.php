@@ -30,5 +30,8 @@ return [
         'node_id' => '001',
         'start_time' => 1362931200,
     ],
+    'orm_options' => [
+        'exceptionOnFailedSave' => true,
+    ],
     'query_log' => true,
 ];
