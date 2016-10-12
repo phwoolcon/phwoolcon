@@ -10,9 +10,9 @@ trait ConfigTrait
 
     protected function filterConfig($key, $data)
     {
-        unset($data['_sensitive_keys'], $data['_allowed_keys']);
+        unset($data['_black_list'], $data['_white_list']);
         // Process white list
-        if (is_array($allowedKeys = Config::get($key . '._allowed_keys'))) {
+        if (is_array($allowedKeys = Config::get($key . '._white_list'))) {
             $allowedData = [];
             foreach ($allowedKeys as $key) {
                 array_set($allowedData, $key, fnGet($data, $key));
@@ -20,7 +20,7 @@ trait ConfigTrait
             return $allowedData;
         }
         // Process black list
-        if (is_array($sensitiveKeys = Config::get($key . '._sensitive_keys'))) {
+        if (is_array($sensitiveKeys = Config::get($key . '._black_list'))) {
             foreach ($sensitiveKeys as $key) {
                 array_forget($data, $key);
             }
@@ -39,7 +39,7 @@ trait ConfigTrait
     {
         $keys = [];
         foreach (Config::get() as $key => $value) {
-            if (is_array(fnGet($value, '_sensitive_keys')) || is_array(fnGet($value, '_allowed_keys'))) {
+            if (is_array(fnGet($value, '_black_list')) || is_array(fnGet($value, '_white_list'))) {
                 $keys[$key] = $key;
             }
         }

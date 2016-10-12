@@ -19,14 +19,14 @@ class ConfigTraitTest extends TestCase
         parent::setUp();
         $this->configTrait = new TestConfigTrait();
         Config::set('white_listed', [
-            '_allowed_keys' => [
+            '_white_list' => [
                 'foo',
             ],
             'foo' => 'bar',
             'hello' => 'world',
         ]);
         Config::set('black_listed', [
-            '_sensitive_keys' => [
+            '_black_list' => [
                 'foo',
             ],
             'foo' => 'bar',
