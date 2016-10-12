@@ -8,18 +8,43 @@ use Phwoolcon\Model\Config as ConfigModel;
 trait ConfigTrait
 {
 
-    protected function filterSubmittedConfig($key, $data)
+    protected function filterConfig($key, $data)
     {
-        unset($data['_sensitive_keys']);
+        unset($data['_sensitive_keys'], $data['_allowed_keys']);
+        // Process white list
+        if (is_array($allowedKeys = Config::get($key . '._allowed_keys'))) {
+            $allowedData = [];
+            foreach ($allowedKeys as $key) {
+                array_set($allowedData, $key, fnGet($data, $key));
+            }
+            return $allowedData;
+        }
+        // Process black list
         if (is_array($sensitiveKeys = Config::get($key . '._sensitive_keys'))) {
             foreach ($sensitiveKeys as $key) {
-                if ($key == '*') {
-                    throw new ValidationException("Config group '{$key}' is protected");
-                }
                 array_forget($data, $key);
             }
+            return $data;
         }
-        return $data;
+        throw new ValidationException("Config group '{$key}' is protected");
+    }
+
+    protected function getCurrentConfig($key)
+    {
+        $data = Config::get($key);
+        return $this->filterConfig($key, $data);
+    }
+
+    protected function keyList()
+    {
+        $keys = [];
+        foreach (Config::get() as $key => $value) {
+            if (is_array(fnGet($value, '_sensitive_keys')) || is_array(fnGet($value, '_allowed_keys'))) {
+                $keys[$key] = $key;
+            }
+        }
+        ksort($keys);
+        return $keys;
     }
 
     protected function submitConfig($key, $data)
@@ -30,8 +55,9 @@ trait ConfigTrait
                 throw new ValidationException(json_last_error_msg(), json_last_error());
             }
         }
-        $value = $this->filterSubmittedConfig($key, $data);
+        $value = $this->filterConfig($key, $data);
         ConfigModel::saveConfig($key, $value);
         Config::clearCache();
+        return $value;
     }
 }
