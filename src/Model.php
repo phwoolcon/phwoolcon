@@ -394,6 +394,19 @@ abstract class Model extends PhalconModel
     public static function buildParams($conditions = [], $bind = [], $orderBy = null, $columns = null, $limit = null)
     {
         $params = [];
+        if (is_string($orderBy)) {
+            $params['order'] = $orderBy;
+        }
+        if ($columns) {
+            $params['columns'] = is_array($columns) ? explode(',', $columns) : $columns;
+        }
+        if (is_int($limit)) {
+            $params['limit'] = $limit;
+        } elseif (is_string($limit) && strpos($limit, ',')) {
+            list($limit, $offset) = explode(',', $limit);
+            $params['limit'] = (int)trim($limit);
+            $params['offset'] = (int)trim($offset);
+        }
         // @codeCoverageIgnoreStart
         if (empty($conditions)) {
             return $params;
@@ -421,19 +434,6 @@ abstract class Model extends PhalconModel
         } else {
             $params['conditions'] = $conditions;
             $params['bind'] = $bind;
-        }
-        if (is_string($orderBy)) {
-            $params['order'] = $orderBy;
-        }
-        if ($columns) {
-            $params['columns'] = is_array($columns) ? explode(',', $columns) : $columns;
-        }
-        if (is_int($limit)) {
-            $params['limit'] = $limit;
-        } elseif (is_string($limit) && strpos($limit, ',')) {
-            list($limit, $offset) = explode(',', $limit);
-            $params['limit'] = (int)trim($limit);
-            $params['offset'] = (int)trim($offset);
         }
         return $params;
     }
