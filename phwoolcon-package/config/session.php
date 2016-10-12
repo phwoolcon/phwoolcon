@@ -1,6 +1,11 @@
 <?php
 
 return [
+    '_white_list' => [
+        'options.lifetime',
+        'options.csrf_token_lifetime',
+        'options.cookies.name',
+    ],
     'default' => 'native',
     'options' => [
         /**

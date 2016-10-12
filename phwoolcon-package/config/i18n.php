@@ -1,5 +1,9 @@
 <?php
 return [
+    '_black_list' => [
+        'locale_path',
+        'undefined_strings_log',
+    ],
     'locale_path' => ROOT_PATH . '/app/locale',
     'cache_locale' => true,
     'multi_locale' => true,

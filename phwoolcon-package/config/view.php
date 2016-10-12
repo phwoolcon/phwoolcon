@@ -1,6 +1,19 @@
 <?php
 
 return [
+    '_white_list' => [
+        'debug',
+        'top_level',
+        'theme',
+        'default_layout',
+        'title_separator',
+        'title_suffix',
+        'admin.title_suffix',
+        'admin.theme',
+        'admin.layout',
+        'options.assets_options.cache_assets',
+        'options.assets_options.apply_filter',
+    ],
     'debug' => false,
     'path' => ROOT_PATH . '/app/views/',
     'theme' => 'default',

@@ -1,5 +1,8 @@
 <?php
 return [
+    '_white_list' => [
+        'query_log',
+    ],
     'default' => '',
     'connections' => [
         'mysql' => [

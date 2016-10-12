@@ -1,5 +1,10 @@
 <?php
 return [
+    '_black_list' => [
+        'autoload',
+        'class_aliases',
+        'on_phwoolcon_update',
+    ],
     'debug' => false,
     'name' => 'Phwoolcon',
     'version' => '1.0.x-dev',
