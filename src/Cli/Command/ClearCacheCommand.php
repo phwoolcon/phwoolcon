@@ -24,24 +24,28 @@ class ClearCacheCommand extends Command
 
     public function fire()
     {
+        $clearAll = true;
         if ($this->input->getOption('config-only')) {
+            $clearAll = false;
             Config::clearCache();
             $this->info('Config cache cleared.');
-            return;
         }
         if ($this->input->getOption('meta-only')) {
+            $clearAll = false;
             Db::clearMetadata();
             $this->info('Model metadata cleared.');
-            return;
         }
         if ($this->input->getOption('locale-only')) {
+            $clearAll = false;
             I18n::clearCache();
             $this->info('Locale cache cleared.');
-            return;
         }
         if ($this->input->getOption('assets-only')) {
+            $clearAll = false;
             View::clearAssetsCache();
             $this->info('Assets cache cleared.');
+        }
+        if (!$clearAll) {
             return;
         }
         Cache::flush();
