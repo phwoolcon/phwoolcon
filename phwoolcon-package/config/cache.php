@@ -16,7 +16,8 @@ return [
                 'port' => 6379,
                 'index' => 5,
                 'persistent' => true,
-                'prefix' => '.',
+                'prefix' => ':',
+                'statsKey' => '_PHCR',
             ],
         ],
         'memcached' => [
