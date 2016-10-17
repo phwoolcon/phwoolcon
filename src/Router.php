@@ -123,12 +123,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             } else {
                 /* @var Controller $controller */
                 $controller = new $controllerClass;
-                if (method_exists($controller, 'initialize')) {
-                    $initializeResponse = $controller->initialize();
-                    if ($initializeResponse instanceof Response) {
-                        return $initializeResponse;
-                    }
-                }
+                method_exists($controller, 'initialize') and $controller->initialize();
                 method_exists($controller, $method = $router->getActionName()) or static::throw404Exception();
                 $controller->{$method}();
                 $response = $controller->response;
