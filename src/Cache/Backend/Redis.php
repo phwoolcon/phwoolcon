@@ -15,6 +15,55 @@ use Phalcon\Cache\FrontendInterface;
 class Redis extends PhalconRedis
 {
 
+    public function _connect()
+    {
+        $options = $this->_options;
+        $redis = new \Redis;
+        // @codeCoverageIgnoreStart
+        if (empty($options['host']) ||
+            empty($options['port']) ||
+            empty($options['persistent']) ||
+            empty($options['index'])
+        ) {
+            throw new Exception('Unexpected inconsistency in options');
+        }
+        // @codeCoverageIgnoreEnd
+        $host = $options['host'];
+        $port = $options['port'];
+        $index = $options['index'];
+
+        if ($options['persistent']) {
+            $success = $redis->pconnect($host, $port, 0, $index);
+        } else // @codeCoverageIgnoreStart
+        {
+            $success = $redis->connect($host, $port);
+        }
+        // @codeCoverageIgnoreEnd
+
+        // @codeCoverageIgnoreStart
+        if (!$success) {
+            throw new Exception('Could not connect to the Redis server ' . $host . ':' . $port);
+        }
+        if (isset($options['auth'])) {
+            $success = $redis->auth($options['auth']);
+            if (!$success) {
+                throw new Exception('Failed to authenticate with the Redis server');
+            }
+        }
+        // @codeCoverageIgnoreEnd
+
+        if ($index) {
+            $success = $redis->select($index);
+            // @codeCoverageIgnoreStart
+            if (!$success) {
+                throw new Exception('Redis server selected database failed');
+            }
+            // @codeCoverageIgnoreEnd
+        }
+
+        $this->_redis = $redis;
+    }
+
     public function decrement($keyName = null, $value = null)
     {
         // @codeCoverageIgnoreStart
