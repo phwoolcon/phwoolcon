@@ -1,6 +1,6 @@
 <?php
 return [
-    'default' => 'file',
+    'default' => extension_loaded('redis') ? 'redis' : 'native',
     'drivers' => [
         'file' => [
             'adapter' => 'Phalcon\Cache\Backend\File',
@@ -10,14 +10,13 @@ return [
             ],
         ],
         'redis' => [
-            'adapter' => 'Phalcon\Cache\Backend\Redis',
+            'adapter' => 'Phwoolcon\Cache\Backend\Redis',
             'options' => [
                 'host' => '127.0.0.1',
                 'port' => 6379,
                 'index' => 5,
                 'persistent' => true,
-                'prefix' => '.',
-                'statsKey' => '_PHCR',
+                'prefix' => 'phw-cache:',
             ],
         ],
         'memcached' => [

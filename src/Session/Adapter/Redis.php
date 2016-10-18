@@ -2,7 +2,9 @@
 
 namespace Phwoolcon\Session\Adapter;
 
+use Phalcon\Cache\Frontend\None as FrontendNone;
 use Phalcon\Session\Adapter\Redis as RedisSession;
+use Phwoolcon\Cache\Backend\Redis as RedisCache;
 use Phwoolcon\Config;
 use Phwoolcon\Session\AdapterInterface;
 use Phwoolcon\Session\AdapterTrait;
@@ -11,8 +13,8 @@ use Phwoolcon\Session\AdapterTrait;
  * Class Redis
  * @package Phwoolcon\Session\Adapter
  *
- * @property \Phalcon\Cache\Backend\Redis $_redis
- * @method  \Phalcon\Cache\Backend\Redis getRedis()
+ * @property RedisCache $_redis
+ * @method  RedisCache getRedis()
  */
 class Redis extends RedisSession implements AdapterInterface
 {
@@ -22,6 +24,7 @@ class Redis extends RedisSession implements AdapterInterface
     {
         $options = array_merge(Config::get('cache.drivers.redis.options'), $options);
         parent::__construct($options);
+        $this->_redis = new RedisCache(new FrontendNone, $options);
     }
 
     public function flush()

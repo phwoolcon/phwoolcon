@@ -35,6 +35,7 @@ return [
             'adapter' => 'Phwoolcon\Session\Adapter\Redis',
             'options' => [
                 'index' => 6,
+                'prefix' => 'phw-session:',
             ],
         ],
         'memcached' => [

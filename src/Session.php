@@ -3,7 +3,6 @@ namespace Phwoolcon;
 
 use Phalcon\Di;
 use Phalcon\Session\Adapter;
-use Phwoolcon\Config;
 use Phwoolcon\Session\AdapterInterface;
 use Phwoolcon\Session\AdapterTrait;
 use Phwoolcon\Exception\SessionException;
@@ -17,7 +16,7 @@ use Phwoolcon\Exception\SessionException;
  * @method static void clearFormData(string $key)
  * @uses AdapterTrait::clearFormData()
  * @method static bool destroy(bool $removeData = false)
- * @uses Phalcon\Session\Adapter::destroy()
+ * @uses \Phalcon\Session\Adapter::destroy()
  * @method static void end()
  * @uses AdapterTrait::end()
  * @method static void flush()
@@ -33,15 +32,15 @@ use Phwoolcon\Exception\SessionException;
  * @method static string getCsrfToken(bool $renew = false)
  * @uses AdapterTrait::getCsrfToken()
  * @method static string getId()
- * @uses Phalcon\Session\Adapter::getId()
+ * @uses \Phalcon\Session\Adapter::getId()
  * @method static string getName()
- * @uses Phalcon\Session\Adapter::getName()
+ * @uses \Phalcon\Session\Adapter::getName()
  * @method static array getOptions()
- * @uses Phalcon\Session\Adapter::getOptions()
+ * @uses \Phalcon\Session\Adapter::getOptions()
  * @method static bool has(string $index)
- * @uses Phalcon\Session\Adapter::has()
+ * @uses \Phalcon\Session\Adapter::has()
  * @method static bool isStarted()
- * @uses Phalcon\Session\Adapter::isStarted()
+ * @uses \Phalcon\Session\Adapter::isStarted()
  * @method static AdapterTrait regenerateId(bool $deleteOldSession = true)
  * @uses AdapterTrait::regenerateId()
  * @method static void rememberFormData(string $key, $data)
@@ -53,15 +52,15 @@ use Phwoolcon\Exception\SessionException;
  * @method static AdapterTrait setCookie()
  * @uses AdapterTrait::setCookie()
  * @method static void setId(string $id)
- * @uses Phalcon\Session\Adapter::setId()
+ * @uses \Phalcon\Session\Adapter::setId()
  * @method static void setName(string $id)
- * @uses Phalcon\Session\Adapter::setName()
+ * @uses \Phalcon\Session\Adapter::setName()
  * @method static void setOptions(array $options)
- * @uses Phalcon\Session\Adapter::setOptions()
+ * @uses \Phalcon\Session\Adapter::setOptions()
  * @method static bool start()
  * @uses AdapterTrait::start()
  * @method static int status()
- * @uses Phalcon\Session\Adapter::status()
+ * @uses \Phalcon\Session\Adapter::status()
  */
 class Session
 {
