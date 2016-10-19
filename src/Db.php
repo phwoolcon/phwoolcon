@@ -38,7 +38,7 @@ class Db extends PhalconDb
             Events::attach('db:beforeQuery', function (Event $event) {
                 /* @var Adapter $adapter */
                 $adapter = $event->getSource();
-                $binds = (array)$event->getData();
+                $binds = $adapter->getSqlVariables();
                 Log::debug($adapter->getSQLStatement() . '; binds = ' . var_export($binds, 1));
             });
         }
