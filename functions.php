@@ -3,6 +3,7 @@ use Phalcon\Di;
 use Phalcon\Text;
 use Phwoolcon\Config;
 use Phwoolcon\I18n;
+use Phwoolcon\Text as PhwoolconText;
 
 /**
  * Translate
@@ -16,6 +17,11 @@ use Phwoolcon\I18n;
 function __($string, array $params = null, $package = null)
 {
     return I18n::translate($string, $params, $package);
+}
+
+function _e($string, $newLineToBr = true)
+{
+    return PhwoolconText::escapeHtml($string, $newLineToBr);
 }
 
 if (!function_exists('array_forget')) {
