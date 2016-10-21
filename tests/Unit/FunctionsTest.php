@@ -98,4 +98,55 @@ class FunctionsTest extends TestCase
         $expected = $uri = 'http://test.com';
         $this->assertEquals($expected, url($uri), 'Bad url() result on external links');
     }
+
+    public function testGetRelativePath()
+    {
+        // Same level
+        $source = '/a/b/c.php';
+        $destination = '/a/b/d.php';
+        $expected = './d.php';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // To child
+        $source = '/a/b/c.php';
+        $destination = '/a/b/c/d.php';
+        $expected = './c/d.php';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // Another child
+        $source = '/a/b/c.php';
+        $destination = '/a/b/d/d.php';
+        $expected = './d/d.php';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // Just parent
+        $source = '/a/b/c.php';
+        $destination = '/a/c.php';
+        $expected = '../c.php';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // Different parent
+        $source = '/a/b/c.php';
+        $destination = '/a/c/d.php';
+        $expected = '../c/d.php';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // Directories
+        $source = '/a/b/c/';
+        $destination = '/a/b/d/';
+        $expected = './d/';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // Directories
+        $source = '/a/b/c/';
+        $destination = '/a/c/d/';
+        $expected = '../c/d/';
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+
+        // Non absolute paths
+        $source = 'a/b/c/';
+        $destination = 'a/c/d/';
+        $expected = $destination;
+        $this->assertEquals($expected, getRelativePath($source, $destination));
+    }
 }

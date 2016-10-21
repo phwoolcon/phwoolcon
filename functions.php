@@ -243,6 +243,36 @@ function fnGet(&$array, $key, $default = null, $separator = '.', $hasObject = fa
     return $tmp;
 }
 
+/**
+ * Return a relative path for destination relative to source
+ *
+ * @param string $source
+ * @param string $destination
+ * @return string
+ */
+function getRelativePath($source, $destination)
+{
+    $ds = DIRECTORY_SEPARATOR;
+    // Process absolute paths only
+    if ($source{0} == $ds && $destination{0} == $ds) {
+        $pathEqualPos = 0;
+        for ($pos = 0, $len = strlen($source); $pos < $len; ++$pos) {
+            if ($source{$pos} != $destination{$pos}) {
+                break;
+            }
+            $source{$pos} == $ds and $pathEqualPos = $pos;
+        }
+        $subSource = substr($source, $pathEqualPos + 1);
+        $subDestination = substr($destination, $pathEqualPos + 1);
+        $sourceDepth = substr_count(rtrim($subSource, $ds), $ds);
+        if ($sourceDepth == 0) {
+            return '.' . $ds . $subDestination;
+        }
+        return str_repeat('..' . $ds, $sourceDepth) . $subDestination;
+    }
+    return $destination;
+}
+
 function isHttpUrl($url)
 {
     return substr($url, 0, 2) == '//' || ($prefix = substr($url, 0, 7)) == 'http://' || $prefix == 'https:/';
@@ -367,8 +397,29 @@ function symlinkDirOverride($source, $destination)
         }
     } elseif (is_file($source)) {
         is_file($destination) and unlink($destination);
-        symlink($source, $destination);
+        symlinkRelative($source, $destination);
     }
+}
+
+/**
+ * Creates a symlink with relative path to source
+ * On Windows, the file will be copied instead of symlink
+ *
+ * @param string $source
+ * @param string $destination
+ * @return bool
+ */
+function symlinkRelative($source, $destination)
+{
+    if (Text::startsWith(PHP_OS, 'WIN')) {
+        return copy($source, $destination);
+    }
+    $cwd = getcwd();
+    $relativePath = getRelativePath($destination, $source);
+    chdir(dirname($destination));
+    $result = symlink($relativePath, $destination);
+    chdir($cwd);
+    return (bool)$result;
 }
 
 function url($path, $queries = [], $secure = null)

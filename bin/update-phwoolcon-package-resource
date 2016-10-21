@@ -148,7 +148,7 @@ function installConfig($package, $path, $configPath, $replaceConfig = false)
             $installed = is_file($destination);
             if (($replaceConfig || !$installed)) {
                 is_file($destination) and unlink($destination);
-                symlink($source, $destination);
+                symlinkRelative($source, $destination);
             }
         }
         echo sprintf('[%s]%s Config files installed', $package, spacePad($package)), PHP_EOL;
@@ -194,7 +194,7 @@ function installMigrations($package, $path, $migrationPath)
         foreach ($items as $source) {
             $destination = $migrationPath . basename($source);
             is_file($destination) and unlink($destination);
-            symlink($source, $destination);
+            symlinkRelative($source, $destination);
         }
         echo sprintf('[%s]%s Migrations updated', $package, spacePad($package)), PHP_EOL;
     }
