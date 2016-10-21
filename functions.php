@@ -170,13 +170,16 @@ function copyDirReplace($source, $destination)
 }
 
 /**
- * @param string $filename
- * @param mixed  $array
+ * @param string   $filename
+ * @param mixed    $array
+ * @param callable $filter
  * @return int
  */
-function fileSaveArray($filename, $array)
+function fileSaveArray($filename, $array, callable $filter = null)
 {
-    return file_put_contents($filename, '<?php return ' . var_export($array, true) . ';');
+    $content = var_export($array, true);
+    $filter and $content = call_user_func($filter, $content);
+    return file_put_contents($filename, '<?php return ' . $content . ';');
 }
 
 function fileSaveInclude($target, array $includes)

@@ -251,7 +251,10 @@ function writeAliases($aliases)
 function writeMigrationCandidates($migrationCandidates)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/migrations.php';
-    fileSaveArray($target, $migrationCandidates);
+    fileSaveArray($target, $migrationCandidates, function ($content) {
+        global $baseDir;
+        return str_replace("'{$baseDir}", "ROOT_PATH . '", $content);
+    });
 }
 
 function writeAssetsGroups($assetsGroups)

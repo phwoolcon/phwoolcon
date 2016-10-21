@@ -79,7 +79,12 @@ class Config
         // @codeCoverageIgnoreStart
         if (Config::get('app.cache_config')) {
             is_dir($cacheDir = dirname($cacheFile)) or mkdir($cacheDir, 0777, true);
-            fileSaveArray($cacheFile, static::$config);
+            fileSaveArray($cacheFile, static::$config, function ($content) {
+                $replacement = <<<'EOF'
+$_SERVER['PHWOOLCON_ROOT_PATH'] . '
+EOF;
+                return str_replace("'{$_SERVER['PHWOOLCON_ROOT_PATH']}", $replacement, $content);
+            });
         }
         // @codeCoverageIgnoreEnd
     }
