@@ -411,6 +411,9 @@ function symlinkDirOverride($source, $destination)
  */
 function symlinkRelative($source, $destination)
 {
+    if ($targetDir = dirname($destination)) {
+        is_dir($targetDir) or mkdir($targetDir, 0755, true);
+    }
     if (Text::startsWith(PHP_OS, 'WIN')) {
         return copy($source, $destination);
     }
