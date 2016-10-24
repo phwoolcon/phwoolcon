@@ -1,0 +1,27 @@
+<?php
+/* @var Phwoolcon\View\Engine\Php $this */
+?>
+<!DOCTYPE html>
+<html lang="<?= View::getPageLanguage(); ?>" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="<?= View::getPageKeywords(); ?>">
+    <meta name="description" content="<?= View::getPageDescription(); ?>">
+    <title><?= View::getPageTitle(); ?></title>
+    <!-- No-JS Support -->
+    <script>(function(h){h.className=h.className.replace('no-js','')})(document.documentElement);</script>
+    <?php $this->include('page/html-head'); ?>
+</head>
+
+<body>
+
+<?= $this->getContent(); ?>
+<?= View::generateBodyJs(); ?>
+<!--[if IE]>
+<?= View::generateIeHackBodyJs(); ?>
+<![endif]-->
+
+</body>
+</html>
