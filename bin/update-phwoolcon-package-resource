@@ -21,7 +21,7 @@ $vendorDir = $baseDir . '/vendor';
 ob_start();
 try {
     include $baseDir . '/bootstrap/start.php';
-    $firstRun = false;
+    $firstRun = !is_file($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/app.php');
 } catch (Exception $e) {
     $firstRun = true;
 }
@@ -34,7 +34,11 @@ if ($firstRun) {
     $localePath = $baseDir . '/app/locale';
     $replaceConfig = true;
     $migrationPath = $baseDir . '/bin/migrations';
-    include $baseDir . '/vendor/phwoolcon/phwoolcon/functions.php';
+    if (!function_exists('fileSaveInclude')) {
+        include $baseDir . '/vendor/phwoolcon/phwoolcon/functions.php';
+    }
+    $cachePath = $baseDir . '/storage/cache';
+    is_dir($cachePath) or mkdir($cachePath, 0755, true);
 } else {
     Events::register($di);
     DiFix::register($di);
