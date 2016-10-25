@@ -3,6 +3,7 @@ namespace Phwoolcon;
 
 use Phalcon\Db as PhalconDb;
 use Phalcon\Db\AdapterInterface;
+use Phalcon\Di;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
 use Phwoolcon\Tests\Helper\TestModel;
@@ -12,6 +13,7 @@ use Phalcon\Version;
  * Class Model
  * @package Phwoolcon
  *
+ * @property Di $_dependencyInjector
  * @method PhalconModel\Message[] getMessages(string $filter = null)
  * @method Mysql|PhalconDb\Adapter\Pdo getWriteConnection()
  */

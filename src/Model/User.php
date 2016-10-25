@@ -1,14 +1,12 @@
 <?php
 namespace Phwoolcon\Model;
 
-use Phalcon\Di;
 use Phwoolcon\Model;
 
 /**
  * Class User
  * @package Phwoolcon\Model
  *
- * @property Di $_dependencyInjector
  * @method string getEmail()
  * @method string getMobile()
  * @method string getUsername()
