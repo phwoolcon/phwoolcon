@@ -140,7 +140,10 @@ ksort($classAliases);
 foreach ($classAliases as $alias => $class) {
     $ideHelperContent .= PHP_EOL . "class {$alias} extends {$class}{}" . PHP_EOL;
 }
-file_put_contents($baseDir . '/ignore/_ide_helper.php', $ideHelperContent);
+$ideHelperPath = $baseDir . '/ignore';
+$ideHelperFile = $ideHelperPath . '/_ide_helper.php';
+is_dir($ideHelperPath) or mkdir($ideHelperPath, 0755, true);
+file_put_contents($ideHelperFile, $ideHelperContent);
 echo 'IDE helper generated', PHP_EOL;
 
 function installConfig($package, $path, $configPath, $replaceConfig = false)
