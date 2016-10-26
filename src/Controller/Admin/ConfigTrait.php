@@ -35,12 +35,19 @@ trait ConfigTrait
         return $this->filterConfig($key, $data);
     }
 
+    public static function getKeyLabel($key)
+    {
+        $labelKey = 'config_key_' . $key;
+        $label = __($labelKey);
+        return $label == $labelKey ? $key : $label;
+    }
+
     protected function keyList()
     {
         $keys = [];
         foreach (Config::get() as $key => $value) {
             if (is_array(fnGet($value, '_black_list')) || is_array(fnGet($value, '_white_list'))) {
-                $keys[$key] = $key;
+                $keys[$key] = static::getKeyLabel($key);
             }
         }
         ksort($keys);
