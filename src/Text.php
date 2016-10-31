@@ -8,7 +8,7 @@ class Text extends PhalconText
 
     public static function ellipsis($string, $length, $suffix = '...')
     {
-        return mb_strlen($string) > $length ? mb_substr($string, 0, $length - 1) . $suffix : $string;
+        return mb_strlen($string) > $length ? mb_substr($string, 0, $length - mb_strlen($suffix)) . $suffix : $string;
     }
 
     public static function escapeHtml($string, $newLineToBr = true)
