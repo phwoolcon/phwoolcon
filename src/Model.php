@@ -125,6 +125,15 @@ abstract class Model extends PhalconModel
         }
     }
 
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    protected function belongsTo($fields, $referenceModel, $referencedFields, $options = null)
+    {
+        parent::belongsTo($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+    }
+
     public function checkDataColumn($column = null)
     {
         if (!isset(static::$_dataColumns[$key = get_class($this)])) {
@@ -180,6 +189,11 @@ abstract class Model extends PhalconModel
         return isset($this->{$this->_pk}) ? $this->{$this->_pk} : null;
     }
 
+    public function getInjectedClass($class)
+    {
+        return $this->_dependencyInjector->has($class) ? $this->_dependencyInjector->getRaw($class) : $class;
+    }
+
     public function getStringMessages()
     {
         if (!$this->getMessages()) {
@@ -190,6 +204,24 @@ abstract class Model extends PhalconModel
             $messages[] = $message->getMessage();
         }
         return implode('; ', $messages);
+    }
+
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    protected function hasMany($fields, $referenceModel, $referencedFields, $options = null)
+    {
+        parent::hasMany($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+    }
+
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    protected function hasOne($fields, $referenceModel, $referencedFields, $options = null)
+    {
+        parent::hasOne($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
     }
 
     /**

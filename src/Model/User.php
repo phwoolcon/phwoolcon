@@ -37,7 +37,6 @@ class User extends Model
     public function initialize()
     {
         $class = UserProfile::class;
-        $this->_dependencyInjector->has($class) and $class = $this->_dependencyInjector->getRaw($class);
         $this->hasOne('id', $class, 'user_id', ['alias' => 'user_profile']);
         parent::initialize();
     }
