@@ -5,6 +5,7 @@ use Phwoolcon\Cache;
 use Phwoolcon\Cli\Command;
 use Phwoolcon\Config;
 use Phwoolcon\Db;
+use Phwoolcon\Events;
 use Phwoolcon\I18n;
 use Phwoolcon\View;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,11 +46,11 @@ class ClearCacheCommand extends Command
             View::clearAssetsCache();
             $this->info('Assets cache cleared.');
         }
-        if (!$clearAll) {
-            return;
+        if ($clearAll) {
+            Cache::flush();
+            Config::clearCache();
+            $this->info('Cache cleared.');
         }
-        Cache::flush();
-        Config::clearCache();
-        $this->info('Cache cleared.');
+        Events::fire('cache:after_clear', $this);
     }
 }
