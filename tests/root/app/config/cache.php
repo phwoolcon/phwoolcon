@@ -1,6 +1,6 @@
 <?php
 return [
-    'default' => extension_loaded('redis') ? 'redis' : 'native',
+    'default' => extension_loaded('redis') ? 'redis' : 'file',
     'drivers' => [
         'file' => [
             'adapter' => 'Phalcon\Cache\Backend\File',

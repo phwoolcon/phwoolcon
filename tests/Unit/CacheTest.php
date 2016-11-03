@@ -46,7 +46,12 @@ class CacheTest extends TestCase
         Cache::set($cacheKey, 'foo');
         $exists = Cache::exists($cacheKey);
         $this->assertTrue($exists);
-        $keys = Cache::queryKeys($cacheKey);
+        // Bug in version < 3.0.2: query keys with prefix in file cache
+        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] >= 3000200) {
+            $keys = Cache::queryKeys($cacheKey);
+        } else {
+            $keys = Cache::queryKeys();
+        }
         $this->assertNotEmpty($keys);
     }
 }
