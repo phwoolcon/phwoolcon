@@ -4,6 +4,7 @@
  * This file will be copied into directory "vendor/bin" after installation
  */
 
+use Phalcon\Version;
 use Phwoolcon\Cache;
 use Phwoolcon\Config;
 use Phwoolcon\Db;
@@ -40,6 +41,7 @@ if ($firstRun) {
     $cachePath = $baseDir . '/storage/cache';
     is_dir($cachePath) or mkdir($cachePath, 0755, true);
 } else {
+    $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
     Events::register($di);
     DiFix::register($di);
     Db::register($di);

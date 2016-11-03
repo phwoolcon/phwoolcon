@@ -4,7 +4,6 @@ namespace Phwoolcon;
 use Closure;
 use Phalcon\Di;
 use Phalcon\Events\Event;
-use Phalcon\Version;
 
 class DiFix extends Di
 {
@@ -19,7 +18,7 @@ class DiFix extends Di
      */
     public static function register(Di $di)
     {
-        if (Version::getId() > '2010000') {
+        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] > '2010000') {
             $di->setInternalEventsManager($di->getShared('eventsManager'));
             Events::attach('di:beforeServiceResolve', function (Event $event) {
                 /* @var Di $di */

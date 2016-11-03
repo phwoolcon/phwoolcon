@@ -3,6 +3,7 @@
 namespace Phwoolcon\Tests\Helper;
 
 use Phalcon\Di;
+use Phalcon\Version;
 use PHPUnit_Framework_TestCase;
 use Phwoolcon\Aliases;
 use Phwoolcon\Cache;
@@ -55,6 +56,7 @@ class TestCase extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
         /* @var Di $di */
         $di = $this->di = Di::getDefault();
         Events::register($di);

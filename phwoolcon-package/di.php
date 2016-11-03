@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Version;
 use Phwoolcon\Aliases;
 use Phwoolcon\Cache;
 use Phwoolcon\Config;
@@ -13,6 +14,8 @@ use Phwoolcon\Router;
 use Phwoolcon\Session;
 use Phwoolcon\View;
 use Phwoolcon\Queue;
+
+$_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
 
 Events::register($di);
 DiFix::register($di);

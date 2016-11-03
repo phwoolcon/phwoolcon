@@ -4,7 +4,6 @@ namespace Phwoolcon\Tests\Helper;
 use Phalcon\Db\Column;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\StringLength;
-use Phalcon\Version;
 use Phwoolcon\Db;
 use Phwoolcon\Model;
 
@@ -67,7 +66,7 @@ class TestModel extends Model
 
     public function validation()
     {
-        if (Version::getId() > '2010000') {
+        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] > '2010000') {
             $validator = new Validation();
             $validator->add('key', new StringLength([
                 'min' => 3,
