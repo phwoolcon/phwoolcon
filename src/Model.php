@@ -458,9 +458,10 @@ abstract class Model extends PhalconModel
                         $operator = reset($value);
                         $realValue = next($value);
                     }
+                    $bindKey = str_replace(['.'], '_', $key);
                     $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
-                        " {$key} {$operator} :{$key}: ";
-                    $params['bind'][$key] = $realValue;
+                        " {$key} {$operator} :{$bindKey}: ";
+                    $params['bind'][$bindKey] = $realValue;
                 }
             } else {
                 $params['conditions'] = $conditions;
