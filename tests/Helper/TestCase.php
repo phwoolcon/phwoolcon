@@ -15,6 +15,7 @@ use Phwoolcon\Events;
 use Phwoolcon\I18n;
 use Phwoolcon\Log;
 use Phwoolcon\Session;
+use Phwoolcon\Util\Counter;
 use Phwoolcon\Util\Timer;
 use Swoole\Process as SwooleProcess;
 
@@ -65,6 +66,7 @@ class TestCase extends PHPUnit_Framework_TestCase
         Cache::register($di);
         Log::register($di);
         Config::register($di);
+        Counter::register($this->di);
         Aliases::register($di);
         I18n::register($di);
         Cookies::register($di);
