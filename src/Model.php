@@ -6,8 +6,7 @@ use Phalcon\Db\AdapterInterface;
 use Phalcon\Di;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
-use Phwoolcon\Tests\Helper\TestModel;
-use Phalcon\Version;
+use Phwoolcon\Util\Counter;
 
 /**
  * Class Model
@@ -84,7 +83,7 @@ abstract class Model extends PhalconModel
     {
         // Phalcon prepareSave() Polyfill
         // @codeCoverageIgnoreStart
-        if (Version::getId() < '2001100') {
+        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] < '2001100') {
             $this->prepareSave();
         }
         // @codeCoverageIgnoreEnd
@@ -167,8 +166,9 @@ abstract class Model extends PhalconModel
 
     public function generateDistributedId()
     {
-        $prefix = (time() - static::$_distributedOptions['start_time']) . substr(microtime(), 2, 3);
-        $id = $prefix . static::$_distributedOptions['node_id'] . mt_rand(100, 999);
+        $prefix = time() - static::$_distributedOptions['start_time'];
+        $suffix = Text::padOrTruncate(Counter::increment($this->_table), '0', 4);
+        $id = $prefix . static::$_distributedOptions['node_id'] . $suffix;
         return $this->setId($id);
     }
 
