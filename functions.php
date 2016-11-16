@@ -305,7 +305,7 @@ function removeDir($dir)
             }
         }
         rmdir($dir);
-    } elseif (file_exists($dir)) {
+    } elseif (file_exists($dir) || is_link($dir)) {
         unlink($dir);
     }
 }
