@@ -20,16 +20,13 @@
         "ext-openssl": "*",
         "ext-PDO": "*",
         "ext-mbstring": "*",
+        "ext-phalcon": ">=3.0.0",
         "phwoolcon/fsm": "~1.0",
         "symfony/console": "~3.0.0",
         "pda/pheanstalk": "~3.1.0",
         "swiftmailer/swiftmailer": "~5.4.2"
     },
-    "require-dev": {
-        "techpivot/phalcon-ci-installer": "~1.0"
-    },
     "suggest": {
-        "ext-phalcon": ">=3.0.0",
         "ext-swoole": ">=1.8.9"
     },
     "autoload": {

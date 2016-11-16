@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+mkdir tmp-techpivot-phalcon
+cd tmp-techpivot-phalcon
+composer require techpivot/phalcon-ci-installer
+vendor/bin/install-phalcon.sh
+cd ..
+rm -rf tmp-techpivot-phalcon
+php --ri phalcon

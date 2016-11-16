@@ -31,8 +31,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq beanstalkd
   - sudo beanstalkd -d -l 127.0.0.1 -p 11300
+  - bin/ci-install-phalcon
   - composer install --prefer-source --no-interaction
-  - vendor/bin/install-phalcon.sh
 
 before_script:
   - composer self-update
