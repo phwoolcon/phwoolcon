@@ -32,8 +32,8 @@ if ($firstRun) {
     $viewPath = $baseDir . '/app/views/';
     $assetsBasePath = $baseDir . '/public';
     $assetsDir = 'assets';
+    $assetsCompiledDir = 'static';
     $localePath = $baseDir . '/app/locale';
-    $replaceConfig = true;
     $migrationPath = $baseDir . '/bin/migrations';
     if (!function_exists('fileSaveInclude')) {
         include $baseDir . '/vendor/phwoolcon/phwoolcon/functions.php';
@@ -50,13 +50,14 @@ if ($firstRun) {
     $viewPath = Config::get('view.path', $baseDir . '/app/views/');
     $assetsBasePath = Config::get('view.options.assets_options.base_path', $baseDir . '/public');
     $assetsDir = Config::get('view.options.assets_options.assets_dir', 'assets');
+    $assetsCompiledDir = Config::get('view.options.assets_options.compiled_dir', 'static');
     $localePath = Config::get('i18n.locale_path', $baseDir . '/app/locale');
-    $replaceConfig = Config::get('app.on_phwoolcon_update.replace_config', true);
     $migrationPath = migrationPath();
 }
 
 $configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
 $assetsPath = $assetsBasePath . '/' . $assetsDir;
+$assetsCompiledPath = $assetsBasePath . '/' . $assetsCompiledDir;
 is_dir($configPath) or mkdir($configPath, 0755, true);
 is_dir($assetsPath) or mkdir($assetsPath, 0755, true);
 
@@ -73,6 +74,15 @@ if (is_file($migrationCandidatesFile = $vendorDir . '/phwoolcon/migrations.php')
     $migrationCandidates = include $migrationCandidatesFile;
 }
 $migrationCandidates['candidates'] = [];
+clearConfigFiles($configPath);
+clearFolders([
+    'Assets' => $assetsPath,
+    'Compiled assets' => $assetsCompiledPath,
+    'Locales' => $localePath,
+    'Migrations' => $migrationPath,
+    'Views' => $viewPath,
+]);
+echo PHP_EOL;
 
 foreach ($packageFiles as $file) {
     if (!is_array($package = include($file))) {
@@ -80,7 +90,7 @@ foreach ($packageFiles as $file) {
     }
     foreach ($package as $name => $resources) {
         $path = $vendorDir . '/' . $name;
-        installConfig($name, $path, $configPath, $replaceConfig);
+        installConfig($name, $path, $configPath);
         installViews($name, $path, $viewPath);
         installAssets($name, $path, $assetsPath);
         installLocale($name, $path, $localePath . '/');
@@ -135,6 +145,7 @@ writeAliases($aliases);
 writeMigrationCandidates($migrationCandidates);
 writeAssetsGroups($assetsGroups);
 writeAdminAssetsGroups($adminAssetsGroups);
+echo PHP_EOL;
 
 $ideHelperContent = '<?php' . PHP_EOL;
 $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
@@ -148,17 +159,14 @@ is_dir($ideHelperPath) or mkdir($ideHelperPath, 0755, true);
 file_put_contents($ideHelperFile, $ideHelperContent);
 echo 'IDE helper generated', PHP_EOL;
 
-function installConfig($package, $path, $configPath, $replaceConfig = false)
+function installConfig($package, $path, $configPath)
 {
     if ($files = glob($path . '/phwoolcon-package/config/*.php')) {
         foreach ($files as $source) {
             $file = basename($source);
             $destination = $configPath . '/' . $file;
-            $installed = is_file($destination);
-            if (($replaceConfig || !$installed)) {
-                is_file($destination) and unlink($destination);
-                symlinkRelative($source, $destination);
-            }
+            is_file($destination) and unlink($destination);
+            symlinkRelative($source, $destination);
         }
         echo sprintf('[%s]%s Config files installed', $package, spacePad($package)), PHP_EOL;
     }
@@ -231,6 +239,27 @@ function installRoutes($package, $path, $file, &$routeFiles = [], $sort = null)
     }
     echo sprintf('[%s]%s Routes registered', $package, spacePad($package)), PHP_EOL;
     $routeFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
+}
+
+function clearConfigFiles($configPath)
+{
+    if ($files = glob($configPath . '/*.php')) {
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+    $label = 'Config';
+    echo sprintf('[%s]%s files cleared', $label, spacePad($label, 16)), PHP_EOL;
+}
+
+function clearFolders(array $folders)
+{
+    foreach ($folders as $label => $path) {
+        removeDir($path);
+        mkdir($path, 0755, true);
+        touch($path . '/.gitkeep');
+        echo sprintf('[%s]%s folder cleared', $label, spacePad($label, 16)), PHP_EOL;
+    }
 }
 
 function writeDi($diFiles)
