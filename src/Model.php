@@ -119,6 +119,7 @@ abstract class Model extends PhalconModel
     protected function afterSave()
     {
         $this->_isNew = false;
+        $this->setSnapshotData($this->toArray());
         foreach ($this->_jsonFields as $field) {
             isset($this->$field) && is_string($data = $this->$field) and $this->$field = json_decode($data, true);
         }

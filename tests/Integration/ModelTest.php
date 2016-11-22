@@ -54,7 +54,10 @@ class ModelTest extends TestCase
         $this->assertEmpty($model->getStringMessages());
         $this->assertEquals($value, $model->getValue());
         $this->assertTrue($model->save(), 'Unable to save model');
-        $this->assertNotEmpty($model->getKey(), 'Unable to generate id');
+        $this->assertNotEmpty($key = $model->getKey(), 'Unable to generate id');
+        $model->setValue(['hello' => 'world']);
+        $this->assertTrue($model->save(), 'Unable to save model continuously');
+        $this->assertEquals($key, $model->getKey());
     }
 
     public function testLoad()
