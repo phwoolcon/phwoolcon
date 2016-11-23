@@ -27,7 +27,7 @@
         "swiftmailer/swiftmailer": "~5.4.2"
     },
     "suggest": {
-        "ext-swoole": ">=1.8.9"
+        "ext-swoole": "~1.8.9"
     },
     "autoload": {
         "psr-4": {
