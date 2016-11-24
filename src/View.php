@@ -10,7 +10,6 @@ use Phwoolcon\Assets\Resource\Js;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Di;
 use Phalcon\Mvc\View as PhalconView;
-use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Mvc\View\Exception as ViewException;
 use Phwoolcon\Assets\ResourceTrait;
 use Phwoolcon\Daemon\ServiceAwareInterface;
@@ -270,7 +269,7 @@ class View extends PhalconView implements ServiceAwareInterface
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         $flag === null or static::$instance->_options['no_footer'] = (bool)$flag;
-        return static::$instance->_options['no_footer'];
+        return !empty(static::$instance->_options['no_footer']);
     }
 
     public static function noHeader($flag = null)
