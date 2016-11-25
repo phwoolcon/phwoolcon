@@ -28,6 +28,7 @@ class View extends PhalconView implements ServiceAwareInterface
     protected static $runningUnitTest = false;
     protected $config = [];
     protected $_theme;
+    protected $_defaultTheme;
     protected $_loadedThemes = [];
     protected $_viewsDir;
     /**
@@ -42,6 +43,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->setViewsDir($this->_viewsDir = $config['path']);
         $this->_mainView = $config['top_level'];
         $this->_theme = $config['theme'];
+        $this->_defaultTheme = 'default';
         $this->_layout = $config['default_layout'];
         $this->config = $config;
         $this->registerEngines($config['engines']);
@@ -56,7 +58,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $silence = $silence && !$this->config['debug'];
         $this->_options['debug_wrapper'] = $this->config['debug'] ?
             ($viewPath == $this->_mainView ? null : $this->getDebugWrapper($viewPath)) : null;
-        $viewPath == $this->_mainView or $viewPath = trim($this->_theme . '/' . $viewPath, '/');
+        $viewPath == $this->_mainView or $viewPath = $this->getAbsoluteViewPath($viewPath);
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }
 
@@ -131,7 +133,8 @@ class View extends PhalconView implements ServiceAwareInterface
 
     public function getAbsoluteViewPath($view)
     {
-        return $this->_viewsDir . $this->_theme . '/' . $view;
+        $path = $this->_viewsDir . $this->_theme . '/' . $view;
+        return is_file($path) ? $path : $this->_viewsDir . $this->_defaultTheme . '/' . $view;
     }
 
     public static function getConfig($key = null)
@@ -204,6 +207,7 @@ class View extends PhalconView implements ServiceAwareInterface
         if ($flag !== null) {
             $this->_options['is_admin'] = $flag = (bool)$flag;
             $this->_theme = $flag ? 'admin/' . $this->config['admin']['theme'] : $this->config['theme'];
+            $this->_defaultTheme = $flag ? 'admin/default' : 'default';
         }
         return !empty($this->_options['is_admin']);
     }
@@ -311,6 +315,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_disabled = false;
         $this->_options = $this->config['options'];
         $this->_theme = $this->config['theme'];
+        $this->_defaultTheme = 'default';
         $this->_layout = $this->config['default_layout'];
         $this->_cache = null;
         $this->_renderLevel = static::LEVEL_MAIN_LAYOUT;
