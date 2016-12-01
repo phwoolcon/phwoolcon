@@ -77,6 +77,11 @@ class I18n extends Adapter implements ServiceAwareInterface
         static::$instance->undefinedStrings = [];
     }
 
+    public function exists($index)
+    {
+        return isset($this->locale[$this->currentLocale]['combined'][$index]);
+    }
+
     public static function formatPrice($amount, $currency = 'CNY')
     {
         // TODO Use I18n config

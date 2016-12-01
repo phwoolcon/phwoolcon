@@ -321,8 +321,8 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_renderLevel = static::LEVEL_MAIN_LAYOUT;
         $this->_cacheLevel = static::LEVEL_NO_RENDER;
         $this->_content = null;
-        $this->_templatesBefore = null;
-        $this->_templatesAfter = null;
+        $this->_templatesBefore = [];
+        $this->_templatesAfter = [];
         $this->_params = [];
         return $this;
     }
