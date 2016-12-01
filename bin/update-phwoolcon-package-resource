@@ -147,11 +147,21 @@ writeAssetsGroups($assetsGroups);
 writeAdminAssetsGroups($adminAssetsGroups);
 echo PHP_EOL;
 
+try {
+    include $vendorDir . '/phwoolcon/di.php';
+} catch (Exception $e) {
+}
 $ideHelperContent = '<?php' . PHP_EOL;
 $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
 ksort($classAliases);
 foreach ($classAliases as $alias => $class) {
-    $ideHelperContent .= PHP_EOL . "class {$alias} extends {$class}{}" . PHP_EOL;
+    $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
+    $ideHelperContent .= "
+class {$alias} extends {$class}
+{
+{$classContent}
+}
+";
 }
 $ideHelperPath = $baseDir . '/ignore';
 $ideHelperFile = $ideHelperPath . '/_ide_helper.php';

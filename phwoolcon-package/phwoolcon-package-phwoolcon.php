@@ -1,4 +1,8 @@
 <?php
+
+use Phwoolcon\Cli\Command;
+use Phwoolcon\Router\Filter;
+
 return [
     'phwoolcon/phwoolcon' => [
         'di' => [
@@ -6,29 +10,30 @@ return [
         ],
         'commands' => [
             0 => [
-                'clear:cache' => 'Phwoolcon\Cli\Command\ClearCacheCommand',
-                'migrate' => 'Phwoolcon\Cli\Command\Migrate',
-                'migrate:create' => 'Phwoolcon\Cli\Command\MigrateCreate',
-                'migrate:revert' => 'Phwoolcon\Cli\Command\MigrateRevert',
-                'migrate:list' => 'Phwoolcon\Cli\Command\MigrateList',
-                'service' => 'Phwoolcon\Cli\Command\ServiceCommand',
+                'clear:cache' => Command\ClearCacheCommand::class,
+                'migrate' => Command\Migrate::class,
+                'migrate:create' => Command\MigrateCreate::class,
+                'migrate:revert' => Command\MigrateRevert::class,
+                'migrate:list' => Command\MigrateList::class,
+                'service' => Command\ServiceCommand::class,
             ],
         ],
         'class_aliases' => [
             0 => [
-                'Config' => 'Phwoolcon\Config',
-                'Db' => 'Phwoolcon\Db',
-                'I18n' => 'Phwoolcon\I18n',
-                'Log' => 'Phwoolcon\Log',
-                'Queue' => 'Phwoolcon\Queue',
-                'Router' => 'Phwoolcon\Router',
-                'Session' => 'Phwoolcon\Session',
-                'View' => 'Phwoolcon\View',
-                'User' => 'Phwoolcon\Model\User',
-                'Text' => 'Phwoolcon\Text',
-                'DisableSessionFilter' => 'Phwoolcon\Router\Filter\DisableSessionFilter',
-                'DisableCsrfFilter' => 'Phwoolcon\Router\Filter\DisableCsrfFilter',
-                'MultiFilter' => 'Phwoolcon\Router\Filter\MultiFilter',
+                'Config' => Phwoolcon\Config::class,
+                'Db' => Phwoolcon\Db::class,
+                'I18n' => Phwoolcon\I18n::class,
+                'Log' => Phwoolcon\Log::class,
+                'Queue' => Phwoolcon\Queue::class,
+                'Router' => Phwoolcon\Router::class,
+                'Session' => Phwoolcon\Session::class,
+                'View' => Phwoolcon\View::class,
+                'User' => Phwoolcon\Model\User::class,
+                'Text' => Phwoolcon\Text::class,
+                'DisableSessionFilter' => Filter\DisableSessionFilter::class,
+                'DisableCsrfFilter' => Filter\DisableCsrfFilter::class,
+                'MultiFilter' => Filter\MultiFilter::class,
+                'Widget' => Phwoolcon\View\Widget::class,
             ],
         ],
     ],
