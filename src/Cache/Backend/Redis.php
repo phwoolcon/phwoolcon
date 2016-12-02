@@ -64,6 +64,30 @@ class Redis extends PhalconRedis
         $this->_redis = $redis;
     }
 
+    protected function afterRetrieve($content)
+    {
+        if (is_numeric($content)) {
+            return $content;
+        }
+        if (isset($content{1}) && $content{0} == 'g' && $content{1} == 'z') {
+            $content = gzinflate(base64_decode(substr($content, 2)));
+        }
+        return $this->_frontend->afterRetrieve($content);
+    }
+
+    protected function beforeStore($content)
+    {
+        if (is_numeric($content)) {
+            return $content;
+        }
+        $content = $this->_frontend->beforeStore($content);
+        // Compress big content
+        if (strlen($content) > 2048) {
+            $content = 'gz' . base64_encode(gzdeflate($content, 9));
+        }
+        return $content;
+    }
+
     public function decrement($keyName = null, $value = null)
     {
         // @codeCoverageIgnoreStart
@@ -146,7 +170,7 @@ class Redis extends PhalconRedis
         if ($content === false) {
             return null;
         }
-        return is_numeric($content) ? $content : $this->_frontend->afterRetrieve($content);
+        return $this->afterRetrieve($content);
     }
 
     public function increment($keyName = null, $value = null)
@@ -205,7 +229,7 @@ class Redis extends PhalconRedis
         }
         // @codeCoverageIgnoreEnd
         $cachedContent = $content === null ? $frontend->getContent() : $content;
-        $preparedContent = is_numeric($cachedContent) ? $cachedContent : $frontend->beforeStore($cachedContent);
+        $preparedContent = $this->beforeStore($cachedContent);
         if ($lifetime === null) {
             $ttl = $this->_lastLifetime ?: $frontend->getLifetime();
         } else {
