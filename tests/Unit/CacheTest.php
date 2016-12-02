@@ -17,7 +17,14 @@ class CacheTest extends TestCase
     public function testSetAndRemoveCache()
     {
         $cacheKey = 'test.set.cache';
-        $value = 'Some stub';
+        $value = str_repeat('Some stub', 1000);
+        Cache::set($cacheKey, $value);
+        $this->assertEquals($value, Cache::get($cacheKey), 'Unable to set cache');
+        Cache::delete($cacheKey);
+        $this->assertNull(Cache::get($cacheKey), 'Unable to delete cache');
+
+        $cacheKey = 'test.set.cache';
+        $value = 1234;
         Cache::set($cacheKey, $value);
         $this->assertEquals($value, Cache::get($cacheKey), 'Unable to set cache');
         Cache::delete($cacheKey);
