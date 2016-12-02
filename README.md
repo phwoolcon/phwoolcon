@@ -106,4 +106,6 @@ To read the report, please open `index.html` in a web browser.
 * Mail
 * Symfony CLI console
 
+[![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 [中文](README-zh.md)
