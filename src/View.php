@@ -266,7 +266,7 @@ class View extends PhalconView implements ServiceAwareInterface
     public static function make($path, $file, $params = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
-        return static::$instance->reset()->render($path, $file, $params)->getContent();
+        return static::$instance->render($path, $file, $params)->getContent();
     }
 
     public static function noFooter($flag = null)

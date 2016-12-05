@@ -111,8 +111,8 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             $router->handle($uri);
             ($route = $router->getMatchedRoute()) or static::throw404Exception();
             static::$disableSession or Session::start();
-            static::$disableCsrfCheck or static::checkCsrfToken();
             if (($controllerClass = $router->getControllerName()) instanceof Closure) {
+                static::$disableCsrfCheck or static::checkCsrfToken();
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
                     /* @var Response $realResponse */
@@ -124,6 +124,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
                 /* @var Controller $controller */
                 $controller = new $controllerClass;
                 method_exists($controller, 'initialize') and $controller->initialize();
+                static::$disableCsrfCheck or static::checkCsrfToken();
                 method_exists($controller, $method = $router->getActionName()) or static::throw404Exception();
                 $controller->{$method}();
                 $response = $controller->response;
