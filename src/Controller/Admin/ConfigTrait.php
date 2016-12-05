@@ -56,13 +56,17 @@ trait ConfigTrait
 
     protected function submitConfig($key, $data)
     {
-        if (is_string($data)) {
-            $data = json_decode($data, true);
-            if (json_last_error() != JSON_ERROR_NONE) {
-                throw new ValidationException(json_last_error_msg(), json_last_error());
+        if ($data === '' || $data === null) {
+            $value = null;
+        } else {
+            if (is_string($data)) {
+                $data = json_decode($data, true);
+                if (json_last_error() != JSON_ERROR_NONE) {
+                    throw new ValidationException(json_last_error_msg(), json_last_error());
+                }
             }
+            $value = $this->filterConfig($key, $data);
         }
-        $value = $this->filterConfig($key, $data);
         ConfigModel::saveConfig($key, $value);
         Config::clearCache();
         return $value;

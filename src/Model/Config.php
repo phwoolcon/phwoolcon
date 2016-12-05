@@ -53,7 +53,12 @@ class Config extends Model
 
     public static function saveConfig($key, $value)
     {
-        $value = json_encode($value);
+        if ($value === null) {
+            $config = static::findFirstSimple(['key' => $key]);
+            $config and $config->delete();
+            return;
+        }
+        $value = json_encode((array)$value);
         /* @var Config $config */
         $config = new static;
         $config->setData('key', $key)

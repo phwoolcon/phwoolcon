@@ -14,10 +14,8 @@ class ConfigTraitTest extends TestCase
      */
     protected $configTrait;
 
-    public function setUp()
+    protected function addTestConfigs()
     {
-        parent::setUp();
-        $this->configTrait = new TestConfigTrait();
         Config::set('white_listed', [
             '_white_list' => [
                 'foo',
@@ -36,6 +34,13 @@ class ConfigTraitTest extends TestCase
             'foo' => 'bar',
             'hello' => 'world',
         ]);
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->configTrait = new TestConfigTrait();
+        $this->addTestConfigs();
     }
 
     public function testKeyList()
@@ -112,13 +117,30 @@ class ConfigTraitTest extends TestCase
             'hello' => 'word',
         ];
         $rawData = json_encode($data);
+
+        // Test white list
         $key = 'white_listed';
+        $fooKey = $key . '.foo';
+        // Check foo value before submit
+        $this->assertEquals('bar', Config::get($fooKey));
         $submittedData = $this->configTrait->submitConfig($key, $rawData);
         // foo should be kept because it is in white list
         $this->assertEquals(fnGet($submittedData, 'foo'), fnGet($data, 'foo'));
         // hello should be removed because it is not in white list
         $this->assertNotEquals(fnGet($submittedData, 'hello'), fnGet($data, 'hello'));
+        // Check foo value after submit
+        Config::register($this->di);
+        $this->assertEquals('baz', Config::get($fooKey));
+        // Test remove db config
+        $this->addTestConfigs();
+        $this->configTrait->submitConfig($key, '');
+        Config::register($this->di);
+        $this->assertEquals(null, Config::get($fooKey));
 
+        // Reset
+        $this->addTestConfigs();
+
+        // Test Black list
         $key = 'black_listed';
         $submittedData = $this->configTrait->submitConfig($key, $rawData);
         // foo should be removed because it is in black list
@@ -126,6 +148,7 @@ class ConfigTraitTest extends TestCase
         // hello should be kept because it is not in black list
         $this->assertEquals(fnGet($submittedData, 'hello'), fnGet($data, 'hello'));
 
+        // Test undefined key
         $e = false;
         $key = 'protected';
         try {
@@ -134,6 +157,7 @@ class ConfigTraitTest extends TestCase
         }
         $this->assertInstanceOf(ValidationException::class, $e);
 
+        // Test bad data
         $e = false;
         $key = 'white_listed';
         $badData = $rawData . 'oops';
