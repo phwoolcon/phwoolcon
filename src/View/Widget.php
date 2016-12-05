@@ -13,6 +13,8 @@ use ReflectionFunction;
  *
  * @method static string label(array $parameters, string $innerHtml)
  * @uses    Widget::builtInLabel()
+ * @method static string multipleChoose(array $parameters)
+ * @uses    Widget::builtInMultipleChoose()
  * @method static string singleChoose(array $parameters)
  * @uses    Widget::builtInSingleChoose()
  */
@@ -59,6 +61,64 @@ class Widget
     protected static function builtInLabel(array $parameters, $innerHtml)
     {
         return Tag::tagHtml('label', $parameters, false, true) . $innerHtml . Tag::tagHtmlClose('label');
+    }
+
+    /**
+     * Make a multiple select widget, if options < 5 it will be expanded into radios by default
+     *
+     * Required parameters:
+     * 'id', 'options' (in array)
+     * Optional parameters:
+     * 'name', 'class', 'value' (selected value) or other html attributes
+     * 'expand' (true or false, by default 'auto')
+     * 'useEmpty', 'emptyText' (used in select mode)
+     * 'prefix', 'suffix' (used to wrap radios in expanded mode)
+     * 'labelOn' ('left' or 'right', by default 'right', used to identify radios in expanded mode)
+     *
+     * @param array $parameters
+     * @return string
+     */
+    protected static function builtInMultipleChoose(array $parameters)
+    {
+        static::checkRequiredParameters($parameters, ['id', 'options']);
+        $options = (array)$parameters['options'];
+        $parameters[0] = $id = $parameters['id'];
+        $expand = isset($parameters['expand']) ? $parameters['expand'] : 'auto';
+        unset($parameters['options'], $parameters['expand']);
+
+        // Expand select into radio buttons
+        if ($expand === true || ($expand == 'auto' && count($options) < 5)) {
+            $html = [];
+            $i = 0;
+            $radioParams = $parameters;
+            $labelOn = isset($radioParams['labelOn']) ? $radioParams['labelOn'] : 'right';
+            $prefix = isset($radioParams['prefix']) ? $radioParams['prefix'] : '';
+            $suffix = isset($radioParams['suffix']) ? $radioParams['suffix'] : '';
+            unset($radioParams['expand'], $radioParams['labelOn'], $radioParams['prefix'], $radioParams['suffix']);
+            unset($radioParams['options'], $radioParams['useEmpty'], $radioParams['emptyText']);
+            $selected = isset($parameters['value']) ? array_flip((array)$parameters['value']) : [];
+            foreach ($options as $value => $label) {
+                $radioParams['id'] = $radioId = $id . '_' . $i;
+                $radioParams['value'] = $value;
+                if (isset($selected[(string)$value])) {
+                    $radioParams['checked'] = 'checked';
+                } else {
+                    $radioParams['checked'] = null;
+                }
+                $radio = Tag::checkField($radioParams);
+                $labelElement = static::label(['for' => $radioId], $label);
+                if ($labelOn == 'right') {
+                    $radio .= PHP_EOL . $labelElement;
+                } else {
+                    $radio = $labelElement . PHP_EOL . $radio;
+                }
+                ++$i;
+                $html[] = $prefix . $radio . $suffix;
+            }
+            return implode(PHP_EOL, $html);
+        }
+        $parameters['multiple'] = true;
+        return Tag::select($parameters, $options);
     }
 
     /**

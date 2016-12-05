@@ -15,6 +15,88 @@ class WidgetTest extends TestCase
         $this->assertEquals('<label for="world">Hello</label>', $widget);
     }
 
+    public function testMultipleSelect()
+    {
+        // Check required field
+        $e = null;
+        try {
+            Widget::multipleChoose([]);
+        } catch (WidgetException $e) {
+        }
+        $this->assertInstanceOf(WidgetException::class, $e);
+        $this->assertContains('id', $e->getMessage());
+
+        $e = null;
+        try {
+            Widget::multipleChoose(['id' => 'hello']);
+        } catch (WidgetException $e) {
+        }
+        $this->assertInstanceOf(WidgetException::class, $e);
+        $this->assertContains('options', $e->getMessage());
+
+        // Test expanded multiple choose
+        $widget = Widget::multipleChoose([
+            'id' => 'hello',
+            'name' => 'data[hello]',
+            'options' => [
+                'hello' => 'world',
+                'foo' => 'bar',
+            ],
+        ]);
+        $this->assertStringStartsWith('<input ', $widget);
+        $this->assertContains('input type="checkbox" id="hello_0" name="data[hello]" value="hello"', $widget);
+        $this->assertContains('<label for="hello_0">world</label>', $widget);
+        $this->assertContains('input type="checkbox" id="hello_1" name="data[hello]" value="foo"', $widget);
+        $this->assertContains('<label for="hello_1">bar</label>', $widget);
+
+        // Test checked expanded multiple choose with label on left
+        $widget = Widget::multipleChoose([
+            'id' => 'hello',
+            'name' => 'data[hello]',
+            'value' => 'hello',
+            'labelOn' => 'left',
+            'options' => [
+                'hello' => 'world',
+                'foo' => 'bar',
+            ],
+        ]);
+        $this->assertStringStartsWith('<label ', $widget);
+        $expected = 'input type="checkbox" id="hello_0" name="data[hello]" value="hello" checked="checked"';
+        $this->assertContains($expected, $widget);
+        $this->assertContains('<label for="hello_0">world</label>', $widget);
+        $this->assertContains('input type="checkbox" id="hello_1" name="data[hello]" value="foo"', $widget);
+        $this->assertContains('<label for="hello_1">bar</label>', $widget);
+
+        // Test multiple choose with select
+        $widget = Widget::multipleChoose([
+            'id' => 'hello',
+            'name' => 'data[hello]',
+            'expand' => false,
+            'options' => [
+                'hello' => 'world',
+                'foo' => 'bar',
+            ],
+        ]);
+        $this->assertContains('select id="hello" name="data[hello]"', $widget);
+        $this->assertContains('<option value="hello">world</option>', $widget);
+        $this->assertContains('<option value="foo">bar</option>', $widget);
+
+        // Test selected multiple choose with select
+        $widget = Widget::multipleChoose([
+            'id' => 'hello',
+            'name' => 'data[hello]',
+            'value' => ['hello', 'foo'],
+            'expand' => false,
+            'options' => [
+                'hello' => 'world',
+                'foo' => 'bar',
+            ],
+        ]);
+        $this->assertContains('select id="hello" name="data[hello]"', $widget);
+        $this->assertContains('<option selected="selected" value="hello">world</option>', $widget);
+        $this->assertContains('<option selected="selected" value="foo">bar</option>', $widget);
+    }
+
     public function testSingleSelect()
     {
         // Check required field
