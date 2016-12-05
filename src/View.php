@@ -198,6 +198,7 @@ class View extends PhalconView implements ServiceAwareInterface
         static::$instance or static::$instance = static::$di->getShared('view');
         $options = Events::fire('view:generatePhwoolconJsOptions', static::$instance, [
             'baseUrl' => url(''),
+            'debug' => static::$instance->config['debug'],
         ]) ?: [];
         return $options;
     }
