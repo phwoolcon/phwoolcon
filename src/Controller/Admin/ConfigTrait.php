@@ -68,7 +68,6 @@ trait ConfigTrait
             $value = $this->filterConfig($key, $data);
         }
         ConfigModel::saveConfig($key, $value);
-        Config::clearCache();
         return $value;
     }
 }

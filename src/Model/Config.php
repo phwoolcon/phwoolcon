@@ -11,6 +11,7 @@ class Config extends Model
 {
     protected $_table = 'config';
     protected $_useDistributedId = false;
+    protected $_jsonFields = ['value'];
 
     public static function all()
     {
@@ -22,8 +23,7 @@ class Config extends Model
             $config = [];
             /* @var static $row */
             foreach (static::find() as $row) {
-                $value = json_decode($row->getData('value'), true);
-                $config[$row->getData('key')] = $value;
+                $config[$row->getData('key')] = $row->getData('value');
             }
             Cache::set($key, $config, Cache::TTL_ONE_MONTH);
         }
@@ -53,16 +53,30 @@ class Config extends Model
 
     public static function saveConfig($key, $value)
     {
-        if ($value === null) {
-            $config = static::findFirstSimple(['key' => $key]);
-            $config and $config->delete();
-            return;
+        if (false === strpos($key, '.')) {
+            if ($value === null) {
+                if ($config = static::findFirstSimple(['key' => $key])) {
+                    $config->delete();
+                    PhwoolconConfig::clearCache();
+                }
+                return;
+            }
+        } // Ability to save a sub key
+        else {
+            list($key, $subKeys) = explode('.', $key, 2);
+            $subValue = $value;
+            if ($existing = static::findFirstSimple(['key' => $key])) {
+                $value = $existing->getData('value');
+            } else {
+                $value = [];
+            }
+            array_set($value, $subKeys, $subValue);
         }
-        $value = json_encode((array)$value);
         /* @var Config $config */
         $config = new static;
         $config->setData('key', $key)
-            ->setData('value', $value)
+            ->setData('value', (array)$value)
             ->save();
+        PhwoolconConfig::clearCache();
     }
 }
