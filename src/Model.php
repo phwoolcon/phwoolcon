@@ -313,6 +313,16 @@ abstract class Model extends PhalconModel
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
+    public function setRelatedRecord($key, $value)
+    {
+        $this->_related[$key] = $value;
+        $this->_dirtyState = static::DIRTY_STATE_TRANSIENT;
+        return $this;
+    }
+
     public static function setup(array $options)
     {
         PhalconModel::setup($options);
