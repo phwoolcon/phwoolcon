@@ -220,9 +220,24 @@ abstract class Model extends PhalconModel
      * @inheritdoc
      * @codeCoverageIgnore
      */
-    protected function hasManyToMany($fields, $intermediateModel, $intermediateFields, $intermediateReferencedFields, $referenceModel, $referencedFields, $options = null)
-    {
-        return parent::hasManyToMany($fields, static::getInjectedClass($intermediateModel), $intermediateFields, $intermediateReferencedFields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+    protected function hasManyToMany(
+        $fields,
+        $intermediateModel,
+        $intermediateFields,
+        $intermediateReferencedFields,
+        $referenceModel,
+        $referencedFields,
+        $options = null
+    ) {
+        return parent::hasManyToMany(
+            $fields,
+            static::getInjectedClass($intermediateModel),
+            $intermediateFields,
+            $intermediateReferencedFields,
+            static::getInjectedClass($referenceModel),
+            $referencedFields,
+            $options
+        );
     }
 
     /**
