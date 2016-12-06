@@ -131,7 +131,7 @@ abstract class Model extends PhalconModel
      */
     protected function belongsTo($fields, $referenceModel, $referencedFields, $options = null)
     {
-        parent::belongsTo($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+        return parent::belongsTo($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
     }
 
     public function checkDataColumn($column = null)
@@ -213,7 +213,16 @@ abstract class Model extends PhalconModel
      */
     protected function hasMany($fields, $referenceModel, $referencedFields, $options = null)
     {
-        parent::hasMany($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+        return parent::hasMany($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+    }
+
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    protected function hasManyToMany($fields, $intermediateModel, $intermediateFields, $intermediateReferencedFields, $referenceModel, $referencedFields, $options = null)
+    {
+        return parent::hasManyToMany($fields, static::getInjectedClass($intermediateModel), $intermediateFields, $intermediateReferencedFields, static::getInjectedClass($referenceModel), $referencedFields, $options);
     }
 
     /**
@@ -222,7 +231,7 @@ abstract class Model extends PhalconModel
      */
     protected function hasOne($fields, $referenceModel, $referencedFields, $options = null)
     {
-        parent::hasOne($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
+        return parent::hasOne($fields, static::getInjectedClass($referenceModel), $referencedFields, $options);
     }
 
     /**
@@ -419,10 +428,10 @@ abstract class Model extends PhalconModel
     }
 
     /**
-     * @param $conditions
-     * @param array $bind
-     * @param string $orderBy
-     * @param string $columns
+     * @param            $conditions
+     * @param array      $bind
+     * @param string     $orderBy
+     * @param string     $columns
      * @param string|int $limit
      * @return array
      */
