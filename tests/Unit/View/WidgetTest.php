@@ -43,11 +43,12 @@ class WidgetTest extends TestCase
                 'foo' => 'bar',
             ],
         ]);
-        $this->assertStringStartsWith('<input ', $widget);
-        $this->assertContains('input type="checkbox" id="hello_0" name="data[hello]" value="hello"', $widget);
-        $this->assertContains('<label for="hello_0">world</label>', $widget);
-        $this->assertContains('input type="checkbox" id="hello_1" name="data[hello]" value="foo"', $widget);
-        $this->assertContains('<label for="hello_1">bar</label>', $widget);
+        $startsWith = '<label for="hello_0"><input type="checkbox" id="hello_0" name="data[hello]" value="hello"';
+        $this->assertStringStartsWith($startsWith, $widget);
+        $this->assertContains('world</label>', $widget);
+        $contains = '<label for="hello_1"><input type="checkbox" id="hello_1" name="data[hello]" value="foo"';
+        $this->assertContains($contains, $widget);
+        $this->assertStringEndsWith('bar</label>', $widget);
 
         // Test checked expanded multiple choose with label on left
         $widget = Widget::multipleChoose([
@@ -60,12 +61,11 @@ class WidgetTest extends TestCase
                 'foo' => 'bar',
             ],
         ]);
-        $this->assertStringStartsWith('<label ', $widget);
+        $this->assertStringStartsWith('<label for="hello_0">world', $widget);
         $expected = 'input type="checkbox" id="hello_0" name="data[hello]" value="hello" checked="checked"';
         $this->assertContains($expected, $widget);
-        $this->assertContains('<label for="hello_0">world</label>', $widget);
+        $this->assertContains('<label for="hello_1">bar', $widget);
         $this->assertContains('input type="checkbox" id="hello_1" name="data[hello]" value="foo"', $widget);
-        $this->assertContains('<label for="hello_1">bar</label>', $widget);
 
         // Test multiple choose with select
         $widget = Widget::multipleChoose([
@@ -125,11 +125,12 @@ class WidgetTest extends TestCase
                 'foo' => 'bar',
             ],
         ]);
-        $this->assertStringStartsWith('<input ', $widget);
-        $this->assertContains('input type="radio" id="hello_0" name="data[hello]" value="hello"', $widget);
-        $this->assertContains('<label for="hello_0">world</label>', $widget);
-        $this->assertContains('input type="radio" id="hello_1" name="data[hello]" value="foo"', $widget);
-        $this->assertContains('<label for="hello_1">bar</label>', $widget);
+        $startsWith = '<label for="hello_0"><input type="radio" id="hello_0" name="data[hello]" value="hello"';
+        $this->assertStringStartsWith($startsWith, $widget);
+        $this->assertContains('world</label>', $widget);
+        $contains = '<label for="hello_1"><input type="radio" id="hello_1" name="data[hello]" value="foo"';
+        $this->assertContains($contains, $widget);
+        $this->assertStringEndsWith('bar</label>', $widget);
 
         // Test checked expanded single choose with label on left
         $widget = Widget::singleChoose([
@@ -142,12 +143,11 @@ class WidgetTest extends TestCase
                 'foo' => 'bar',
             ],
         ]);
-        $this->assertStringStartsWith('<label ', $widget);
+        $this->assertStringStartsWith('<label for="hello_0">world', $widget);
         $expected = 'input type="radio" id="hello_0" name="data[hello]" value="hello" checked="checked"';
         $this->assertContains($expected, $widget);
-        $this->assertContains('<label for="hello_0">world</label>', $widget);
+        $this->assertContains('<label for="hello_1">bar', $widget);
         $this->assertContains('input type="radio" id="hello_1" name="data[hello]" value="foo"', $widget);
-        $this->assertContains('<label for="hello_1">bar</label>', $widget);
 
         // Test single choose with select
         $widget = Widget::singleChoose([
