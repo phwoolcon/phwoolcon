@@ -105,15 +105,15 @@ class Widget
                 } else {
                     $radioParams['checked'] = null;
                 }
-                $radio = Tag::checkField($radioParams);
-                $labelElement = static::label(['for' => $radioId], $label);
+                $checkbox = Tag::checkField($radioParams);
                 if ($labelOn == 'right') {
-                    $radio .= PHP_EOL . $labelElement;
+                    $checkbox .= PHP_EOL . $label;
                 } else {
-                    $radio = $labelElement . PHP_EOL . $radio;
+                    $checkbox = $label . PHP_EOL . $checkbox;
                 }
+                $checkbox = static::label(['for' => $radioId], $checkbox);
                 ++$i;
-                $html[] = $prefix . $radio . $suffix;
+                $html[] = $prefix . $checkbox . $suffix;
             }
             return implode(PHP_EOL, $html);
         }
@@ -164,12 +164,12 @@ class Widget
                     $radioParams['checked'] = null;
                 }
                 $radio = Tag::radioField($radioParams);
-                $labelElement = static::label(['for' => $radioId], $label);
                 if ($labelOn == 'right') {
-                    $radio .= PHP_EOL . $labelElement;
+                    $radio .= PHP_EOL . $label;
                 } else {
-                    $radio = $labelElement . PHP_EOL . $radio;
+                    $radio = $label . PHP_EOL . $radio;
                 }
+                $radio = static::label(['for' => $radioId], $radio);
                 ++$i;
                 $html[] = $prefix . $radio . $suffix;
             }
