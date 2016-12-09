@@ -161,7 +161,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         }
         if (is_string($handler)) {
             list($controller, $action) = explode('::', $handler);
-            $handler = compact('controller', 'action');
+            $handler = ['controller' => $controller, 'action' => $action];
         } elseif ($handler instanceof Closure) {
             $handler = ['controller' => $handler];
         }

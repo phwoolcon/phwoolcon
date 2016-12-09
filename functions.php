@@ -425,30 +425,56 @@ function symlinkRelative($source, $destination)
     return (bool)$result;
 }
 
-function url($path, $queries = [], $secure = null)
+function url($path, array $queries = null, $secure = null)
 {
+    // Store the variables which are almost unchanged between invocations as static
+    /* @var \Phalcon\Http\Request $request */
+    static $config, $request, $baseDirs = [], $hostComponents;
+    $hostComponents === null and $hostComponents = parse_url(Config::get('app.url'));
+    $config === null and $config = [
+        'enable_https' => Config::get('app.enable_https'),
+        'secure_routes' => Config::get('app.secure_routes'),
+        'host' => (isset($hostComponents['host']) ? $hostComponents['host'] :
+                'localhost') . (isset($hostComponents['port']) ? ':' . $hostComponents['port'] : ''),
+    ];
+    $request === null and $request = Di::getDefault()['request'];
+
     if (isHttpUrl($path)) {
         return $path;
     }
+
+    // Decide http or https
     $path = trim($path, '/');
-    if (Config::get('app.enable_https')) {
+    if ($config['enable_https']) {
         Text::startsWith($path, 'admin', false) and $secure = true;
-        $secure === null && (null !== $configValue = Config::get('app.secure_routes.' . $path)) and $secure = $configValue;
-        // TODO Detection https via proxy
-        $secure === null and $secure = Di::getDefault()['request']->getScheme() === 'https';
+        $secure === null && isset($config['secure_routes'][$path]) and $secure = $config['secure_routes'][$path];
+        // TODO Detect https via proxy
+        $secure === null and $secure = $request->getScheme() === 'https';
     } else {
         $secure = false;
     }
     $protocol = $secure ? 'https://' : 'http://';
-    $host = fnGet($_SERVER, 'HTTP_HOST') ?: parse_url(Config::get('app.url'), PHP_URL_HOST);
-    $base = $_SERVER['SCRIPT_NAME'];
-    $base = trim(dirname($base), '/');
-    $base and $base .= '/';
-    $url = $protocol . $host . '/' . $base;
-    $url .= $path;
-    if ($queries && is_array($queries)) {
-        $queries = http_build_query($queries);
+
+    // Decide host
+    $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $config['host'];
+
+    // Decide base dir
+    $scriptName = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+    if (isset($baseDirs[$scriptName])) {
+        $base = $baseDirs[$scriptName];
+    } else {
+        $base = $scriptName;
+        $base = trim(dirname($base), '/');
+        $base and $base .= '/';
+        $baseDirs[$scriptName] = $base;
     }
-    $queries && is_string($queries) and $url .= '?' . str_replace('?', '', $queries);
+    $url = $protocol . $host . '/' . $base;
+
+    // Apply path and queries
+    $url .= $path;
+    if ($queries !== null) {
+        $delimiter = strpos($path, '?') === false ? '?' : '&';
+        $url .= $delimiter . http_build_query($queries);
+    }
     return $url;
 }
