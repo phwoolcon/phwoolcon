@@ -429,9 +429,10 @@ function url($path, array $queries = null, $secure = null)
 {
     // Store the variables which are almost unchanged between invocations as static
     /* @var \Phalcon\Http\Request $request */
-    static $config, $request, $baseDirs = [], $hostComponents;
+    static $runningUnitTest, $config, $request, $baseDirs = [], $hostComponents;
+    $runningUnitTest === null and $runningUnitTest = Config::runningUnitTest();
     $hostComponents === null and $hostComponents = parse_url(Config::get('app.url'));
-    $config === null and $config = [
+    $config === null || $runningUnitTest === true and $config = [
         'enable_https' => Config::get('app.enable_https'),
         'secure_routes' => Config::get('app.secure_routes'),
         'host' => (isset($hostComponents['host']) ? $hostComponents['host'] :
