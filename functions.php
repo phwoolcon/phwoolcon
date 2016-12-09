@@ -189,9 +189,11 @@ function fileSaveInclude($target, array $includes)
         if (Text::startsWith($file, $_SERVER['PHWOOLCON_ROOT_PATH'])) {
             $relativePath = str_replace($_SERVER['PHWOOLCON_ROOT_PATH'], '', $file);
             $content .= "include ROOT_PATH . '{$relativePath}';" . PHP_EOL;
-        } else {
+        } // @codeCoverageIgnoreStart
+        else {
             $content .= "include '{$file}';" . PHP_EOL;
         }
+        // @codeCoverageIgnoreEnd
     }
     file_put_contents($target, $content);
 }
@@ -414,9 +416,11 @@ function symlinkRelative($source, $destination)
     if ($targetDir = dirname($destination)) {
         is_dir($targetDir) or mkdir($targetDir, 0755, true);
     }
+    // @codeCoverageIgnoreStart
     if (Text::startsWith(PHP_OS, 'WIN')) {
         return copy($source, $destination);
     }
+    // @codeCoverageIgnoreEnd
     $cwd = getcwd();
     $relativePath = getRelativePath($destination, $source);
     chdir(dirname($destination));
