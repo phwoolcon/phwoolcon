@@ -2,6 +2,7 @@
 namespace Phwoolcon;
 
 use Closure;
+use Opis\Closure\SerializableClosure;
 use Phalcon\Di;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
@@ -16,6 +17,7 @@ use Phwoolcon\Exception\HttpException;
  * Class Router
  * @package Phwoolcon
  *
+ * @property Route[] $_routes
  * @method Route add($pattern, $paths = null, $httpMethods = null, $position = Router::POSITION_LAST)
  */
 class Router extends PhalconRouter implements ServiceAwareInterface
@@ -34,6 +36,9 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     protected $_uriSource = self::URI_SOURCE_SERVER_REQUEST_URI;
     protected $_sitePathPrefix;
     protected $_sitePathLength;
+
+    protected static $cacheFile;
+
     /**
      * @var Response\Cookies
      */
@@ -54,8 +59,14 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         }
         // @codeCoverageIgnoreEnd
         $this->removeExtraSlashes(true);
-        $routes = is_file($file = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/app/routes.php') ? include $file : [];
-        is_array($routes) and $this->addRoutes($routes);
+        if (Config::get('app.cache_routes')) {
+            if (!$this->loadLocalCache()) {
+                $this->loadRoutes();
+                $this->saveLocalCache();
+            }
+        } else {
+            $this->loadRoutes();
+        }
         $this->cookies = static::$di->getShared('cookies');
         $this->response = static::$di->getShared('response');
         $this->response->setStatusCode(200);
@@ -81,6 +92,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         if ($request->isPost() && $request->get('_token') != Session::getCsrfToken()) {
             self::throwCsrfException();
         }
+    }
+
+    public static function clearCache()
+    {
+        is_file($file = static::$cacheFile) and unlink($file);
     }
 
     public static function disableCsrfCheck()
@@ -111,7 +127,9 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             $router->handle($uri);
             ($route = $router->getMatchedRoute()) or static::throw404Exception();
             static::$disableSession or Session::start();
-            if (($controllerClass = $router->getControllerName()) instanceof Closure) {
+            $controllerClass = $router->getControllerName();
+            $controllerClass instanceof SerializableClosure and $controllerClass = $controllerClass->getClosure();
+            if ($controllerClass instanceof Closure) {
                 static::$disableCsrfCheck or static::checkCsrfToken();
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
@@ -143,6 +161,31 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         return View::make('errors', $template, ['page_title' => $pateTitle]);
     }
 
+    protected function loadLocalCache()
+    {
+        if (!is_file(static::$cacheFile)) {
+            return false;
+        }
+        try {
+            if ($routes = include static::$cacheFile) {
+                $this->_routes = unserialize($routes);
+                return true;
+            }
+        } // @codeCoverageIgnoreStart
+        catch (\Exception $e) {
+            Log::exception($e);
+        }
+        return false;
+        // @codeCoverageIgnoreEnd
+    }
+
+    protected function loadRoutes()
+    {
+        $this->_routes = [];
+        $routes = is_file($file = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/app/routes.php') ? include $file : [];
+        is_array($routes) and $this->addRoutes($routes);
+    }
+
     public function prefix($prefix, array $routes, $filter = null)
     {
         $this->addRoutes($routes, $prefix, $filter);
@@ -152,7 +195,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     public function quickAdd($method, $uri, $handler, $filter = null)
     {
         $uri{0} == '/' or $uri = '/' . $uri;
-        if (is_array($handler)) {
+        if ($isArrayHandler = is_array($handler)) {
             if (!$filter && isset($handler['filter'])) {
                 $filter = $handler['filter'];
                 unset($handler['filter']);
@@ -163,7 +206,9 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             list($controller, $action) = explode('::', $handler);
             $handler = ['controller' => $controller, 'action' => $action];
         } elseif ($handler instanceof Closure) {
-            $handler = ['controller' => $handler];
+            $handler = ['controller' => new SerializableClosure($handler)];
+        } elseif ($isArrayHandler && isset($handler['controller']) && $handler['controller'] instanceof Closure) {
+            $handler['controller'] = new SerializableClosure($handler['controller']);
         }
         $method == 'ANY' and $method = null;
         $method == 'GET' and $method = ['GET', 'HEAD'];
@@ -176,6 +221,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     public static function register(Di $di)
     {
         static::$di = $di;
+        static::$cacheFile = storagePath('cache/routes.php');
         $di->remove('router');
         $di->setShared('router', function () {
             return new static();
@@ -190,6 +236,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         $this->response->setContent('')
             ->resetHeaders()
             ->setStatusCode(200);
+    }
+
+    protected function saveLocalCache()
+    {
+        fileSaveArray(static::$cacheFile, serialize($this->_routes));
     }
 
     public static function staticReset()

@@ -3,6 +3,7 @@ namespace Phwoolcon\Tests\Unit;
 
 use Exception;
 use Phalcon\Http\Response;
+use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\Exception\Http\CsrfException;
 use Phwoolcon\Exception\Http\ForbiddenException;
@@ -206,5 +207,15 @@ class RouterTest extends TestCase
     public function testGenerateErrorPage()
     {
         $this->assertEquals('404 NOT FOUND', Router::generateErrorPage('404', '404 PAGE TITLE'));
+    }
+
+    public function testCachedRoutes()
+    {
+        Config::set('app.cache_routes', true);
+        Router::clearCache();
+        Router::register($this->di);
+        $this->testClosureRoutes();
+        Router::clearCache();
+        Config::set('app.cache_routes', false);
     }
 }

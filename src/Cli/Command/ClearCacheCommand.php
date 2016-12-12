@@ -7,6 +7,7 @@ use Phwoolcon\Config;
 use Phwoolcon\Db;
 use Phwoolcon\Events;
 use Phwoolcon\I18n;
+use Phwoolcon\Router;
 use Phwoolcon\View;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -20,6 +21,7 @@ class ClearCacheCommand extends Command
             new InputOption('meta-only', 'm', InputOption::VALUE_NONE, 'Clear model metadata only'),
             new InputOption('locale-only', 'l', InputOption::VALUE_NONE, 'Clear locale cache only'),
             new InputOption('assets-only', 'a', InputOption::VALUE_NONE, 'Clear assets cache only'),
+            new InputOption('routes-only', 'r', InputOption::VALUE_NONE, 'Clear routes cache only'),
         ])->setDescription('Clears cache');
     }
 
@@ -46,9 +48,15 @@ class ClearCacheCommand extends Command
             View::clearAssetsCache();
             $this->info('Assets cache cleared.');
         }
+        if ($this->input->getOption('routes-only')) {
+            $clearAll = false;
+            Router::clearCache();
+            $this->info('Routes cache cleared.');
+        }
         if ($clearAll) {
             Cache::flush();
             Config::clearCache();
+            Router::clearCache();
             $this->info('Cache cleared.');
         }
         Events::fire('cache:after_clear', $this);
