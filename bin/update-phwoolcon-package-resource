@@ -4,6 +4,7 @@
  * This file will be copied into directory "vendor/bin" after installation
  */
 
+use Phalcon\Text;
 use Phalcon\Version;
 use Phwoolcon\Cache;
 use Phwoolcon\Config;
@@ -147,27 +148,108 @@ writeAssetsGroups($assetsGroups);
 writeAdminAssetsGroups($adminAssetsGroups);
 echo PHP_EOL;
 
+generateModelTraits();
+
 try {
-    include $vendorDir . '/phwoolcon/di.php';
+    include $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
 } catch (Exception $e) {
 }
-$ideHelperContent = '<?php' . PHP_EOL;
-$classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
-ksort($classAliases);
-foreach ($classAliases as $alias => $class) {
-    $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
-    $ideHelperContent .= "
+generateIdeHelper();
+
+function generateIdeHelper()
+{
+    $ideHelperContent = '<?php' . PHP_EOL;
+    $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
+    ksort($classAliases);
+    foreach ($classAliases as $alias => $class) {
+        $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
+        $ideHelperContent .= "
 class {$alias} extends {$class}
 {
 {$classContent}
 }
 ";
+    }
+    $ideHelperPath = $GLOBALS['baseDir'] . '/ignore';
+    $ideHelperFile = $ideHelperPath . '/_ide_helper.php';
+    is_dir($ideHelperPath) or mkdir($ideHelperPath, 0755, true);
+    file_put_contents($ideHelperFile, $ideHelperContent);
+    echo 'IDE helper generated', PHP_EOL;
 }
-$ideHelperPath = $baseDir . '/ignore';
-$ideHelperFile = $ideHelperPath . '/_ide_helper.php';
-is_dir($ideHelperPath) or mkdir($ideHelperPath, 0755, true);
-file_put_contents($ideHelperFile, $ideHelperContent);
-echo 'IDE helper generated', PHP_EOL;
+
+function generateModelTraits()
+{
+    try {
+        if ($GLOBALS['firstRun'] || !Config::get('database.default')) {
+            return;
+        }
+        $traitTemplate = <<<'TRAIT'
+trait TraitName
+{
+    protected $_table = 'table_name';
+
+properties
+methods
+}
+
+TRAIT;
+        $propertiesTemplate = <<<'PROPERTY'
+    public $property;
+PROPERTY;
+        $methodsTemplate = <<<'METHOD'
+
+    public function getMethod()
+    {
+        return $this->property;
+    }
+
+    public function setMethod($value)
+    {
+        $this->property = $value;
+        return $this;
+    }
+METHOD;
+
+        $traits = [];
+        $db = Db::connection();
+        foreach ($db->listTables() as $table) {
+            $traitName = Text::camelize($table) . 'ModelTrait';
+            $properties = [];
+            $methods = [];
+            /* @var \Phalcon\Db\Column $column */
+            foreach ($db->describeColumns($table) as $column) {
+                $propertyName = $column->getName();
+                $properties[] = str_replace('property', $propertyName, $propertiesTemplate);
+                $methods[] = str_replace([
+                    'Method',
+                    'property',
+                    'value',
+                ], [
+                    $methodName = Text::camelize($propertyName),
+                    $propertyName,
+                    lcfirst($methodName),
+                ], $methodsTemplate);
+            }
+            $traits[] = str_replace([
+                'table_name',
+                'TraitName',
+                'properties',
+                'methods',
+            ], [
+                $table,
+                $traitName,
+                implode(PHP_EOL, $properties),
+                implode(PHP_EOL, $methods),
+            ], $traitTemplate);
+        }
+        $content = implode(PHP_EOL, $traits);
+        $target = $GLOBALS['vendorDir'] . '/phwoolcon/model_traits.php';
+        file_put_contents($target, '<?php' . PHP_EOL . $content);
+        echo 'Dynamic model traits generated', PHP_EOL;
+    } catch (Exception $e) {
+        return;
+    }
+}
 
 function installConfig($package, $path, $configPath)
 {
