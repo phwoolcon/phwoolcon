@@ -186,7 +186,7 @@ function generateModelTraits()
         $traitTemplate = <<<'TRAIT'
 trait TraitName
 {
-    protected $_table = 'table_name';
+    // protected $_table = 'table_name';
 
 properties
 methods
