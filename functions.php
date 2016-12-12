@@ -312,7 +312,7 @@ function removeDir($dir)
     }
 }
 
-function secureUrl($path, $queries = [])
+function secureUrl($path, array $queries = [])
 {
     return url($path, $queries, true);
 }
@@ -429,7 +429,7 @@ function symlinkRelative($source, $destination)
     return (bool)$result;
 }
 
-function url($path, array $queries = null, $secure = null)
+function url($path, array $queries = [], $secure = null)
 {
     // Store the variables which are almost unchanged between invocations as static
     /* @var \Phalcon\Http\Request $request */
@@ -477,7 +477,7 @@ function url($path, array $queries = null, $secure = null)
 
     // Apply path and queries
     $url .= $path;
-    if ($queries !== null) {
+    if ($queries) {
         $delimiter = strpos($path, '?') === false ? '?' : '&';
         $url .= $delimiter . http_build_query($queries);
     }
