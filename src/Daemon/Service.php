@@ -68,6 +68,7 @@ class Service
         }
         // @codeCoverageIgnoreEnd
 
+        defined('PHWOOLCON_SERVICE_MODE') or define('PHWOOLCON_SERVICE_MODE', true);
         foreach ($_SERVER as $k => $v) {
             substr($k, 0, 10) == 'PHWOOLCON_' and $this->environmentVariables[$k] = $v;
         }
