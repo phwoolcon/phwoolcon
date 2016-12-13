@@ -19,6 +19,10 @@ use Phwoolcon\View;
 
 $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
 
+if (is_file($modelTraitFile = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolcon/model_traits.php')) {
+    include $modelTraitFile;
+}
+
 Events::register($di);
 DiFix::register($di);
 Db::register($di);
@@ -36,7 +40,3 @@ Queue::register($di);
 Loader::register($di);
 
 $loader->registerNamespaces(Config::get('app.autoload.namespaces', []), true);
-
-if (is_file($modelTraitFile = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolcon/model_traits.php')) {
-    include $modelTraitFile;
-}
