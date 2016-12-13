@@ -209,6 +209,30 @@ PROPERTY;
         return $this;
     }
 METHOD;
+        $findMethodsTemplate = <<<'FIND'
+
+    /**
+     * @param $value
+     * @return static[]|\Phalcon\Mvc\Model\Resultset\Simple
+     */
+    public static function findByMethod($value)
+    {
+        return static::findSimple([
+            'property' => $value,
+        ]);
+    }
+
+    /**
+     * @param $value
+     * @return static|false
+     */
+    public static function findFirstByMethod($value)
+    {
+        return static::findFirstSimple([
+            'property' => $value,
+        ]);
+    }
+FIND;
 
         $traits = [];
         $db = Db::connection();
@@ -216,19 +240,30 @@ METHOD;
             $traitName = Text::camelize($table) . 'ModelTrait';
             $properties = [];
             $methods = [];
+            /* @var \Phalcon\Db\Index $index */
+            $indexedProperties = [];
+            foreach ($db->describeIndexes($table) as $index) {
+                $columns = $index->getColumns();
+                $firstColumn = reset($columns);
+                $indexedProperties[$firstColumn] = $firstColumn;
+            }
             /* @var \Phalcon\Db\Column $column */
             foreach ($db->describeColumns($table) as $column) {
                 $propertyName = $column->getName();
                 $properties[] = str_replace('property', $propertyName, $propertiesTemplate);
-                $methods[] = str_replace([
+                $methods[] = str_replace($methodsSearch = [
                     'Method',
                     'property',
                     'value',
-                ], [
+                ], $methodsReplacement = [
                     $methodName = Text::camelize($propertyName),
                     $propertyName,
                     lcfirst($methodName),
                 ], $methodsTemplate);
+
+                if (isset($indexedProperties[$propertyName])) {
+                    $methods[] = str_replace($methodsSearch, $methodsReplacement, $findMethodsTemplate);
+                }
             }
             $traits[] = str_replace([
                 'table_name',
@@ -242,7 +277,16 @@ METHOD;
                 implode(PHP_EOL, $methods),
             ], $traitTemplate);
         }
-        $content = implode(PHP_EOL, $traits);
+        $content = <<<'CONTENT'
+if (defined('PHWOOLCON_MODELS_TRAIT_LOADED')) {
+    return;
+}
+define('PHWOOLCON_MODELS_TRAIT_LOADED', true);
+
+
+CONTENT;
+
+        $content .= implode(PHP_EOL, $traits);
         $target = $GLOBALS['vendorDir'] . '/phwoolcon/model_traits.php';
         file_put_contents($target, '<?php' . PHP_EOL . $content);
         echo 'Dynamic model traits generated', PHP_EOL;
