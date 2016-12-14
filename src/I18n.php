@@ -42,7 +42,7 @@ class I18n extends Adapter implements ServiceAwareInterface
         $this->options = $options;
         $this->loadLocale($this->defaultLocale);
         $this->undefinedStringsLogFile = storagePath($options['undefined_strings_log']);
-        is_file($this->undefinedStringsLogFile) and $this->undefinedStrings = include $this->undefinedStringsLogFile;
+        $this->loadUndefinedLocaleStrings();
         $this->reset();
     }
 
@@ -129,10 +129,15 @@ class I18n extends Adapter implements ServiceAwareInterface
         return $this;
     }
 
-    protected function logUndefinedLocaleString()
+    protected function loadUndefinedLocaleStrings()
+    {
+        is_file($file = $this->undefinedStringsLogFile) and $this->undefinedStrings = include $file;
+        return $this;
+    }
+
+    protected function logUndefinedLocaleStrings()
     {
         $file = $this->undefinedStringsLogFile;
-        is_file($file) and $this->undefinedStrings = include $file;
         fileSaveArray($file, $this->undefinedStrings);
     }
 
@@ -146,8 +151,9 @@ class I18n extends Adapter implements ServiceAwareInterface
         } else {
             if (!isset($this->undefinedStrings[$locale][$package][$string])) {
                 Log::warning("I18n: locale string not found: '{$string}'");
+                $this->loadUndefinedLocaleStrings();
                 $this->undefinedStrings[$locale][$package][$string] = true;
-                $this->logUndefinedLocaleString();
+                $this->logUndefinedLocaleStrings();
             }
             $translation = $string;
         }
