@@ -148,7 +148,7 @@ class I18n extends Adapter implements ServiceAwareInterface
             $this->logUndefinedLocaleString($string, $package);
             $translation = $string;
         }
-        return $this->replacePlaceholders($translation, $params);
+        return $params ? $this->replacePlaceholders($translation, $params) : $translation;
     }
 
     public static function register(Di $di)
