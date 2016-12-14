@@ -89,6 +89,23 @@ class RouterTest extends TestCase
         $this->assertFalse($this->getView()->isAdmin());
     }
 
+    public function testRegexRoutes()
+    {
+        $expected = var_export([
+            $what = 'regex',
+            'what' => $what,
+        ], 1);
+        $response = $this->dispatch("/test/{$what}/regex-route");
+        $this->assertEquals($expected, $response->getContent());
+
+        $expected = var_export([
+            $what = 'foo',
+            'what' => $what,
+        ], 1);
+        $response = $this->dispatch("/test/{$what}/regex-route");
+        $this->assertEquals($expected, $response->getContent());
+    }
+
     public function testFilteredRoutes()
     {
         $response = $this->dispatch('/test-filtered-route', 'POST');

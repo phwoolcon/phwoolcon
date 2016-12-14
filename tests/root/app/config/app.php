@@ -8,6 +8,7 @@ return [
     'version' => '1.0.x-dev',
     'cache_config' => false,
     'enable_https' => false,
+    'use_lite_router' => true,
     'secure_routes' => [],
     'autoload' => [
         'namespaces' => [

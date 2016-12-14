@@ -213,9 +213,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             foreach ($regexRoutes as $pattern => $route) {
                 if (preg_match($pattern, $handledUri, $matches)) {
                     if ($beforeMatch = $route->getBeforeMatch()) {
+                        // @codeCoverageIgnoreStart
                         if (!call_user_func_array($beforeMatch, [$handledUri, $route, $this])) {
                             continue;
                         }
+                        // @codeCoverageIgnoreEnd
                     }
 
                     $paths = $route->getPaths();
@@ -237,9 +239,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
                             /**
                              * Remove the path if the parameter was not matched
                              */
+                            // @codeCoverageIgnoreStart
                             if ($isPositionInt) {
                                 unset($parts[$part]);
                             }
+                            // @codeCoverageIgnoreEnd
                         }
                     }
 
@@ -453,6 +457,9 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         throw new CsrfException($content, ['content-type' => $contentType]);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public static function useLiteHandler($flag = null)
     {
         $flag === null or static::$useLiteHandler = (bool)$flag;

@@ -27,6 +27,15 @@ $this->prefix('/prefix', [
 
 return [
     'GET' => [
+        'test/{what}/regex-route' => [
+            'controller' => function () {
+                /* @var Router $this */
+                return var_export($this->getParams(), 1);
+            },
+            'params' => 1,          // Test params mapping
+            'module' => 'foo',      // Just to cover codes,
+            'namespace' => 'bar',   // phwoolcon don't use module and namespace
+        ],
         'test-closure-route' => function () {
             return 'Test Closure Route Content';
         },
