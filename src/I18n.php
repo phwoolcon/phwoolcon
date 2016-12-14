@@ -77,6 +77,9 @@ class I18n extends Adapter implements ServiceAwareInterface
         static::$instance->undefinedStrings = [];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function exists($index)
     {
         return isset($this->locale[$this->currentLocale]['combined'][$index]);
@@ -126,26 +129,26 @@ class I18n extends Adapter implements ServiceAwareInterface
         return $this;
     }
 
-    protected function logUndefinedLocaleString($string, $package)
+    protected function logUndefinedLocaleString()
     {
-        $package = (string)$package;
-        if (isset($this->undefinedStrings[$this->currentLocale][$package][$string])) {
-            return;
-        }
-        Log::warning("I18n: locale string not found: '{$string}'");
-        is_file($this->undefinedStringsLogFile) and $this->undefinedStrings = include $this->undefinedStringsLogFile;
-        $this->undefinedStrings[$this->currentLocale][$package][$string] = true;
-        fileSaveArray($this->undefinedStringsLogFile, $this->undefinedStrings);
+        $file = $this->undefinedStringsLogFile;
+        is_file($file) and $this->undefinedStrings = include $file;
+        fileSaveArray($file, $this->undefinedStrings);
     }
 
     public function query($string, $params = null, $package = null)
     {
-        if ($package && isset($this->locale[$this->currentLocale]['packages'][$package][$string])) {
-            $translation = $this->locale[$this->currentLocale]['packages'][$package][$string];
-        } elseif (isset($this->locale[$this->currentLocale]['combined'][$string])) {
-            $translation = $this->locale[$this->currentLocale]['combined'][$string];
+        $locale = $this->currentLocale;
+        if ($package && isset($this->locale[$locale]['packages'][$package][$string])) {
+            $translation = $this->locale[$locale]['packages'][$package][$string];
+        } elseif (isset($this->locale[$locale]['combined'][$string])) {
+            $translation = $this->locale[$locale]['combined'][$string];
         } else {
-            $this->logUndefinedLocaleString($string, $package);
+            if (!isset($this->undefinedStrings[$locale][$package][$string])) {
+                Log::warning("I18n: locale string not found: '{$string}'");
+                $this->undefinedStrings[$locale][$package][$string] = true;
+                $this->logUndefinedLocaleString();
+            }
             $translation = $string;
         }
         return $params ? $this->replacePlaceholders($translation, $params) : $translation;
