@@ -7,6 +7,7 @@ use Phalcon\Di;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Router as PhalconRouter;
+use Phalcon\Mvc\Router\Exception;
 use Phalcon\Mvc\Router\Route;
 use Phwoolcon\Daemon\ServiceAwareInterface;
 use Phwoolcon\Exception\Http\CsrfException;
@@ -29,6 +30,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     protected static $disableSession = false;
     protected static $disableCsrfCheck = false;
     protected static $runningUnitTest = false;
+    protected static $useLiteHandler = true;
+    /**
+     * @var Request
+     */
+    protected static $request;
     /**
      * @var static
      */
@@ -48,10 +54,21 @@ class Router extends PhalconRouter implements ServiceAwareInterface
      */
     protected $response;
 
+    /**
+     * @var Route[][]
+     */
+    protected $exactRoutes;
+
+    /**
+     * @var Route[][]
+     */
+    protected $regexRoutes;
+
     public function __construct()
     {
         parent::__construct(false);
         static::$runningUnitTest = Config::runningUnitTest();
+        static::$useLiteHandler = Config::get('app.use_lite_router');
         // @codeCoverageIgnoreStart
         if ($this->_sitePathPrefix = Config::get('app.site_path')) {
             $this->_uriSource = self::URI_SOURCE_GET_URL;
@@ -87,8 +104,8 @@ class Router extends PhalconRouter implements ServiceAwareInterface
 
     public static function checkCsrfToken()
     {
-        /* @var Request $request */
-        $request = static::$di->getShared('request');
+        static::$request or static::$request = static::$di->getShared('request');
+        $request = static::$request;
         if ($request->isPost() && $request->get('_token') != Session::getCsrfToken()) {
             self::throwCsrfException();
         }
@@ -124,7 +141,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             }
             // @codeCoverageIgnoreEnd
             Events::fire('router:before_dispatch', $router, ['uri' => $uri]);
-            $router->handle($uri);
+            static::$useLiteHandler ? $router->liteHandle($uri) : $router->handle($uri);
             ($route = $router->getMatchedRoute()) or static::throw404Exception();
             static::$disableSession or Session::start();
             $controllerClass = $router->getControllerName();
@@ -159,6 +176,155 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     public static function generateErrorPage($template, $pateTitle)
     {
         return View::make('errors', $template, ['page_title' => $pateTitle]);
+    }
+
+    public function liteHandle($uri = null)
+    {
+        static::$request or static::$request = static::$di->getShared('request');
+        $request = static::$request;
+
+        $this->exactRoutes === null and $this->splitRoutes();
+
+        $realUri = $uri === null ? $this->getRewriteUri() : $uri;
+        $handledUri = $realUri === '/' ? $realUri : rtrim($realUri, '/');
+
+        $this->_matches = null;
+        $this->_wasMatched = true;
+        $this->_matchedRoute = null;
+
+        $this->_namespace = $this->_defaultNamespace;
+        $this->_module = $this->_defaultModule;
+        $this->_controller = $this->_defaultController;
+        $this->_action = $this->_defaultAction;
+        $this->_params = $this->_defaultParams;
+
+        $httpMethod = $request->getMethod();
+        $matchedRoute = null;
+        if (isset($this->exactRoutes[$httpMethod][$handledUri])) {
+            $matchedRoute = $this->exactRoutes[$httpMethod][$handledUri];
+            if ($beforeMatch = $matchedRoute->getBeforeMatch()) {
+                if (!call_user_func_array($beforeMatch, [$handledUri, $matchedRoute, $this])) {
+                    $matchedRoute = null;
+                }
+            }
+        }
+        if ($matchedRoute === null) {
+            $regexRoutes = isset($this->regexRoutes[$httpMethod]) ? $this->regexRoutes[$httpMethod] : [];
+            foreach ($regexRoutes as $pattern => $route) {
+                if (preg_match($pattern, $handledUri, $matches)) {
+                    if ($beforeMatch = $route->getBeforeMatch()) {
+                        if (!call_user_func_array($beforeMatch, [$handledUri, $route, $this])) {
+                            continue;
+                        }
+                    }
+
+                    $paths = $route->getPaths();
+                    $parts = $paths;
+
+                    foreach ($paths as $part => $position) {
+                        $isPositionInt = is_int($position);
+                        $isPositionString = is_string($position);
+                        if (!$isPositionInt && !$isPositionString) {
+                            continue;
+                        }
+
+                        if (isset($matches[$position])) {
+                            /**
+                             * Update the parts
+                             */
+                            $parts[$part] = $matches[$position];
+                        } else {
+                            /**
+                             * Remove the path if the parameter was not matched
+                             */
+                            if ($isPositionInt) {
+                                unset($parts[$part]);
+                            }
+                        }
+                    }
+
+                    /**
+                     * Update the matches generated by preg_match
+                     */
+                    $this->_matches = $matches;
+
+                    $matchedRoute = $route;
+                    break;
+                }
+            }
+        }
+        if ($matchedRoute) {
+            $this->_matchedRoute = $matchedRoute;
+            $this->_wasMatched = true;
+
+            isset($paths) or $paths = $matchedRoute->getPaths();
+            isset($parts) or $parts = $paths;
+
+            /**
+             * Check for a namespace
+             */
+            if (isset($parts['namespace'])) {
+                $namespace = $parts['namespace'];
+                if (!is_numeric($namespace)) {
+                    $this->_namespace = $namespace;
+                }
+                unset($parts['namespace']);
+            }
+
+            /**
+             * Check for a module
+             */
+            if (isset($parts['module'])) {
+                $module = $parts['module'];
+                if (!is_numeric($module)) {
+                    $this->_module = $module;
+                }
+                unset($parts['module']);
+            }
+
+            /**
+             * Check for a controller
+             */
+            if (isset($parts['controller'])) {
+                $controller = $parts['controller'];
+                if (!is_numeric($controller)) {
+                    $this->_controller = $controller;
+                }
+                unset($parts['controller']);
+            }
+
+            /**
+             * Check for an action
+             */
+            if (isset($parts['action'])) {
+                $action = $parts['action'];
+                if (!is_numeric($action)) {
+                    $this->_action = $action;
+                }
+                unset($parts['action']);
+            }
+
+            $params = [];
+            /**
+             * Check for parameters
+             */
+            if (isset($parts['params'])) {
+                $paramsStr = $parts['params'];
+                if (is_string($paramsStr)) {
+                    $strParams = trim($paramsStr, '/');
+                    if ($strParams !== '') {
+                        $params = explode('/', $strParams);
+                    }
+                }
+                unset($parts['params']);
+            }
+
+            if ($params) {
+                $this->_params = array_merge($params, $parts);
+            } else {
+                $this->_params = $parts;
+            }
+        }
     }
 
     protected function loadLocalCache()
@@ -243,6 +409,30 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         fileSaveArray(static::$cacheFile, serialize($this->_routes));
     }
 
+    protected function splitRoutes()
+    {
+        $exactRoutes = [];
+        $regexRoutes = [];
+        /* @var Route[] $routes */
+        $routes = array_reverse($this->_routes);
+        foreach ($routes as $route) {
+            $pattern = $route->getCompiledPattern();
+            $methods = (array)$route->getHttpMethods();
+            $methods or $methods = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'];
+            if ($pattern{0} === '#') {
+                foreach ($methods as $method) {
+                    $regexRoutes[$method][$pattern] = $route;
+                }
+            } else {
+                foreach ($methods as $method) {
+                    $exactRoutes[$method][$pattern] = $route;
+                }
+            }
+        }
+        $this->exactRoutes = $exactRoutes;
+        $this->regexRoutes = $regexRoutes;
+    }
+
     public static function staticReset()
     {
         static::$router === null and static::$router = static::$di->getShared('router');
@@ -261,5 +451,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         !$content && static::$runningUnitTest and $content = '403 FORBIDDEN';
         $content or $content = static::generateErrorPage('csrf', '403 FORBIDDEN');
         throw new CsrfException($content, ['content-type' => $contentType]);
+    }
+
+    public static function useLiteHandler($flag = null)
+    {
+        $flag === null or static::$useLiteHandler = (bool)$flag;
+        return static::$useLiteHandler;
     }
 }

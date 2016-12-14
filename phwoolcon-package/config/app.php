@@ -14,6 +14,7 @@ return [
     'cache_routes' => false,
     'enable_https' => false,
     'secure_routes' => [],
+    'use_lite_router' => true,
     'autoload' => [
         'namespaces' => [
         ],
