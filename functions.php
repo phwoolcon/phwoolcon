@@ -179,7 +179,9 @@ function fileSaveArray($filename, $array, callable $filter = null)
 {
     $content = var_export($array, true);
     $filter and $content = call_user_func($filter, $content);
-    return file_put_contents($filename, '<?php return ' . $content . ';');
+    $result = file_put_contents($filename, '<?php return ' . $content . ';');
+    opcache_invalidate($filename, true);
+    return $result;
 }
 
 function fileSaveInclude($target, array $includes)
@@ -195,7 +197,9 @@ function fileSaveInclude($target, array $includes)
         }
         // @codeCoverageIgnoreEnd
     }
-    file_put_contents($target, $content);
+    $result = file_put_contents($target, $content);
+    opcache_invalidate($target, true);
+    return $result;
 }
 
 /**
