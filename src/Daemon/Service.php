@@ -379,9 +379,7 @@ class Service
         ]);
         $this->onReceive($server, $fd, $fromId, $data);
         $microTime = explode(' ', microtime());
-        /* @var Router $router */
-        $router = static::$di->getShared('router');
-        $pathInfo = strtr($router->getRewriteUri(), ['/' => '|']);
+        $pathInfo = strtr(Router::getCurrentUri(), ['/' => '|']);
         $reportFile = $microTime[1] . '-' . substr($microTime[0], 2) . '-' . $_SERVER['REQUEST_METHOD'] . $pathInfo;
         $this->profiler or $this->profiler = new XHProfRuns_Default($this->profilerDir);
         $this->profiler->save_run(xhprof_disable(), 'service', $reportFile);

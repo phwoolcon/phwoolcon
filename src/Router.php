@@ -31,6 +31,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     protected static $disableCsrfCheck = false;
     protected static $runningUnitTest = false;
     protected static $useLiteHandler = true;
+    protected static $currentUri = null;
     /**
      * @var Request
      */
@@ -141,7 +142,12 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             }
             // @codeCoverageIgnoreEnd
             Events::fire('router:before_dispatch', $router, ['uri' => $uri]);
-            static::$useLiteHandler ? $router->liteHandle($uri) : $router->handle($uri);
+
+            $realUri = $uri === null ? $router->getRewriteUri() : $uri;
+            $handledUri = $realUri === '/' ? $realUri : rtrim($realUri, '/');
+            static::$currentUri = $handledUri;
+
+            static::$useLiteHandler ? $router->liteHandle($handledUri) : $router->handle($handledUri);
             ($route = $router->getMatchedRoute()) or static::throw404Exception();
             static::$disableSession or Session::start();
             $controllerClass = $router->getControllerName();
@@ -178,15 +184,17 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         return View::make('errors', $template, ['page_title' => $pateTitle]);
     }
 
-    public function liteHandle($uri = null)
+    public static function getCurrentUri()
+    {
+        return self::$currentUri;
+    }
+
+    public function liteHandle($uri)
     {
         static::$request or static::$request = static::$di->getShared('request');
         $request = static::$request;
 
         $this->exactRoutes === null and $this->splitRoutes();
-
-        $realUri = $uri === null ? $this->getRewriteUri() : $uri;
-        $handledUri = $realUri === '/' ? $realUri : rtrim($realUri, '/');
 
         $this->_matches = null;
         $this->_wasMatched = true;
@@ -200,10 +208,10 @@ class Router extends PhalconRouter implements ServiceAwareInterface
 
         $httpMethod = $request->getMethod();
         $matchedRoute = null;
-        if (isset($this->exactRoutes[$httpMethod][$handledUri])) {
-            $matchedRoute = $this->exactRoutes[$httpMethod][$handledUri];
+        if (isset($this->exactRoutes[$httpMethod][$uri])) {
+            $matchedRoute = $this->exactRoutes[$httpMethod][$uri];
             if ($beforeMatch = $matchedRoute->getBeforeMatch()) {
-                if (!call_user_func_array($beforeMatch, [$handledUri, $matchedRoute, $this])) {
+                if (!call_user_func_array($beforeMatch, [$uri, $matchedRoute, $this])) {
                     $matchedRoute = null;
                 }
             }
@@ -211,10 +219,10 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         if ($matchedRoute === null) {
             $regexRoutes = isset($this->regexRoutes[$httpMethod]) ? $this->regexRoutes[$httpMethod] : [];
             foreach ($regexRoutes as $pattern => $route) {
-                if (preg_match($pattern, $handledUri, $matches)) {
+                if (preg_match($pattern, $uri, $matches)) {
                     if ($beforeMatch = $route->getBeforeMatch()) {
                         // @codeCoverageIgnoreStart
-                        if (!call_user_func_array($beforeMatch, [$handledUri, $route, $this])) {
+                        if (!call_user_func_array($beforeMatch, [$uri, $route, $this])) {
                             continue;
                         }
                         // @codeCoverageIgnoreEnd
@@ -402,6 +410,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     {
         static::$disableSession = false;
         static::$disableCsrfCheck = false;
+        static::$currentUri = null;
         $this->cookies->reset();
         $this->response->setContent('')
             ->resetHeaders()
