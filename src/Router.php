@@ -434,11 +434,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             $methods or $methods = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'];
             if ($pattern{0} === '#') {
                 foreach ($methods as $method) {
-                    $regexRoutes[$method][$pattern] = $route;
+                    isset($regexRoutes[$method][$pattern]) or $regexRoutes[$method][$pattern] = $route;
                 }
             } else {
                 foreach ($methods as $method) {
-                    $exactRoutes[$method][$pattern] = $route;
+                    isset($exactRoutes[$method][$pattern]) or $exactRoutes[$method][$pattern] = $route;
                 }
             }
         }
