@@ -151,7 +151,12 @@ echo PHP_EOL;
 generateModelTraits();
 
 try {
-    include $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
+    if (!$firstRun) {
+        spl_autoload_register(function ($class) {
+            throw new Exception("Class '{$class}' not found");
+        });
+        include $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
+    }
 } catch (Exception $e) {
 }
 generateIdeHelper();
