@@ -467,7 +467,7 @@ abstract class Model extends PhalconModel
             $params['order'] = $orderBy;
         }
         if ($columns) {
-            $params['columns'] = is_array($columns) ? explode(',', $columns) : $columns;
+            $params['columns'] = is_array($columns) ? implode(',', $columns) : $columns;
         }
         if (is_int($limit)) {
             $params['limit'] = $limit;
