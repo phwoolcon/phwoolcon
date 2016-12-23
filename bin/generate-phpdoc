@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+cd "$(dirname "$( dirname "${BASH_SOURCE[0]}" )")"
+
+if [ ! -d "ignore/phpdoc" ]; then
+    mkdir -p ignore/phpdoc
+fi
+cd ignore/phpdoc
+
+if [ ! -d "vendor" ]; then
+    composer require phwoolcon/phpdoc-markdown-public
+else
+    file_m_time=`stat -c %Y composer.lock`
+    current_time=`date +%s`
+    diff=$(( current_time - file_m_time ))
+    if [ ${diff} -gt 86400 ]; then
+        composer update
+        touch composer.lock
+    fi
+fi
+
+cd ../..
+
+rm -rf docs && ignore/phpdoc/vendor/bin/phpdoc

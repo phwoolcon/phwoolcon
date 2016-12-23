@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>Phwoolcon Api Reference</title>
+    <parser>
+        <target>ignore/phpdoc/docs-build</target>
+        <default-package-name>Phwoolcon</default-package-name>
+    </parser>
+    <transformer>
+        <target>docs</target>
+    </transformer>
+    <files>
+        <directory>src</directory>
+        <file>functions.php</file>
+    </files>
+    <transformations>
+        <template name="ignore/phpdoc/vendor/phwoolcon/phpdoc-markdown-public/data/templates/markdown-public"/>
+    </transformations>
+</phpdoc>

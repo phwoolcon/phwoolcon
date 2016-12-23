@@ -206,15 +206,22 @@ function fileSaveInclude($target, array $includes)
  * Safely get child value from an array or an object
  *
  * Usage:
- * Assume you want to get value from a multidimensional array like: $array = ['l1' => ['l2' => 'value']],
+ *
+ * Assume you want to get value from a multidimensional array like: <code>$array = ['l1' => ['l2' => 'value']]</code>,<br>
  * then you can try following:
+ *
+ * <code>
  * $l1 = fnGet($array, 'l1'); // returns ['l2' => 'value']
  * $l2 = fnGet($array, 'l1.l2'); // returns 'value'
  * $undefined = fnGet($array, 'l3'); // returns null
+ * </code>
  *
  * You can specify default value for undefined keys, and the key separator:
+ *
+ * <code>
  * $l2 = fnGet($array, 'l1/l2', null, '/'); // returns 'value'
  * $undefined = fnGet($array, 'l3', 'default value'); // returns 'default value'
+ * </code>
  *
  * @param array|object $array     Subject array or object
  * @param string       $key       Indicates the data element of the target value
