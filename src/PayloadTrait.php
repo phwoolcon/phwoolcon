@@ -3,7 +3,7 @@ namespace Phwoolcon;
 
 use ErrorException;
 
-trait PayloadTait
+trait PayloadTrait
 {
     protected $data;
 

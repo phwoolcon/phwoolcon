@@ -3,5 +3,5 @@ namespace Phwoolcon;
 
 class Payload
 {
-    use PayloadTait;
+    use PayloadTrait;
 }
