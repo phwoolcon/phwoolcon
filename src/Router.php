@@ -157,7 +157,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
                     /* @var Response $realResponse */
-                    $realResponse = static::$di->getShared('response');
+                    $realResponse = $router->response;
                     $realResponse->setContent($response);
                     $response = $realResponse;
                 }
