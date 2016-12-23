@@ -42,6 +42,7 @@ before_script:
   - phpenv config-add php-ext.ini
   - pear install PHP_CodeSniffer
   - phpenv rehash
+  - php --ri phalcon
   - php --ri swoole
 
 script:

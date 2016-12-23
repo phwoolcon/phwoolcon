@@ -5,4 +5,3 @@ composer require techpivot/phalcon-ci-installer
 vendor/bin/install-phalcon.sh
 cd ..
 rm -rf tmp-techpivot-phalcon
-php --ri phalcon
