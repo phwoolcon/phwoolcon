@@ -24,6 +24,8 @@ If you have bugs in service mode, you can easily turn off the service
 mode, you loose some speed (but still fast) to gain more stability,  
 fix your bugs and apply service mode again.
 
+[API Reference](docs/ApiIndex.md)
+
 # Usage
 
 ## Installation
@@ -105,6 +107,7 @@ To read the report, please open `index.html` in a web browser.
 * Finite state machine
 * Mail
 * Symfony CLI console
+
 
 [![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
