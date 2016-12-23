@@ -354,7 +354,7 @@ function showTrace($exit = true, $print = true)
  * Values with smaller sort order will be overridden by bigger ones.
  *
  * Example:
- *
+ * <code>
  *  $array = [
  *      10 => [                 // 10 is a sort order
  *          'foo' => 'bar',     // Holds value 'bar' in key 'foo'
@@ -366,13 +366,16 @@ function showTrace($exit = true, $print = true)
  *      ],
  *  ];
  *  var_export($result = arraySortedMerge($array));
+ * </code>
  *
  * Will produce:
+ * <code>
  *  $result = [
  *      'foo' => 'baz',
  *      'who' => 'me',
  *      'hello' => 'world',
  *  ];
+ * </code>
  *
  * @param array $array
  * @return array

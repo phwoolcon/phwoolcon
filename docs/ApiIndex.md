@@ -14984,6 +14984,7 @@ Values with smaller sort order will be overridden by bigger ones.
 
 Example:
 
+```php
  $array = [
      10 => [                 // 10 is a sort order
          'foo' => 'bar',     // Holds value 'bar' in key 'foo'
@@ -14995,13 +14996,17 @@ Example:
      ],
  ];
  var_export($result = arraySortedMerge($array));
+```
 
 Will produce:
+
+```php
  $result = [
      'foo' => 'baz',
      'who' => 'me',
      'hello' => 'world',
  ];
+```
 
 
 **Parameters:**
