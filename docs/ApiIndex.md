@@ -1,4 +1,4 @@
-# Phwoolcon Api Reference
+# Phwoolcon API Reference
 
 ## Table of Contents
 
@@ -694,7 +694,7 @@ Functions:
 
 <a name="--construct">&nbsp;</a>
 
-### __construct <kbd>abstract</kbd>
+### __construct
 ```php
 Adapter::__construct(  $options )
 ```
@@ -1781,7 +1781,7 @@ Cli::register( \Phalcon\Di $di )
 
 <a name="--construct-4">&nbsp;</a>
 
-### __construct <kbd>abstract</kbd>
+### __construct
 ```php
 Command::__construct(  $name, \Phalcon\Di $di )
 ```
@@ -1807,7 +1807,7 @@ Command::__construct(  $name, \Phalcon\Di $di )
 
 <a name="ask">&nbsp;</a>
 
-### ask <kbd>abstract</kbd>
+### ask
 ```php
 Command::ask(  $question,  $default = null )
 ```
@@ -1833,7 +1833,7 @@ Command::ask(  $question,  $default = null )
 
 <a name="comment">&nbsp;</a>
 
-### comment <kbd>abstract</kbd>
+### comment
 ```php
 Command::comment(  $messages )
 ```
@@ -1858,7 +1858,7 @@ Command::comment(  $messages )
 
 <a name="confirm">&nbsp;</a>
 
-### confirm <kbd>abstract</kbd>
+### confirm
 ```php
 Command::confirm(  $question,  $default = true )
 ```
@@ -1884,7 +1884,7 @@ Command::confirm(  $question,  $default = true )
 
 <a name="createprogressbar">&nbsp;</a>
 
-### createProgressBar <kbd>abstract</kbd>
+### createProgressBar
 ```php
 Command::createProgressBar(  $max )
 ```
@@ -1909,7 +1909,7 @@ Command::createProgressBar(  $max )
 
 <a name="error">&nbsp;</a>
 
-### error <kbd>abstract</kbd>
+### error
 ```php
 Command::error(  $messages )
 ```
@@ -1934,7 +1934,7 @@ Command::error(  $messages )
 
 <a name="execute">&nbsp;</a>
 
-### execute <kbd>abstract</kbd>
+### execute
 ```php
 Command::execute( \Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output )
 ```
@@ -1960,7 +1960,7 @@ Command::execute( \Symfony\Component\Console\Input\InputInterface $input, \Symfo
 
 <a name="fire-1">&nbsp;</a>
 
-### fire <kbd>abstract</kbd>
+### fire
 ```php
 Command::fire(  )
 ```
@@ -1978,7 +1978,7 @@ Command::fire(  )
 
 <a name="getdi-1">&nbsp;</a>
 
-### getDi <kbd>abstract</kbd>
+### getDi
 ```php
 Command::getDi(  ): \Phalcon\Di
 ```
@@ -1997,7 +1997,7 @@ Command::getDi(  ): \Phalcon\Di
 
 <a name="info">&nbsp;</a>
 
-### info <kbd>abstract</kbd>
+### info
 ```php
 Command::info(  $messages )
 ```
@@ -2022,7 +2022,7 @@ Command::info(  $messages )
 
 <a name="question">&nbsp;</a>
 
-### question <kbd>abstract</kbd>
+### question
 ```php
 Command::question(  $messages )
 ```
@@ -2047,7 +2047,7 @@ Command::question(  $messages )
 
 <a name="setdi">&nbsp;</a>
 
-### setDi <kbd>abstract</kbd>
+### setDi
 ```php
 Command::setDi( \Phalcon\Di $di ): $this
 ```
@@ -2953,7 +2953,7 @@ Class Controller
 
 <a name="addpagetitle">&nbsp;</a>
 
-### addPageTitle <kbd>abstract</kbd>
+### addPageTitle
 ```php
 Controller::addPageTitle(  $title )
 ```
@@ -2977,7 +2977,7 @@ Controller::addPageTitle(  $title )
 
 <a name="getbrowsercache">&nbsp;</a>
 
-### getBrowserCache <kbd>abstract</kbd>
+### getBrowserCache
 ```php
 Controller::getBrowserCache(  $pageId = null,  $type = null )
 ```
@@ -3002,7 +3002,7 @@ Controller::getBrowserCache(  $pageId = null,  $type = null )
 
 <a name="getcontentetag">&nbsp;</a>
 
-### getContentEtag <kbd>abstract</kbd>
+### getContentEtag
 ```php
 Controller::getContentEtag(  &$content )
 ```
@@ -3026,7 +3026,7 @@ Controller::getContentEtag(  &$content )
 
 <a name="initialize-1">&nbsp;</a>
 
-### initialize <kbd>abstract</kbd>
+### initialize
 ```php
 Controller::initialize(  )
 ```
@@ -3044,7 +3044,7 @@ Controller::initialize(  )
 
 <a name="render">&nbsp;</a>
 
-### render <kbd>abstract</kbd>
+### render
 ```php
 Controller::render(  $path,  $view, array $params = array() )
 ```
@@ -3070,7 +3070,7 @@ Controller::render(  $path,  $view, array $params = array() )
 
 <a name="setbrowsercache">&nbsp;</a>
 
-### setBrowserCache <kbd>abstract</kbd>
+### setBrowserCache
 ```php
 Controller::setBrowserCache(  $pageId = null,  $type = null,  $ttl = \Phwoolcon\Cache::TTL_ONE_WEEK )
 ```
@@ -3096,7 +3096,7 @@ Controller::setBrowserCache(  $pageId = null,  $type = null,  $ttl = \Phwoolcon\
 
 <a name="setbrowsercacheheaders">&nbsp;</a>
 
-### setBrowserCacheHeaders <kbd>abstract</kbd>
+### setBrowserCacheHeaders
 ```php
 Controller::setBrowserCacheHeaders(  $eTag,  $ttl = \Phwoolcon\Cache::TTL_ONE_WEEK )
 ```
@@ -7338,7 +7338,7 @@ Class Model
 
 <a name="--call">&nbsp;</a>
 
-### __call <kbd>abstract</kbd>
+### __call
 ```php
 Model::__call(  $method,  $arguments )
 ```
@@ -7364,7 +7364,7 @@ Model::__call(  $method,  $arguments )
 
 <a name="adddata">&nbsp;</a>
 
-### addData <kbd>abstract</kbd>
+### addData
 ```php
 Model::addData( array $data )
 ```
@@ -7389,7 +7389,7 @@ Model::addData( array $data )
 
 <a name="afterfetch">&nbsp;</a>
 
-### afterFetch <kbd>abstract</kbd>
+### afterFetch
 ```php
 Model::afterFetch(  )
 ```
@@ -7408,7 +7408,7 @@ Model::afterFetch(  )
 
 <a name="buildparams">&nbsp;</a>
 
-### buildParams <kbd>static</kbd> <kbd>abstract</kbd>
+### buildParams <kbd>static</kbd>
 ```php
 Model::buildParams(  $conditions = array(), array $bind = array(), string $orderBy = null, string $columns = null, string|integer $limit = null ): array
 ```
@@ -7437,7 +7437,7 @@ Model::buildParams(  $conditions = array(), array $bind = array(), string $order
 
 <a name="checkdatacolumn">&nbsp;</a>
 
-### checkDataColumn <kbd>abstract</kbd>
+### checkDataColumn
 ```php
 Model::checkDataColumn(  $column = null )
 ```
@@ -7462,7 +7462,7 @@ Model::checkDataColumn(  $column = null )
 
 <a name="cleardata">&nbsp;</a>
 
-### clearData <kbd>abstract</kbd>
+### clearData
 ```php
 Model::clearData(  )
 ```
@@ -7481,7 +7481,7 @@ Model::clearData(  )
 
 <a name="countsimple">&nbsp;</a>
 
-### countSimple <kbd>static</kbd> <kbd>abstract</kbd>
+### countSimple <kbd>static</kbd>
 ```php
 Model::countSimple( array $conditions = array(), array $bind = array() ): mixed
 ```
@@ -7507,7 +7507,7 @@ Model::countSimple( array $conditions = array(), array $bind = array() ): mixed
 
 <a name="findfirstsimple">&nbsp;</a>
 
-### findFirstSimple <kbd>static</kbd> <kbd>abstract</kbd>
+### findFirstSimple <kbd>static</kbd>
 ```php
 Model::findFirstSimple( array|string $conditions, array $bind = array(), string $order = null, string $columns = null ): $this|false
 ```
@@ -7535,7 +7535,7 @@ Model::findFirstSimple( array|string $conditions, array $bind = array(), string 
 
 <a name="findsimple">&nbsp;</a>
 
-### findSimple <kbd>static</kbd> <kbd>abstract</kbd>
+### findSimple <kbd>static</kbd>
 ```php
 Model::findSimple(  $conditions = array(), array $bind = array(), string $order = null, string $columns = null, string|integer $limit = null ): \Phalcon\Mvc\Model\Resultset\Simple|\Phalcon\Mvc\Model\ResultsetInterface
 ```
@@ -7564,7 +7564,7 @@ Model::findSimple(  $conditions = array(), array $bind = array(), string $order 
 
 <a name="generatedistributedid">&nbsp;</a>
 
-### generateDistributedId <kbd>abstract</kbd>
+### generateDistributedId
 ```php
 Model::generateDistributedId(  )
 ```
@@ -7583,7 +7583,7 @@ Model::generateDistributedId(  )
 
 <a name="getadditionaldata">&nbsp;</a>
 
-### getAdditionalData <kbd>abstract</kbd>
+### getAdditionalData
 ```php
 Model::getAdditionalData(  $key = null )
 ```
@@ -7608,7 +7608,7 @@ Model::getAdditionalData(  $key = null )
 
 <a name="getdata">&nbsp;</a>
 
-### getData <kbd>abstract</kbd>
+### getData
 ```php
 Model::getData(  $key = null )
 ```
@@ -7633,7 +7633,7 @@ Model::getData(  $key = null )
 
 <a name="getid">&nbsp;</a>
 
-### getId <kbd>abstract</kbd>
+### getId
 ```php
 Model::getId(  )
 ```
@@ -7652,7 +7652,7 @@ Model::getId(  )
 
 <a name="getinjectedclass">&nbsp;</a>
 
-### getInjectedClass <kbd>abstract</kbd>
+### getInjectedClass
 ```php
 Model::getInjectedClass(  $class )
 ```
@@ -7677,7 +7677,7 @@ Model::getInjectedClass(  $class )
 
 <a name="getmessages-1">&nbsp;</a>
 
-### getMessages <kbd>abstract</kbd> <kbd>magic</kbd>
+### getMessages <kbd>magic</kbd>
 ```php
 Model::getMessages( string $filter = null ): array<mixed,\Phalcon\Mvc\Model\Message>
 ```
@@ -7701,7 +7701,7 @@ Model::getMessages( string $filter = null ): array<mixed,\Phalcon\Mvc\Model\Mess
 
 <a name="getstringmessages">&nbsp;</a>
 
-### getStringMessages <kbd>abstract</kbd>
+### getStringMessages
 ```php
 Model::getStringMessages(  )
 ```
@@ -7720,7 +7720,7 @@ Model::getStringMessages(  )
 
 <a name="getwriteconnection-1">&nbsp;</a>
 
-### getWriteConnection <kbd>abstract</kbd> <kbd>magic</kbd>
+### getWriteConnection <kbd>magic</kbd>
 ```php
 Model::getWriteConnection(  ): \Phwoolcon\Db\Adapter\Pdo\Mysql|\Phalcon\Db\Adapter\Pdo
 ```
@@ -7738,7 +7738,7 @@ Model::getWriteConnection(  ): \Phwoolcon\Db\Adapter\Pdo\Mysql|\Phalcon\Db\Adapt
 
 <a name="initialize">&nbsp;</a>
 
-### initialize <kbd>abstract</kbd>
+### initialize
 ```php
 Model::initialize(  )
 ```
@@ -7757,7 +7757,7 @@ Runs once, only when the model instance is created at the first time
 
 <a name="isnew">&nbsp;</a>
 
-### isNew <kbd>abstract</kbd>
+### isNew
 ```php
 Model::isNew(  )
 ```
@@ -7776,7 +7776,7 @@ Model::isNew(  )
 
 <a name="reset-2">&nbsp;</a>
 
-### reset <kbd>abstract</kbd>
+### reset
 ```php
 Model::reset(  )
 ```
@@ -7795,7 +7795,7 @@ Model::reset(  )
 
 <a name="setdata">&nbsp;</a>
 
-### setData <kbd>abstract</kbd>
+### setData
 ```php
 Model::setData(  $key,  $value = null )
 ```
@@ -7821,7 +7821,7 @@ Model::setData(  $key,  $value = null )
 
 <a name="setid">&nbsp;</a>
 
-### setId <kbd>abstract</kbd>
+### setId
 ```php
 Model::setId(  $id )
 ```
@@ -7846,7 +7846,7 @@ Model::setId(  $id )
 
 <a name="setrelatedrecord">&nbsp;</a>
 
-### setRelatedRecord <kbd>abstract</kbd>
+### setRelatedRecord
 ```php
 Model::setRelatedRecord(  $key,  $value )
 ```
@@ -7872,7 +7872,7 @@ Model::setRelatedRecord(  $key,  $value )
 
 <a name="setup">&nbsp;</a>
 
-### setup <kbd>static</kbd> <kbd>abstract</kbd>
+### setup <kbd>static</kbd>
 ```php
 Model::setup( array $options )
 ```
@@ -7897,7 +7897,7 @@ Model::setup( array $options )
 
 <a name="sqlexecute">&nbsp;</a>
 
-### sqlExecute <kbd>abstract</kbd>
+### sqlExecute
 ```php
 Model::sqlExecute(  $sql, null $bind = null ): boolean
 ```
@@ -7923,7 +7923,7 @@ Model::sqlExecute(  $sql, null $bind = null ): boolean
 
 <a name="sqlfetchall">&nbsp;</a>
 
-### sqlFetchAll <kbd>abstract</kbd>
+### sqlFetchAll
 ```php
 Model::sqlFetchAll(  $sql, null $bind = null ): array
 ```
@@ -7949,7 +7949,7 @@ Model::sqlFetchAll(  $sql, null $bind = null ): array
 
 <a name="sqlfetchcolumn">&nbsp;</a>
 
-### sqlFetchColumn <kbd>abstract</kbd>
+### sqlFetchColumn
 ```php
 Model::sqlFetchColumn(  $sql, null $bind = null ): mixed
 ```
@@ -7975,7 +7975,7 @@ Model::sqlFetchColumn(  $sql, null $bind = null ): mixed
 
 <a name="sqlfetchone">&nbsp;</a>
 
-### sqlFetchOne <kbd>abstract</kbd>
+### sqlFetchOne
 ```php
 Model::sqlFetchOne(  $sql, null $bind = null ): array
 ```
@@ -8001,7 +8001,7 @@ Model::sqlFetchOne(  $sql, null $bind = null ): array
 
 <a name="validation">&nbsp;</a>
 
-### validation <kbd>abstract</kbd>
+### validation
 ```php
 Model::validation(  )
 ```

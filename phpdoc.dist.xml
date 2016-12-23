@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdoc>
-    <title>Phwoolcon Api Reference</title>
+    <title>Phwoolcon API Reference</title>
     <parser>
         <target>ignore/phpdoc/docs-build</target>
         <default-package-name>Phwoolcon</default-package-name>
