@@ -452,4 +452,31 @@ class FunctionsTest extends TestCase
         $this->assertFileNotExists($targetFile);
         $this->assertFileNotExists($fileToBeIncluded);
     }
+
+    public function testEscape()
+    {
+        $text = '<script>alert(1);</script>';
+        $expected = '&lt;script&gt;alert(1);&lt;/script&gt;';
+        $this->assertEquals($expected, _e($text));
+    }
+
+    public function testArraySortedMerge()
+    {
+        $array = [
+            10 => [                 // 10 is a sort order
+                'foo' => 'bar',     // Holds value 'bar' in key 'foo'
+                'who' => 'me',
+            ],
+            20 => [                 // 20 is a bigger sort order
+                'foo' => 'baz',     // This will override the key 'foo' with value 'baz'
+                'hello' => 'world', // New values will be merged
+            ],
+        ];
+        $expected = [
+            'foo' => 'baz',
+            'who' => 'me',
+            'hello' => 'world',
+        ];
+        $this->assertEquals($expected, arraySortedMerge($array));
+    }
 }

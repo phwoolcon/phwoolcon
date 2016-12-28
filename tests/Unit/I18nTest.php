@@ -1,6 +1,7 @@
 <?php
 namespace Phwoolcon\Tests\Unit;
 
+use Phwoolcon\Cache\Clearer;
 use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\I18n;
@@ -14,7 +15,7 @@ class I18nTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        I18n::clearCache();
+        Clearer::clear(Clearer::TYPE_LOCALE);
     }
 
     public function testTranslate()

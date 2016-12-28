@@ -7,6 +7,7 @@ use Phalcon\Version;
 use PHPUnit_Framework_TestCase;
 use Phwoolcon\Aliases;
 use Phwoolcon\Cache;
+use Phwoolcon\Cache\Clearer;
 use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\Db;
@@ -71,8 +72,7 @@ class TestCase extends PHPUnit_Framework_TestCase
         I18n::register($di);
         Cookies::register($di);
         Session::register($di);
-        Cache::flush();
-        Config::clearCache();
+        Clearer::clear();
         parent::setUp();
 
         $class = get_class($this);

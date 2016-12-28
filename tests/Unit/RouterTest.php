@@ -3,6 +3,7 @@ namespace Phwoolcon\Tests\Unit;
 
 use Exception;
 use Phalcon\Http\Response;
+use Phwoolcon\Cache\Clearer;
 use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\Exception\Http\CsrfException;
@@ -229,10 +230,10 @@ class RouterTest extends TestCase
     public function testCachedRoutes()
     {
         Config::set('app.cache_routes', true);
-        Router::clearCache();
+        Clearer::clear(Clearer::TYPE_ROUTES);
         Router::register($this->di);
         $this->testClosureRoutes();
-        Router::clearCache();
+        Clearer::clear(Clearer::TYPE_ROUTES);
         Config::set('app.cache_routes', false);
     }
 }

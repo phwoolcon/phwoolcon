@@ -1,6 +1,7 @@
 <?php
 namespace Phwoolcon\Tests\Unit;
 
+use Phwoolcon\Cache\Clearer;
 use Phwoolcon\Tests\Helper\TestCase;
 use Phwoolcon\View;
 
@@ -63,7 +64,7 @@ class ViewTest extends TestCase
         $view = $this->di->getShared('view');
         $view->isAdmin(false);
         $view->cache(true);
-        View::clearAssetsCache();
+        Clearer::clear(Clearer::TYPE_ASSETS);
         $this->assertStringStartsWith('<script type="text/javascript" ', View::generateHeadJs());
         // Test assets cache
         $this->assertStringStartsWith('<script type="text/javascript" ', View::generateHeadJs());

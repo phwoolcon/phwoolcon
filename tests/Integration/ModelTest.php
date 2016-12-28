@@ -3,6 +3,7 @@ namespace Phwoolcon\Tests\Integration;
 
 use Exception;
 use Phalcon\Mvc\Model\ValidationFailed;
+use Phwoolcon\Cache\Clearer;
 use Phwoolcon\Db;
 use Phwoolcon\Tests\Helper\TestCase;
 use Phwoolcon\Tests\Helper\TestModel;
@@ -18,7 +19,7 @@ class ModelTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Db::clearMetadata();
+        Clearer::clear(Clearer::TYPE_META);
     }
 
     public function testSetDataAndGetData()

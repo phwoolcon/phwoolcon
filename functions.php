@@ -499,6 +499,7 @@ function url($path, array $queries = [], $secure = null)
 }
 
 // OPCache workaround
+// @codeCoverageIgnoreStart
 if (!function_exists('opcache_invalidate')) {
     /**
      * (PHP 5 &gt;= 5.5.0, PECL ZendOpcache &gt;= 7.0.0 )<br/>
@@ -531,3 +532,4 @@ if (!function_exists('opcache_reset')) {
         return true;
     }
 }
+// @codeCoverageIgnoreEnd
