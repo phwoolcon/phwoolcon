@@ -1,14 +1,8 @@
 <?php
 namespace Phwoolcon\Cli\Command;
 
-use Phwoolcon\Cache;
+use Phwoolcon\Cache\Clearer;
 use Phwoolcon\Cli\Command;
-use Phwoolcon\Config;
-use Phwoolcon\Db;
-use Phwoolcon\Events;
-use Phwoolcon\I18n;
-use Phwoolcon\Router;
-use Phwoolcon\View;
 use Symfony\Component\Console\Input\InputOption;
 
 class ClearCacheCommand extends Command
@@ -16,49 +10,21 @@ class ClearCacheCommand extends Command
 
     protected function configure()
     {
-        $this->setDefinition([
-            new InputOption('config-only', 'c', InputOption::VALUE_NONE, 'Clear config cache only'),
-            new InputOption('meta-only', 'm', InputOption::VALUE_NONE, 'Clear model metadata only'),
-            new InputOption('locale-only', 'l', InputOption::VALUE_NONE, 'Clear locale cache only'),
-            new InputOption('assets-only', 'a', InputOption::VALUE_NONE, 'Clear assets cache only'),
-            new InputOption('routes-only', 'r', InputOption::VALUE_NONE, 'Clear routes cache only'),
-        ])->setDescription('Clears cache');
+        $definition = [];
+        $shotCuts = [];
+        foreach (Clearer::getTypes() as $type => $label) {
+            $shotCut = isset($shotCuts[$type{0}]) ? null : $type{0};
+            $shotCuts[$shotCut] = true;
+            $definition[] = new InputOption($type, $shotCut, InputOption::VALUE_NONE, $label);
+        }
+        $this->setDefinition($definition)->setDescription('Clears cache');
     }
 
     public function fire()
     {
-        $clearAll = true;
-        if ($this->input->getOption('config-only')) {
-            $clearAll = false;
-            Config::clearCache();
-            $this->info('Config cache cleared.');
+        $types = array_keys(array_filter($this->input->getOptions()));
+        foreach (Clearer::clear($types) as $message) {
+            $this->info($message);
         }
-        if ($this->input->getOption('meta-only')) {
-            $clearAll = false;
-            Db::clearMetadata();
-            $this->info('Model metadata cleared.');
-        }
-        if ($this->input->getOption('locale-only')) {
-            $clearAll = false;
-            I18n::clearCache();
-            $this->info('Locale cache cleared.');
-        }
-        if ($this->input->getOption('assets-only')) {
-            $clearAll = false;
-            View::clearAssetsCache();
-            $this->info('Assets cache cleared.');
-        }
-        if ($this->input->getOption('routes-only')) {
-            $clearAll = false;
-            Router::clearCache();
-            $this->info('Routes cache cleared.');
-        }
-        if ($clearAll) {
-            Cache::flush();
-            Config::clearCache();
-            Router::clearCache();
-            $this->info('Cache cleared.');
-        }
-        Events::fire('cache:after_clear', $this);
     }
 }
