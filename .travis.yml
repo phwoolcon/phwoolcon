@@ -31,17 +31,18 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq beanstalkd
   - sudo beanstalkd -d -l 127.0.0.1 -p 11300
-  - bin/ci-install-phalcon
-  - composer install --prefer-source --no-interaction
-
-before_script:
-  - composer self-update
-  - composer update --no-interaction --prefer-source
-  - mysql -uroot -e 'CREATE DATABASE `phwoolcon_test` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;'
+  - printf "\n" | pecl install imagick
   - pecl install swoole-1.8.13
   - phpenv config-add php-ext.ini
-  - pear install PHP_CodeSniffer
+  - bin/ci-install-phalcon
+  - composer install --prefer-source --no-interaction
   - phpenv rehash
+  - composer self-update
+
+before_script:
+  - composer update --no-interaction --prefer-source
+  - mysql -uroot -e 'CREATE DATABASE `phwoolcon_test` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;'
+  - pear install PHP_CodeSniffer
   - php --ri phalcon
   - php --ri swoole
 
