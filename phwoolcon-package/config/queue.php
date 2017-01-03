@@ -1,5 +1,8 @@
 <?php
 
+use Phwoolcon\Queue\Adapter\Beanstalkd;
+use Phwoolcon\Queue\FailedLoggerDb;
+
 return [
     'default' => 'default_queue',
 
@@ -28,7 +31,7 @@ return [
     */
     'connections' => [
         'beanstalkd' => [
-            'adapter' => 'Phwoolcon\Queue\Adapter\Beanstalkd',
+            'adapter' => Beanstalkd::class,
             'host' => '127.0.0.1',
             'port' => 11300,
             'connect_timeout' => 5,
@@ -51,7 +54,7 @@ return [
     |
     */
     'failed_logger' => [
-        'adapter' => 'Phwoolcon\Queue\FailedLoggerDb',
+        'adapter' => FailedLoggerDb::class,
         'options' => [
             'connection' => '',
             'table' => 'failed_jobs',
