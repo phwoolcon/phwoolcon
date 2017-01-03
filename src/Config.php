@@ -63,10 +63,22 @@ class Config
             return;
         }
         // @codeCoverageIgnoreEnd
-        $defaultFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/*.php');
-        $environmentFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/' . $environment . '/*.php');
 
+        // Load default configs
+        $defaultFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/*.php');
         $config = new PhalconConfig(static::loadFiles($defaultFiles));
+
+        // Load override configs
+        $overrideDirs = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/override-*/');
+        foreach ($overrideDirs as $overrideDir) {
+            $overrideFiles = glob($overrideDir . '*.php');
+            $overrideSettings = static::loadFiles($overrideFiles);
+            $overrideConfig = new PhalconConfig($overrideSettings);
+            $config->merge($overrideConfig);
+        }
+
+        // Load environment configs
+        $environmentFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/' . $environment . '/*.php');
         $environmentSettings = static::loadFiles($environmentFiles);
         $environmentSettings['environment'] = $environment;
         $environmentConfig = new PhalconConfig($environmentSettings);

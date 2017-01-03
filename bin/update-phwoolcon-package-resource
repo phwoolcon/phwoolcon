@@ -302,6 +302,7 @@ CONTENT;
 
 function installConfig($package, $path, $configPath)
 {
+    $installed = false;
     if ($files = glob($path . '/phwoolcon-package/config/*.php')) {
         foreach ($files as $source) {
             $file = basename($source);
@@ -309,6 +310,20 @@ function installConfig($package, $path, $configPath)
             is_file($destination) and unlink($destination);
             symlinkRelative($source, $destination);
         }
+        $installed = true;
+    }
+
+    if ($overrides = glob($path . '/phwoolcon-package/config/override-*/*.php')) {
+        foreach ($overrides as $override) {
+            $file = basename($override);
+            $dir = basename(dirname($override));
+            $destination = $configPath . '/' . $dir . '/' . $file;
+            is_file($destination) and unlink($destination);
+            symlinkRelative($override, $destination);
+        }
+        $installed = true;
+    }
+    if ($installed) {
         echo sprintf('[%s]%s Config files installed', $package, spacePad($package)), PHP_EOL;
     }
 }
@@ -387,6 +402,11 @@ function clearConfigFiles($configPath)
     if ($files = glob($configPath . '/*.php')) {
         foreach ($files as $file) {
             unlink($file);
+        }
+    }
+    if ($overrideDirs = glob($configPath . '/override-*/')) {
+        foreach ($overrideDirs as $overrideDir) {
+            removeDir($overrideDir);
         }
     }
     $label = 'Config';
