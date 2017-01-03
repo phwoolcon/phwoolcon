@@ -109,13 +109,12 @@ class QueueTest extends TestCase
     {
         Queue::register($this->di);
         $queue = Queue::connection();
-        $workerClass = TestQueueWorker::class;
         $data = [
             'test' => 'listener',
         ];
 
         TestQueueWorker::reset();
-        $queue->push("{$workerClass}::staticWorker", $data);
+        $queue->push([TestQueueWorker::class, 'staticWorker'], $data);
 
         // Listen and fire job
         $listener = new Listener();
