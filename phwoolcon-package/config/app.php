@@ -22,7 +22,7 @@ return [
     'timezone' => 'UTC',
     'url' => 'http://localhost',
     'site_path' => '',
-    'class_aliases' => include ROOT_PATH . '/vendor/phwoolcon/class_aliases.php',
+    'class_aliases' => include $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolcon/class_aliases.php',
     'log' => [
         'adapter' => 'file',
         'file' => 'phwoolcon.log',

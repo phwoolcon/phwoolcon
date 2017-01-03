@@ -39,7 +39,7 @@ return [
             'default' => 'default',
         ],
         'file' => [
-            'path' => ROOT_PATH . '/storage/queue',
+            'path' => $_SERVER['PHWOOLCON_ROOT_PATH'] . '/storage/queue',
             'ext' => '.data',
         ],
     ],

@@ -4,7 +4,7 @@ return [
         'locale_path',
         'undefined_strings_log',
     ],
-    'locale_path' => ROOT_PATH . '/app/locale',
+    'locale_path' => $_SERVER['PHWOOLCON_ROOT_PATH'] . '/app/locale',
     'cache_locale' => true,
     'multi_locale' => true,
     'default_locale' => 'zh_CN',
