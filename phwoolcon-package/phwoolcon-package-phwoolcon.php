@@ -16,6 +16,7 @@ return [
                 'migrate:revert' => Command\MigrateRevert::class,
                 'migrate:list' => Command\MigrateList::class,
                 'service' => Command\ServiceCommand::class,
+                'queue:consume' => Command\QueueConsumeCommand::class,
             ],
         ],
         'class_aliases' => [

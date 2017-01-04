@@ -35,6 +35,7 @@ return [
             'host' => '127.0.0.1',
             'port' => 11300,
             'connect_timeout' => 5,
+            'read_timeout' => 0,
             'persistence' => false,
             'default' => 'default',
         ],

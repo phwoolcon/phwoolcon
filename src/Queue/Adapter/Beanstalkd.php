@@ -17,6 +17,7 @@ use Phwoolcon\Queue\AdapterTrait;
 class Beanstalkd implements AdapterInterface
 {
     use AdapterTrait;
+    protected $readTimeout = null;
 
     protected function connect(array $options)
     {
@@ -31,13 +32,14 @@ class Beanstalkd implements AdapterInterface
             $options['connect_timeout'],
             $options['persistence']
         );
+        isset($options['read_timeout']) and $this->readTimeout = $options['read_timeout'];
     }
 
     public function pop($queue = null)
     {
         $queue = $this->getQueue($queue);
 
-        if (($job = $this->connection->watchOnly($queue)->reserve(0)) instanceof PheanstalkJob) {
+        if (($job = $this->connection->watchOnly($queue)->reserve($this->readTimeout)) instanceof PheanstalkJob) {
             return new Job($this, $job, $queue);
         }
         return null;

@@ -6,6 +6,7 @@ use Exception;
 class TestQueueWorker
 {
     protected static $jobData;
+    protected static $memoryLeak = [];
 
     public function diSharedWorker($job, $data)
     {
@@ -25,6 +26,7 @@ class TestQueueWorker
     public static function reset()
     {
         static::$jobData = null;
+        static::$memoryLeak = [];
     }
 
     public static function staticWorker($job, $data)
@@ -35,6 +37,13 @@ class TestQueueWorker
     public static function staticFailureWorker($job, $data)
     {
         static::$jobData = $data;
-        throw new Exception;
+        throw new Exception('Failure worker');
+    }
+
+    public static function memoryLeakWorker($job, $data)
+    {
+        for ($i = 0; $i < 1000; ++$i) {
+            static::$memoryLeak[] = $data;
+        }
     }
 }

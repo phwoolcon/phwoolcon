@@ -1,9 +1,18 @@
 <?php
+use Phwoolcon\Cli\Command\ClearCacheCommand;
+use Phwoolcon\Cli\Command\Migrate;
+use Phwoolcon\Cli\Command\MigrateCreate;
+use Phwoolcon\Cli\Command\MigrateList;
+use Phwoolcon\Cli\Command\MigrateRevert;
+use Phwoolcon\Cli\Command\QueueConsumeCommand;
+use Phwoolcon\Tests\Helper\Cli\TestCommand;
+
 return [
-    'test-command' => 'Phwoolcon\Tests\Helper\Cli\TestCommand',
-    'clear:cache' => 'Phwoolcon\Cli\Command\ClearCacheCommand',
-    'migrate' => 'Phwoolcon\Cli\Command\Migrate',
-    'migrate:create' => 'Phwoolcon\Cli\Command\MigrateCreate',
-    'migrate:revert' => 'Phwoolcon\Cli\Command\MigrateRevert',
-    'migrate:list' => 'Phwoolcon\Cli\Command\MigrateList',
+    'test-command' => TestCommand::class,
+    'clear:cache' => ClearCacheCommand::class,
+    'migrate' => Migrate::class,
+    'migrate:create' => MigrateCreate::class,
+    'migrate:revert' => MigrateRevert::class,
+    'migrate:list' => MigrateList::class,
+    'queue:consume' => QueueConsumeCommand::class,
 ];
