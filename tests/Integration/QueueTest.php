@@ -1,5 +1,5 @@
 <?php
-namespace Phwoolcon\Tests\Unit;
+namespace Phwoolcon\Tests\Integration;
 
 use Exception;
 use Phwoolcon\Config;
