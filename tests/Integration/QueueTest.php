@@ -55,9 +55,24 @@ class QueueTest extends TestCase
         $this->realTestQueuePushAndFire('beanstalkd');
     }
 
+    public function testDbQueuePushAndFire()
+    {
+        $this->realTestQueuePushAndFire('db');
+    }
+
     public function testBeanstalkdQueueJobsOperation()
     {
-        Config::set('queue.queues.default_queue.connection', 'beanstalkd');
+        $this->realTestQueueJobsOperation('beanstalkd');
+    }
+
+    public function testDbQueueJobsOperation()
+    {
+        $this->realTestQueueJobsOperation('db');
+    }
+
+    public function realTestQueueJobsOperation($driver)
+    {
+        Config::set('queue.queues.default_queue.connection', $driver);
         Queue::register($this->di);
         /* @var Queue\Adapter\Beanstalkd $queue */
         $queue = Queue::connection();
@@ -73,7 +88,7 @@ class QueueTest extends TestCase
         /* @var Queue\Adapter\Beanstalkd\Job $job */
         $job = $queue->pop();
         ++$attempts;
-        $this->assertEquals($data, $job->getRawJob()->getData());
+        $this->assertEquals($data, $job->getRawBody());
         $this->assertEquals($jobId, $job->getJobId());
 
         // Release
@@ -82,7 +97,7 @@ class QueueTest extends TestCase
         // Bury
         $job = $queue->pop();
         ++$attempts;
-        $this->assertEquals($data, $job->getRawJob()->getData());
+        $this->assertEquals($data, $job->getRawBody());
         $this->assertEquals($jobId, $job->getJobId());
         $job->bury();
 

@@ -1,6 +1,7 @@
 <?php
 
 use Phwoolcon\Queue\Adapter\Beanstalkd;
+use Phwoolcon\Queue\Adapter\DbQueue;
 use Phwoolcon\Queue\FailedLoggerDb;
 
 return [
@@ -18,6 +19,12 @@ return [
         'default_queue' => [
             'connection' => 'beanstalkd',
             'options' => [],
+        ],
+        'async_email_sending' => [
+            'connection' => 'db',
+            'options' => [
+                'default' => 'async_email_sending',
+            ],
         ],
     ],
 
@@ -42,6 +49,12 @@ return [
         'file' => [
             'path' => $_SERVER['PHWOOLCON_ROOT_PATH'] . '/storage/queue',
             'ext' => '.data',
+        ],
+        'db' => [
+            'adapter' => DbQueue::class,
+            'database_connection' => '', // Leave empty to use default connection. See config file database.php
+            'table' => 'queue_jobs',
+            'time_to_run' => 60,
         ],
     ],
 
