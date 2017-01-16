@@ -47,6 +47,7 @@ class Beanstalkd implements AdapterInterface
 
     public function pushRaw($payload, $queue = null, array $options = [])
     {
+        $payload = (string)$payload;
         $priority = isset($options['priority']) ? $options['priority'] : Pheanstalk::DEFAULT_PRIORITY;
         $delay = isset($options['delay']) ? $options['delay'] : Pheanstalk::DEFAULT_DELAY;
         $timeToRun = isset($options['ttr']) ? $options['ttr'] : Pheanstalk::DEFAULT_TTR;
