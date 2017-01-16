@@ -43,12 +43,14 @@ class FailedLoggerDb
                     'autoIncrement' => true,
                 ]),
                 new Column('connection', [
-                    'type' => Column::TYPE_TEXT,
-                    'notNull' => false,
+                    'type' => Column::TYPE_VARCHAR,
+                    'size' => 255,
+                    'notNull' => true,
                 ]),
                 new Column('queue', [
-                    'type' => Column::TYPE_TEXT,
-                    'notNull' => false,
+                    'type' => Column::TYPE_VARCHAR,
+                    'size' => 255,
+                    'notNull' => true,
                 ]),
                 new Column('payload', [
                     'type' => 'LONGTEXT',
