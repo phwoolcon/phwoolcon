@@ -1,4 +1,7 @@
 <?php
+
+use Phalcon\Logger;
+
 return [
     '_black_list' => [
         'autoload',
@@ -25,6 +28,7 @@ return [
     'class_aliases' => include $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolcon/class_aliases.php',
     'log' => [
         'adapter' => 'file',
+        'level' => Logger::NOTICE,
         'file' => 'phwoolcon.log',
     ],
     'on_phwoolcon_update' => [
