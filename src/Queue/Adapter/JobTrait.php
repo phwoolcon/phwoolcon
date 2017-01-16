@@ -118,6 +118,9 @@ trait JobTrait
      */
     abstract public function getRawBody();
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getRawJob()
     {
         return $this->rawJob;

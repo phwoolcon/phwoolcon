@@ -184,6 +184,10 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         return View::make('errors', $template, ['page_title' => $pateTitle]);
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
     public static function getCurrentUri()
     {
         return self::$currentUri;
