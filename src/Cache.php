@@ -5,6 +5,7 @@ use Phalcon\Di;
 use Phalcon\Cache\Frontend\Data;
 use Phalcon\Cache\Backend;
 use Phwoolcon\Cache\Backend\Redis;
+use Phwoolcon\Exception\InvalidConfigException;
 
 /**
  * Class Cache
@@ -72,10 +73,19 @@ class Cache
             $config = Config::get('cache.drivers.' . $default);
             $class = $config['adapter'];
             $options = $config['options'];
-            strpos($class, '\\') === false and $class = 'Phalcon\\Cache\\Backend\\' . $class;
+            // @codeCoverageIgnoreStart
+            if (!$class || !class_exists($class)) {
+                throw new InvalidConfigException("Invalid cache adapter {$class}, please check config file cache.php");
+            }
+            // @codeCoverageIgnoreEnd
             isset($options['cacheDir']) and $options['cacheDir'] = storagePath($options['cacheDir']) . '/';
             /* @var Backend $backend */
             $backend = new $class($frontend, $options);
+            // @codeCoverageIgnoreStart
+            if (!$backend instanceof Backend) {
+                throw new InvalidConfigException("Cache adapter {$class} should extend " . Backend::class);
+            }
+            // @codeCoverageIgnoreEnd
             return $backend;
         });
     }

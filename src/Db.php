@@ -3,6 +3,7 @@
 namespace Phwoolcon;
 
 use Phalcon\Events\Event;
+use Phwoolcon\Exception\InvalidConfigException;
 use Phwoolcon\Model\MetaData\InCache;
 use Phalcon\Di;
 use Phalcon\Db as PhalconDb;
@@ -74,8 +75,18 @@ class Db extends PhalconDb
             static::$defaultTableCharset[$name] = $connection['default_table_charset'];
         }
         unset($connection['adapter'], $connection['default_table_charset']);
-        strpos($class, '\\') === false and $class = 'Phalcon\\Db\\Adapter\\Pdo\\' . $class;
-        return new $class($connection);
+        // @codeCoverageIgnoreStart
+        if (!$class || !class_exists($class)) {
+            throw new InvalidConfigException("Invalid db adapter {$class}, please check config file database.php");
+        }
+        // @codeCoverageIgnoreEnd
+        $adapter = new $class($connection);
+        // @codeCoverageIgnoreStart
+        if (!$adapter instanceof Adapter) {
+            throw new InvalidConfigException("Db adapter {$class} should extend " . Adapter::class);
+        }
+        // @codeCoverageIgnoreEnd
+        return $adapter;
     }
 
     /**

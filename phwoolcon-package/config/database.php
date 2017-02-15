@@ -1,4 +1,8 @@
 <?php
+
+use Phalcon\Db\Adapter\Pdo\Postgresql;
+use Phwoolcon\Db\Adapter\Pdo\Mysql;
+
 return [
     '_white_list' => [
         'query_log',
@@ -6,7 +10,7 @@ return [
     'default' => '',
     'connections' => [
         'mysql' => [
-            'adapter'    => 'Phwoolcon\Db\Adapter\Pdo\Mysql',
+            'adapter'    => Mysql::class,
             'host'       => 'localhost',
             'dbname'     => 'dbname',
             'username'   => 'user',
@@ -20,7 +24,7 @@ return [
         ],
 
         'pgsql' => [
-            'adapter'  => 'Phalcon\Db\Adapter\Pdo\Postgresql',
+            'adapter'  => Postgresql::class,
             'host'     => 'localhost',
             'dbname'   => 'dbname',
             'username' => 'user',

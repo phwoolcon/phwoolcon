@@ -2,9 +2,9 @@
 namespace Phwoolcon;
 
 use Phalcon\Di;
+use Phwoolcon\Exception\InvalidConfigException;
 use Phwoolcon\Queue\AdapterInterface;
 use Phwoolcon\Queue\AdapterTrait;
-use Phwoolcon\Exception\QueueException;
 use Phwoolcon\Queue\FailedLoggerDb;
 
 class Queue
@@ -44,11 +44,15 @@ class Queue
         $connection = $this->config['connections'][$connectionName];
         $options = array_merge($connection, $queue['options']);
         $class = $connection['adapter'];
-        strpos($class, '\\') === false and $class = 'Phwoolcon\\Queue\\Adapter\\' . $class;
+        // @codeCoverageIgnoreStart
+        if (!$class || !class_exists($class)) {
+            throw new InvalidConfigException("Invalid queue adapter {$class}, please check config file queue.php");
+        }
+        // @codeCoverageIgnoreEnd
         $instance = new $class(static::$di, $options, $name);
         // @codeCoverageIgnoreStart
         if (!$instance instanceof AdapterInterface) {
-            throw new QueueException('Queue adapter class should implement ' . AdapterInterface::class);
+            throw new InvalidConfigException("Queue adapter {$class} should implement " . AdapterInterface::class);
         }
         // @codeCoverageIgnoreEnd
         return $instance;

@@ -3,9 +3,9 @@ namespace Phwoolcon;
 
 use Phalcon\Di;
 use Phalcon\Session\Adapter;
+use Phwoolcon\Exception\InvalidConfigException;
 use Phwoolcon\Session\AdapterInterface;
 use Phwoolcon\Session\AdapterTrait;
-use Phwoolcon\Exception\SessionException;
 
 /**
  * Class Session
@@ -94,11 +94,17 @@ class Session
             $options += Config::get('session.options');
             $options['cookies'] += Config::get('cookies');
             session_name($options['cookies']['name']);
-            strpos($class, '\\') === false and $class = 'Phwoolcon\\Session\\Adapter\\' . $class;
+            // @codeCoverageIgnoreStart
+            if (!$class || !class_exists($class)) {
+                $errorMessage = "Invalid session adapter {$class}, please check config file session.php";
+                throw new InvalidConfigException($errorMessage);
+            }
+            // @codeCoverageIgnoreEnd
             $session = new $class($options);
             // @codeCoverageIgnoreStart
             if (!$session instanceof AdapterInterface) {
-                throw new SessionException('Session class should implement ' . AdapterInterface::class);
+                $errorMessage = "Session adapter {$class} should implement " . AdapterInterface::class;
+                throw new InvalidConfigException($errorMessage);
             }
             // @codeCoverageIgnoreEnd
             return $session;
