@@ -18,6 +18,13 @@ interface JobInterface
     public function delete();
 
     /**
+     * Get the raw body of the job
+     *
+     * @return string
+     */
+    public function getRawBody();
+
+    /**
      * Release the job back into the queue.
      *
      * @param  int $delay

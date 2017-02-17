@@ -69,6 +69,13 @@ trait AdapterTrait
 
     abstract public function pop($queue = null);
 
+    /**
+     * @param callable|string $worker
+     * @param mixed           $data
+     * @param string          $queue
+     * @param array           $options
+     * @return mixed
+     */
     public function push($worker, $data = '', $queue = null, array $options = [])
     {
         return $this->pushRaw($this->createPayload($worker, $data), $queue, $options);
