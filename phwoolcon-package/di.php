@@ -10,7 +10,8 @@ use Phwoolcon\DiFix;
 use Phwoolcon\Events;
 use Phwoolcon\I18n;
 use Phwoolcon\Log;
-use Phwoolcon\Model\DynamicTrait\Loader;
+use Phwoolcon\Mailer;
+use Phwoolcon\Model\DynamicTrait\Loader as DynamicTrait;
 use Phwoolcon\Queue;
 use Phwoolcon\Router;
 use Phwoolcon\Session;
@@ -37,6 +38,7 @@ Cookies::register($di);
 Session::register($di);
 View::register($di);
 Queue::register($di);
-Loader::register($di);
+DynamicTrait::register($di);
+Mailer::register($di);
 
 $loader->registerNamespaces(Config::get('app.autoload.namespaces', []), true);

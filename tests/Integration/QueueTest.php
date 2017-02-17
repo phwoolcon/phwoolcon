@@ -138,8 +138,8 @@ class QueueTest extends TestCase
 
         // Pop nothing from a empty queue
         $result = $listener->pop('', null, 0, 0, 1);
-        $this->assertNull(fnGet($result, 'job'));
-        $this->assertFalse(fnGet($result, 'failed'));
+        $this->assertNull($result->getJob());
+        $this->assertEquals($result::STATUS_SUCCESS, $result->getStatus());
     }
 
     public function testFailedListener()
@@ -165,6 +165,6 @@ class QueueTest extends TestCase
 
         // Log failure job
         $result = $listener->pop('', null, 0, 0, 1);
-        $this->assertTrue(fnGet($result, 'failed'));
+        $this->assertEquals($result::STATUS_FAILED, $result->getStatus());
     }
 }

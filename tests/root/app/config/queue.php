@@ -22,6 +22,12 @@ return [
                 'default' => 'phwoolcon-test',
             ],
         ],
+        'async_email_sending' => [
+            'connection' => 'db',
+            'options' => [
+                'default' => 'async_email_sending',
+            ],
+        ],
     ],
 
     /*
