@@ -5,6 +5,8 @@ use Phalcon\Di;
 use Phwoolcon\Queue;
 use Phwoolcon\Queue\Adapter\JobTrait;
 use Swift;
+use Swift_Attachment;
+use Swift_Image;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SendmailTransport;
@@ -70,6 +72,39 @@ class Mailer
     }
 
     /**
+     * @param array $definitions
+     * @return Swift_Attachment[]
+     */
+    public function generateAttachments(array $definitions)
+    {
+        if (isset($definitions['data']) ||
+            isset($definitions['path']) ||
+            isset($definitions['file_name']) ||
+            isset($definitions['file_type'])
+        ) {
+            $definitions = [$definitions];
+        }
+
+        $attachments = [];
+        foreach ($definitions as $definition) {
+            if (is_string($definition)) {
+                $definition = ['path' => $definition];
+            }
+
+            $filename = isset($definition['file_name']) ? $definition['file_name'] : null;
+            $contentType = isset($definition['file_type']) ? $definition['file_type'] : null;
+            if (isset($definition['data'])) {
+                $attachments[] = Swift_Attachment::newInstance($definition['data'], $filename, $contentType);
+            } elseif (isset($definition['path']) && is_file($definition['path'])) {
+                $attachment = Swift_Attachment::fromPath($definition['path'], $contentType);
+                $filename and $attachment->setFilename($filename);
+                $attachments[] = $attachment;
+            }
+        }
+        return $attachments;
+    }
+
+    /**
      * @param JobTrait $job
      * @param array    $payload
      */
@@ -86,10 +121,37 @@ class Mailer
 
     public function realSend($to, $subject, $body, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
     {
-        $message = Swift_Message::newInstance($subject, $body, $contentType);
+        // Fetch body text
+        $bodyText = isset($body['body']) ? $body['body'] : $body;
+        $message = Swift_Message::newInstance($subject, $bodyText, $contentType);
+
+        // Process attachments
+        if (isset($body['attach'])) {
+            foreach ($this->generateAttachments((array)$body['attach']) as $attachment) {
+                $message->attach($attachment);
+            }
+        }
+
+        // Process inline medias
+        if (isset($body['embed']) && is_array($body['embed'])) {
+            $placeholders = [];
+            $replacements = [];
+            foreach ($body['embed'] as $placeholder => $embed) {
+                is_numeric($placeholder) and $placeholder = $embed;
+                $cid = $message->embed(Swift_Image::fromPath($embed));
+                $placeholders[] = $placeholder;
+                $replacements[] = $cid;
+            }
+            $bodyText = str_replace($placeholders, $replacements, $bodyText);
+            $message->setBody($bodyText);
+        }
+
+        // Add receivers and sender
         $message->setTo($to);
         $cc and $message->setCc($cc);
         $message->setFrom($this->sender);
+
+        // Send the mail
         $sent = $this->mailerLibrary->send($message);
         $this->mailerLibrary->getTransport()->stop();
         return $sent;
@@ -116,11 +178,13 @@ class Mailer
      * If `async` is enabled, the mail will be pushed into queue instead, then send it by a backend process:
      * `bin/cli queue:consume async_email_sending`
      *
-     * @param string|array $to Supports 'to@domain.com', ['to@domain.com'] or ['to@domain.com' => 'Display Name']
+     * @param string|array $to   Supports 'to@domain.com', ['to@domain.com'] or ['to@domain.com' => 'Display Name']
      * @param string       $subject
-     * @param string       $body
+     * @param string|array $body If you want to send attachment, please use array form:
+     *                           ['body' => 'Body text', 'attach' => $attachments, 'embed' => $embed]
+     *                           for the structure of $attachments, @see Mailer::generateAttachments()
      * @param string       $contentType
-     * @param string|array $cc @see $to
+     * @param string|array $cc   @see $to
      * @return int
      */
     public static function send($to, $subject, $body, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
