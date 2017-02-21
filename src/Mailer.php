@@ -79,12 +79,12 @@ class Mailer
         call_user_func_array([static::$instance, 'realSend'], $payload);
     }
 
-    protected function queue($to, $subject = null, $body = null, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
+    protected function queue($to, $subject, $body, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
     {
         $this->queue->push([static::class, 'handleQueueJob'], func_get_args());
     }
 
-    public function realSend($to, $subject = null, $body = null, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
+    public function realSend($to, $subject, $body, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
     {
         $message = Swift_Message::newInstance($subject, $body, $contentType);
         $message->setTo($to);
@@ -123,7 +123,7 @@ class Mailer
      * @param string|array $cc @see $to
      * @return int
      */
-    public static function send($to, $subject = null, $body = null, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
+    public static function send($to, $subject, $body, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
     {
         static::$instance === null and static::$instance = static::$di->getShared('mailer');
         $mailer = static::$instance;
