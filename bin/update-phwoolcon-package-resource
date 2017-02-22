@@ -167,7 +167,11 @@ function generateIdeHelper()
     $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
     ksort($classAliases);
     foreach ($classAliases as $alias => $class) {
-        $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
+        $classContent = '';
+        try {
+            $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
+        } catch (Exception $e) {
+        }
         $ideHelperContent .= "
 class {$alias} extends {$class}
 {
