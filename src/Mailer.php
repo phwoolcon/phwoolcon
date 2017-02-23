@@ -77,19 +77,17 @@ class Mailer
      */
     public function generateAttachments(array $definitions)
     {
-        if (isset($definitions['data']) ||
-            isset($definitions['path']) ||
-            isset($definitions['file_name']) ||
-            isset($definitions['file_type'])
-        ) {
+        if (isset($definitions['data']) || isset($definitions['path'])) {
             $definitions = [$definitions];
         }
 
         $attachments = [];
         foreach ($definitions as $definition) {
+            // @codeCoverageIgnoreStart
             if (is_string($definition)) {
                 $definition = ['path' => $definition];
             }
+            // @codeCoverageIgnoreEnd
 
             $filename = isset($definition['file_name']) ? $definition['file_name'] : null;
             $contentType = isset($definition['file_type']) ? $definition['file_type'] : null;
@@ -138,9 +136,9 @@ class Mailer
             $replacements = [];
             foreach ($body['embed'] as $placeholder => $embed) {
                 is_numeric($placeholder) and $placeholder = $embed;
-                $cid = $message->embed(Swift_Image::fromPath($embed));
-                $placeholders[] = $placeholder;
-                $replacements[] = $cid;
+                $contentId = $message->embed(Swift_Image::fromPath($embed));
+                $placeholders[] = '%' . $placeholder . '%';
+                $replacements[] = $contentId;
             }
             $bodyText = str_replace($placeholders, $replacements, $bodyText);
             $message->setBody($bodyText);
@@ -180,9 +178,10 @@ class Mailer
      *
      * @param string|array $to   Supports 'to@domain.com', ['to@domain.com'] or ['to@domain.com' => 'Display Name']
      * @param string       $subject
-     * @param string|array $body If you want to send attachment, please use array form:
+     * @param string|array $body If you want to send attachment, or send embed media, please use array form:
      *                           ['body' => 'Body text', 'attach' => $attachments, 'embed' => $embed]
      *                           for the structure of $attachments, @see Mailer::generateAttachments()
+     *                           for the structure of $embed, @see Mailer::realSend()
      * @param string       $contentType
      * @param string|array $cc   @see $to
      * @return int

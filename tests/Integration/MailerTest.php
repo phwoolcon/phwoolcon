@@ -132,4 +132,62 @@ EOT;
         $result = Mailer::send($to, $subject, $body, Mailer::CONTENT_TYPE_TEXT);
         $this->assertEquals(2, $result);
     }
+
+    public function testAttachmentsAndEmbeds()
+    {
+        $this->skipIfSmtpPortNotReady();
+
+        // Set async mode off
+        Config::set('mail.async', false);
+        Mailer::register($this->di);
+
+        $to = ['john@domain.com' => 'John Doe'];
+        $subject = 'Hello World';
+
+        // Send email with attachment in data
+        $body = [
+            'body' => 'Foo bar',
+            'attach' => [
+                'data' => 'Foo text',
+                'file_name' => 'foo.txt',
+                'file_type' => 'text/plain',
+            ],
+        ];
+
+        $result = Mailer::send($to, $subject, $body);
+        $this->assertEquals(1, $result);
+
+        // Send email with attachment in file path
+        $body = [
+            'body' => 'Foo bar',
+            'attach' => [
+                'path' => __FILE__,
+            ],
+        ];
+
+        $result = Mailer::send($to, $subject, $body);
+        $this->assertEquals(1, $result);
+
+        // Send email with attachment in file path
+        $body = [
+            'body' => 'Foo bar',
+            'attach' => [
+                'path' => __FILE__,
+            ],
+        ];
+
+        $result = Mailer::send($to, $subject, $body);
+        $this->assertEquals(1, $result);
+
+        // Send email with embed media
+        $body = [
+            'body' => 'Foo bar <img src="%img1%">',
+            'embed' => [
+                'img1' => __FILE__,
+            ],
+        ];
+
+        $result = Mailer::send($to, $subject, $body);
+        $this->assertEquals(1, $result);
+    }
 }
