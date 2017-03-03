@@ -1,8 +1,6 @@
 <?php
 namespace Phwoolcon;
 
-use Exception;
-use Phwoolcon\Exception\Http\NotFoundException;
 use Phalcon\Di;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\File;
@@ -27,7 +25,10 @@ class Log extends Logger
         static::log(static::ERROR, $message, $context);
     }
 
-    public static function exception(Exception $e)
+    /**
+     * @param \Throwable $e
+     */
+    public static function exception($e)
     {
         $message = get_class($e);
         $e instanceof HttpException or $message .= "\n" . $e->__toString();
