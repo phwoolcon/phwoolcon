@@ -1,9 +1,20 @@
 <?php
 return [
+    'Clear assets cache' => 'Clear assets cache',
+    'Clear config cache' => 'Clear config cache',
+    'Clear locale cache' => 'Clear locale cache',
+    'Clear model metadata' => 'Clear model metadata',
+    'Clear routes cache' => 'Clear routes cache',
     'config_key_app' => 'General',
     'config_key_cookies' => 'Cookies',
     'config_key_database' => 'Database',
     'config_key_i18n' => 'Internationalization',
+    'config_key_mail' => 'Mail',
     'config_key_session' => 'Session',
     'config_key_view' => 'View',
+    'Assets cache cleared.' => 'Assets cache cleared.',
+    'Config cache cleared.' => 'Config cache cleared.',
+    'Model metadata cleared.' => 'Model metadata cleared.',
+    'Locale cache cleared.' => 'Locale cache cleared.',
+    'Routes cache cleared.' => 'Routes cache cleared.',
 ];
