@@ -7,6 +7,7 @@ use Phalcon\Di;
 use Phwoolcon\Cli;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -27,6 +28,8 @@ abstract class Command extends SymfonyCommand
      * @var SymfonyStyle
      */
     protected $interactive;
+
+    protected $statusCode = 0;
 
     public function __construct($name, Di $di)
     {
@@ -63,6 +66,7 @@ abstract class Command extends SymfonyCommand
         $this->output = $output;
         $this->interactive = new SymfonyStyle($input, $output);
         $this->fire();
+        return $this->statusCode;
     }
 
     /**
@@ -100,10 +104,14 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     * @param string $messages
+     * @param int    $statusCode
      */
-    public function error($messages)
+    public function error($messages, $statusCode = 1)
     {
-        $this->output->writeln("<error>{$messages}</error>");
+        $output = $this->output instanceof ConsoleOutputInterface ? $this->output : $this->output->getErrorOutput();
+        $output->writeln("<error>{$messages}</error>");
+        $this->statusCode = $statusCode;
     }
 
     public function info($messages)
