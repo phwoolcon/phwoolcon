@@ -4,7 +4,7 @@ namespace Phwoolcon\Tests\Helper;
 
 use Phalcon\Di;
 use Phalcon\Version;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase as PhpunitTestCase;
 use Phwoolcon\Aliases;
 use Phwoolcon\Cache;
 use Phwoolcon\Cache\Clearer;
@@ -20,7 +20,7 @@ use Phwoolcon\Util\Counter;
 use Phwoolcon\Util\Timer;
 use Swoole\Process as SwooleProcess;
 
-class TestCase extends PHPUnit_Framework_TestCase
+class TestCase extends PhpunitTestCase
 {
     /**
      * @var Di

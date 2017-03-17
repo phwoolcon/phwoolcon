@@ -301,13 +301,6 @@ function price($amount, $currency = 'CNY')
     return I18n::formatPrice($amount, $currency);
 }
 
-if (!function_exists('random_bytes')) {
-    function random_bytes($length)
-    {
-        return openssl_random_pseudo_bytes($length);
-    }
-}
-
 function removeDir($dir)
 {
     if (is_dir($dir)) {
@@ -498,8 +491,9 @@ function url($path, array $queries = [], $secure = null)
     return $url;
 }
 
-// OPCache workaround
 // @codeCoverageIgnoreStart
+
+// OPCache workaround
 if (!function_exists('opcache_invalidate')) {
     /**
      * (PHP 5 &gt;= 5.5.0, PECL ZendOpcache &gt;= 7.0.0 )<br/>
@@ -530,6 +524,14 @@ if (!function_exists('opcache_reset')) {
     function opcache_reset()
     {
         return true;
+    }
+}
+
+// Random Bytes workaround
+if (!function_exists('random_bytes')) {
+    function random_bytes($length)
+    {
+        return openssl_random_pseudo_bytes($length);
     }
 }
 // @codeCoverageIgnoreEnd
