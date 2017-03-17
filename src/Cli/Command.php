@@ -109,7 +109,7 @@ abstract class Command extends SymfonyCommand
      */
     public function error($messages, $statusCode = 1)
     {
-        $output = $this->output instanceof ConsoleOutputInterface ? $this->output : $this->output->getErrorOutput();
+        $output = $this->output instanceof ConsoleOutputInterface ? $this->output->getErrorOutput() : $this->output;
         $output->writeln("<error>{$messages}</error>");
         $this->statusCode = $statusCode;
     }
