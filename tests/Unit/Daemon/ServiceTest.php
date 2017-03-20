@@ -44,15 +44,19 @@ class ServiceTest extends TestCase
         } else {
             $client->send($request);
         }
-        $response = $client->recv();
-        $client->close();
-
-        if ($response === false) {
-            return false;
+        if ($rounds = $client->recv()) {
+            $roundsLength = unpack('N', $rounds)[1];
+            $rounds = substr($rounds, -$roundsLength);
+            $response = '';
+            for (; $rounds > 0; --$rounds) {
+                $responseChunk = $client->recv();
+                $chunkLength = unpack('N', $responseChunk)[1];
+                $response .= substr($responseChunk, -$chunkLength);
+            }
+            $client->close();
+            return unserialize($response);
         }
-
-        $length = unpack('N', $response)[1];
-        return unserialize(substr($response, -$length));
+        return false;
     }
 
     public function setUp()

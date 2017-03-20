@@ -221,13 +221,19 @@ class Service
             'meta' => $this->debug ? $this->getDebugInfo($server) : ['service' => 1],
         ]);
 
-        $server->send($fd, pack('N', $outputLength = strlen($result)), $fromId);
-        if ($outputLength >= $this->config['buffer_output_size']) {
-            foreach (str_split($result, $this->config['chunk_output_size']) as $chunk) {
-                $server->send($fd, $chunk, $fromId);
-            }
+        if (strlen($result) >= $this->config['buffer_output_size']) {
+            $chunks = str_split($result, $this->config['chunk_output_size'] - 10);
+            $rounds = count($chunks);
         } else {
-            $server->send($fd, $result, $fromId);
+            $chunks = [$result];
+            $rounds = 1;
+        }
+
+        $server->send($fd, pack('N', strlen($rounds)), $fromId);
+        $server->send($fd, $rounds, $fromId);
+        foreach ($chunks as $chunk) {
+            $server->send($fd, pack('N', strlen($chunk)), $fromId);
+            $server->send($fd, $chunk, $fromId);
         }
     }
 
