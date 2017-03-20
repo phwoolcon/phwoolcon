@@ -46,7 +46,7 @@ before_install:
   # Install imagick to pass Phalcon compiling
   - printf "\n" | pecl install imagick
   # Install Swoole
-  - pecl install swoole-1.8.13
+  - pecl install swoole
   - phpenv config-add php-ext.ini
   # Install Phalcon
   - bin/ci-install-phalcon
