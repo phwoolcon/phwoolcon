@@ -68,6 +68,11 @@ class Log extends Logger
         });
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @param string $message
+     * @param array  $context
+     */
     public static function warning($message = null, array $context = [])
     {
         static::log(static::WARNING, $message, $context);

@@ -150,7 +150,7 @@ class I18n extends Adapter implements ServiceAwareInterface
             $translation = $this->locale[$locale]['combined'][$string];
         } else {
             if (!isset($this->undefinedStrings[$locale][$package][$string])) {
-                Log::warning("I18n: locale string not found: '{$string}'");
+                Log::debug("I18n: locale string not found: '{$string}'");
                 $this->loadUndefinedLocaleStrings();
                 $this->undefinedStrings[$locale][$package][$string] = true;
                 $this->logUndefinedLocaleStrings();

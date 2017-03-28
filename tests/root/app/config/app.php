@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Logger;
 use Phwoolcon\Router\Filter;
 
 return [
@@ -34,6 +35,7 @@ return [
     ],
     'log' => [
         'adapter' => 'file',
+        'level' => Logger::SPECIAL,
         'file' => 'phwoolcon.log',
     ],
 ];
