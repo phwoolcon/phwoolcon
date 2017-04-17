@@ -55,6 +55,9 @@ class Rds extends Adapter
                     'notNull' => true,
                 ]),
             ],
+            'options' => [
+                'TABLE_COLLATION' => 'utf8_unicode_ci',
+            ],
         ]);
     }
 
