@@ -13,6 +13,7 @@ trait AdapterTrait
     protected $defaultQueue;
     protected $options;
     protected $connectionName;
+    protected $predefinedWorker;
 
     public function __construct(Di $di, array $options, $connectionName)
     {
@@ -20,6 +21,7 @@ trait AdapterTrait
         $this->options = $options;
         $this->defaultQueue = $options['default'];
         $this->connectionName = $connectionName;
+        isset($options['worker']) and $this->predefinedWorker = $options['worker'];
         $this->connect($options);
     }
 
@@ -49,6 +51,11 @@ trait AdapterTrait
     public function getConnectionName()
     {
         return $this->connectionName;
+    }
+
+    public function getPredefinedWorker()
+    {
+        return $this->predefinedWorker;
     }
 
     public function getDi()
