@@ -42,3 +42,6 @@ DynamicTrait::register($di);
 Mailer::register($di);
 
 $loader->registerNamespaces(Config::get('app.autoload.namespaces', []), true);
+if ($timezone = Config::get('app.timezone')) {
+    date_default_timezone_set($timezone);
+}
