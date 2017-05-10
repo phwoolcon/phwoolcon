@@ -17,10 +17,10 @@ class QueueConsumeCommand extends Command
     protected function configure()
     {
         $this->setDescription('Consume from a given queue')
-            ->addArgument('connection', InputArgument::OPTIONAL, 'The connection name to consume from');
+            ->addArgument('queue', InputArgument::OPTIONAL, 'The queue name to consume from, e.g. async_email_sending');
 
         $optional = InputOption::VALUE_OPTIONAL;
-        $this->addOption('queue', null, $optional, 'The queue name to consume from')
+        $this->addOption('topic', null, $optional, 'The queue topic to consume from')
             ->addOption('delay', null, $optional, 'Seconds to delay failed jobs', 0)
             ->addOption('interval', 'i', $optional, 'Seconds between jobs execution', 0)
             ->addOption('memory', null, $optional, 'The memory limit in megabytes', 128)
@@ -32,9 +32,9 @@ class QueueConsumeCommand extends Command
     public function fire()
     {
         $runningUnitTest = Config::runningUnitTest();
-        $connectionName = $this->input->getArgument('connection');
+        $queueName = $this->input->getArgument('queue');
 
-        $queue = $this->input->getOption('queue');
+        $topic = $this->input->getOption('topic');
         $delay = $this->input->getOption('delay');
         $interval = $this->input->getOption('interval') * 1e6;
         $sleep = $this->input->getOption('sleep');
@@ -57,7 +57,7 @@ class QueueConsumeCommand extends Command
                 $i = 0;
             }
             try {
-                $listener->pop($connectionName, $queue, $delay, $sleep, $maxTries);
+                $listener->pop($queueName, $topic, $delay, $sleep, $maxTries);
                 $interval and usleep($interval);
             } catch (Exception $e) {
                 Log::exception($e);
