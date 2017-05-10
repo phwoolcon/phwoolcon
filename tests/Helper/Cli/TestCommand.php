@@ -30,4 +30,11 @@ class TestCommand extends Command
     {
         $this->question('foo');
     }
+
+    public function testTimestampMessage()
+    {
+        $this->outputTimestamp = true;
+        $this->info('foo');
+        $this->outputTimestamp = false;
+    }
 }

@@ -31,9 +31,12 @@ abstract class Command extends SymfonyCommand
 
     protected $statusCode = 0;
 
+    protected $outputTimestamp = false;
+
     public function __construct($name, Di $di)
     {
         $this->di = $di;
+        empty($_SERVER['PHWOOLCON_CLI_OUTPUT_TIMESTAMP']) or $this->outputTimestamp = true;
         parent::__construct($name);
     }
 
@@ -97,30 +100,42 @@ abstract class Command extends SymfonyCommand
         return $this;
     }
 
-    public function comment($messages)
+    public function comment($message)
     {
-        $this->output->writeln("<comment>{$messages}</comment>");
+        $this->writeln("<comment>{$message}</comment>");
     }
 
     /**
      * @codeCoverageIgnore
-     * @param string $messages
+     * @param string $message
      * @param int    $statusCode
      */
-    public function error($messages, $statusCode = 1)
+    public function error($message, $statusCode = 1)
     {
+        $this->outputTimestamp and $message = $this->timestampMessage($message);
         $output = $this->output instanceof ConsoleOutputInterface ? $this->output->getErrorOutput() : $this->output;
-        $output->writeln("<error>{$messages}</error>");
+        $output->writeln("<error>{$message}</error>");
         $this->statusCode = $statusCode;
     }
 
-    public function info($messages)
+    public function info($message)
     {
-        $this->output->writeln("<info>{$messages}</info>");
+        $this->writeln("<info>{$message}</info>");
     }
 
-    public function question($messages)
+    public function question($message)
     {
-        $this->output->writeln("<question>{$messages}</question>");
+        $this->writeln("<question>{$message}</question>");
+    }
+
+    public function writeln($message)
+    {
+        $this->outputTimestamp and $message = $this->timestampMessage($message);
+        $this->output->writeln($message);
+    }
+
+    protected function timestampMessage($message)
+    {
+        return date('[Y-m-d H:i:s] ') . $message;
     }
 }

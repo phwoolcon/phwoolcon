@@ -32,4 +32,11 @@ class CliTest extends CliTestCase
         $this->assertStringStartsWith('2/10', trim($lines[2]));
         $this->assertContains('20%', trim($lines[2]));
     }
+
+    public function testTimestampMessage()
+    {
+        $output = $this->runCommand('test-command', ['TimestampMessage']);
+        $this->assertStringStartsWith(date('[Y-m-d'), $output);
+        $this->assertStringEndsWith('foo', trim($output));
+    }
 }
