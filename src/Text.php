@@ -6,6 +6,13 @@ use Phalcon\Text as PhalconText;
 class Text extends PhalconText
 {
 
+    /**
+     * @param string $string
+     * @param int    $length
+     * @param string $suffix
+     * @return string
+     * @codeCoverageIgnore
+     */
     public static function ellipsis($string, $length, $suffix = '...')
     {
         return mb_strlen($string) > $length ? mb_substr($string, 0, $length - mb_strlen($suffix)) . $suffix : $string;
