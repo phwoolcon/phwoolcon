@@ -54,7 +54,7 @@ class QueueConsumeTest extends CliTestCase
             $connection->push([TestQueueWorker::class, 'memoryLeakWorker'], $data);
         }
         $output = $this->runCommand('queue:consume', ['--ttl=5', "--memory={$memoryLimit}"]);
-        $this->assertEquals('Memory leak protection', trim($output));
+        $this->assertStringEndsWith('Memory leak protection', trim($output));
         TestQueueWorker::reset();
         $this->clearQueue();
     }
@@ -68,7 +68,7 @@ class QueueConsumeTest extends CliTestCase
         TestQueueWorker::reset();
         $output = $this->runCommand('queue:consume', ['--ttl=0']);
         $this->assertEquals($data, TestQueueWorker::getJobData());
-        $this->assertEquals('Failure worker', trim($output));
+        $this->assertStringEndsWith('Failure worker', trim($output));
         TestQueueWorker::reset();
         $this->clearQueue();
     }
