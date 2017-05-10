@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 class QueueConsumeCommand extends Command
 {
+    protected $outputTimestamp = true;
 
     protected function configure()
     {
