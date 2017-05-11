@@ -9,8 +9,6 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class Command extends SymfonyCommand
@@ -107,6 +105,14 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     */
+    public function debug($message)
+    {
+        $this->output->isDebug() and $this->comment($message);
+    }
+
+    /**
+     * @codeCoverageIgnore
      * @param string $message
      * @param int    $statusCode
      */
@@ -128,6 +134,22 @@ abstract class Command extends SymfonyCommand
         $this->writeln("<question>{$message}</question>");
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
+    public function verbose($message)
+    {
+        $this->output->isVerbose() and $this->info($message);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function veryVerbose($message)
+    {
+        $this->output->isVeryVerbose() and $this->info($message);
+    }
+
     public function writeln($message)
     {
         $this->outputTimestamp and $message = $this->timestampMessage($message);
@@ -137,5 +159,16 @@ abstract class Command extends SymfonyCommand
     protected function timestampMessage($message)
     {
         return date('[Y-m-d H:i:s] ') . $message;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @param $title
+     */
+    protected function setCliTitle($title)
+    {
+        if (function_exists('cli_set_process_title')) {
+            cli_set_process_title($title);
+        }
     }
 }
