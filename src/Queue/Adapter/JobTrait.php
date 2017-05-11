@@ -70,9 +70,11 @@ trait JobTrait
 
     public function fire()
     {
+        // @codeCoverageIgnoreStart
         if ($worker = $this->queue->getPredefinedWorker()) {
             $data = $this->getRawBody();
-        } else {
+        } //@codeCoverageIgnoreEnd
+        else {
             $payload = json_decode($this->getRawBody(), true);
             $worker = $payload['job'];
             $data = $payload['data'];
