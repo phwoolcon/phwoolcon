@@ -19,6 +19,8 @@ trait Api
 
     public function initialize()
     {
+        Router::disableCsrfCheck();
+        Router::disableSession();
     }
 
     public function missingMethod()
