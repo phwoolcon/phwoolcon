@@ -16,6 +16,7 @@ class Cli
             // @codeCoverageIgnoreStart
             if (!class_exists($class)) {
                 fwrite(STDERR, "[Warning] commands config: Class {$class} not found for {$name}" . PHP_EOL);
+                continue;
             }
             // @codeCoverageIgnoreEnd
             $app->add(new $class($name, $di));
