@@ -13,6 +13,11 @@ class Cli
     {
         $app = new Application(Config::get('app.name'), Config::get('app.version'));
         foreach (Config::get('commands') as $name => $class) {
+            // @codeCoverageIgnoreStart
+            if (!class_exists($class)) {
+                fwrite(STDERR, "[Warning] commands config: Class {$class} not found for {$name}" . PHP_EOL);
+            }
+            // @codeCoverageIgnoreEnd
             $app->add(new $class($name, $di));
         }
         return $app;
