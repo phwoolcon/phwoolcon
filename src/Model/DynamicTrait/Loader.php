@@ -21,7 +21,7 @@ class Loader
 
     public function autoLoad($className)
     {
-        if (Text::endsWith($className, $this->suffix, false)) {
+        if (Text::endsWith($className, $this->suffix, false) && trait_exists(EmptyTrait::class)) {
             class_alias(EmptyTrait::class, $className);
             return true;
         }
