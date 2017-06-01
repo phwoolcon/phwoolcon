@@ -95,6 +95,9 @@ class View extends PhalconView implements ServiceAwareInterface
         }
         // @codeCoverageIgnoreEnd
         $assets = ob_get_clean();
+        if ($view->config['options']['assets_options']['apply_filter']) {
+            $assets = str_replace(['http://', 'https://'], '//', $assets);
+        }
         static::$cachedAssets[$collectionName] = $assets;
         $useCache and Cache::set('assets', static::$cachedAssets);
         return $assets;
