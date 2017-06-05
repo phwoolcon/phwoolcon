@@ -98,10 +98,10 @@ class Migrate extends Command
         return $this;
     }
 
-    protected function logAndShowInfo($info)
+    protected function logAndShowInfo($info, $newline = true)
     {
         Log::info($info);
-        $this->info($info);
+        $newline ? $this->info($info) : $this->output->write("<info>{$info}</info>");
     }
 
     protected function migrationExecuted($filename, $flag = null)
@@ -133,7 +133,7 @@ class Migrate extends Command
                 continue;
             }
             $migrated = true;
-            $this->logAndShowInfo(sprintf('Start migration "%s"', $filename));
+            $this->logAndShowInfo(sprintf('Start migration "%s"...', $filename), false);
             $db->begin();
             try {
                 $migration = include $file;
@@ -146,12 +146,12 @@ class Migrate extends Command
             catch (Exception $e) {
                 $db->rollback();
                 Log::exception($e);
-                $this->error(sprintf('Error in migration "%s"', $filename));
+                $this->error(' [ BAD ] ');
                 $this->error($e->getMessage());
                 return;
             }
             // @codeCoverageIgnoreEnd
-            $this->logAndShowInfo(sprintf('Finish migration "%s"', $filename));
+            $this->logAndShowInfo(' [ OK ] ');
         }
         if ($migrated) {
             Db::clearMetadata();

@@ -56,7 +56,11 @@ class MigrationTest extends CliTestCase
 
         // Test migration up
         $output = $this->runCommand('migrate:up');
-        $this->assertContains(sprintf('Finish migration "%s"', $migrationFile), $output, 'Unable to run migration');
+        $this->assertContains(
+            sprintf('Start migration "%s"... [ OK ]', $migrationFile),
+            $output,
+            'Unable to run migration'
+        );
         $output = $this->runCommand('migrate:list', ['-i']);
         $this->assertContains($migrationFile, $output, 'Unable to detect installed migrations');
         $list->clearMigratedCache();
@@ -69,9 +73,9 @@ class MigrationTest extends CliTestCase
         $list->clearMigratedCache();
 
         // Test migration down
-        $output = $this->runCommand('migrate:down');
+        $output = $this->runCommand('migrate:down', ['-f']);
         $this->assertContains(
-            sprintf('Finish reverting migration "%s"', $migrationFile),
+            sprintf('Start reverting migration "%s"... [ OK ]', $migrationFile),
             $output,
             'Unable to revert migration'
         );
