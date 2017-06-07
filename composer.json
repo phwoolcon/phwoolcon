@@ -42,8 +42,7 @@
     },
     "bin": [
         "bin/update-phwoolcon-package-resource",
-        "bin/generate-phpdoc",
-        "phwoolcon-package/phwoolcon-package-phwoolcon.php"
+        "bin/generate-phpdoc"
     ],
     "extra": {
         "branch-alias": {

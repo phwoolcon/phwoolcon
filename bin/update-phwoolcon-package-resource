@@ -63,7 +63,7 @@ is_dir($configPath) or mkdir($configPath, 0755, true);
 is_dir($assetsPath) or mkdir($assetsPath, 0755, true);
 
 $packages = [];
-$packageFiles = glob($vendorDir . '/bin/phwoolcon-package-*.php');
+$packageFiles = detectPhwoolconPackageFiles($vendorDir);
 
 $diFiles = [];
 $routeFiles = [];

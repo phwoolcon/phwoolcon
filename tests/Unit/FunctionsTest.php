@@ -453,6 +453,14 @@ class FunctionsTest extends TestCase
         $this->assertFileNotExists($fileToBeIncluded);
     }
 
+    public function testDetectPhwoolconPackageFiles()
+    {
+        $vendorDir = dirname(dirname(dirname(dirname(__DIR__))));
+        $packageFiles = detectPhwoolconPackageFiles($vendorDir);
+        $target = $vendorDir . '/phwoolcon/phwoolcon/phwoolcon-package/phwoolcon-package-phwoolcon.php';
+        $this->assertContains($target, $packageFiles);
+    }
+
     public function testEscape()
     {
         $text = '<script>alert(1);</script>';

@@ -170,6 +170,17 @@ function copyDirReplace($source, $destination)
 }
 
 /**
+ * @param string $vendorDir
+ * @return array
+ */
+function detectPhwoolconPackageFiles($vendorDir = null)
+{
+    $vendorDir or $vendorDir = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor';
+    $packageFiles = glob($vendorDir . '/*/*/phwoolcon-package/phwoolcon-package-*.php');
+    return $packageFiles;
+}
+
+/**
  * @param string   $filename
  * @param mixed    $array
  * @param callable $filter
