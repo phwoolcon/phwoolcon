@@ -89,8 +89,8 @@ foreach ($packageFiles as $file) {
     if (!is_array($package = include($file))) {
         continue;
     }
+    $path = dirname(dirname($file));
     foreach ($package as $name => $resources) {
-        $path = $vendorDir . '/' . $name;
         installConfig($name, $path, $configPath);
         installViews($name, $path, $viewPath);
         installAssets($name, $path, $assetsPath);
