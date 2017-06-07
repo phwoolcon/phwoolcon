@@ -17,6 +17,7 @@ return [
                 'migrate:list' => Command\MigrateList::class,
                 'service' => Command\ServiceCommand::class,
                 'queue:consume' => Command\QueueConsumeCommand::class,
+                'phpunit:pick-package' => Command\PhpunitPickPackageCommand::class,
             ],
         ],
         'class_aliases' => [

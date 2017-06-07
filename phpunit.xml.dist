@@ -33,6 +33,7 @@
                 <file>src/Protocol/StreamWrapperTrait.php</file>
                 <file>src/Cli/Output/Stream.php</file>
                 <file>src/Cli/Command/ClearCacheCommand.php</file>
+                <file>src/Cli/Command/PhpunitPickPackageCommand.php</file>
 
                 <!-- TODO Implement service tests -->
                 <file>src/Cli/Command/ServiceCommand.php</file>
