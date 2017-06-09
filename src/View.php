@@ -233,6 +233,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $resourcePath = '/' . $assetsOptions['assets_dir'] . '/';
         $compiledPath = '/' . $assetsOptions['compiled_dir'] . '/';
         foreach ($assets as $collectionName => $resources) {
+            ksort($resources);
             $resourceType = substr($collectionName, strrpos($collectionName, '-') + 1);
             $collectionName = $prefix . $collectionName;
             $collection = $this->assets->collection($collectionName);
