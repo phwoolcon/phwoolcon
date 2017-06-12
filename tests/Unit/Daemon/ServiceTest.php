@@ -78,15 +78,18 @@ class ServiceTest extends TestCase
     public function testChoosePort()
     {
         $service = $this->service;
+        opcache_reset();
         $port = $service->choosePort();
         $this->assertEquals($port, $service->choosePort());
 
         // Swap port
         $service->choosePort(true);
+        opcache_reset();
         $this->assertNotEquals($port, $service->choosePort());
 
         // Swap port
         $service->choosePort(true);
+        opcache_reset();
         $this->assertEquals($port, $service->choosePort());
     }
 
