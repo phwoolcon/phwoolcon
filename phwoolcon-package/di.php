@@ -25,7 +25,7 @@ if (is_file($modelTraitFile = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolc
 }
 
 Events::register($di);
-DiFix::register($di);
+DiFix::fix($di);
 Db::register($di);
 Cache::register($di);
 Log::register($di);

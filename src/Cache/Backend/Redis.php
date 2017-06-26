@@ -44,7 +44,7 @@ class Redis extends PhalconRedis
         if (!$success) {
             throw new Exception('Could not connect to the Redis server ' . $host . ':' . $port);
         }
-        if (isset($options['auth'])) {
+        if (!empty($options['auth'])) {
             $success = $redis->auth($options['auth']);
             if (!$success) {
                 throw new Exception('Failed to authenticate with the Redis server');

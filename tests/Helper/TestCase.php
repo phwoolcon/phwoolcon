@@ -62,7 +62,7 @@ class TestCase extends PhpunitTestCase
         /* @var Di $di */
         $di = $this->di = Di::getDefault();
         Events::register($di);
-        DiFix::register($di);
+        DiFix::fix($di);
         Db::register($di);
         Cache::register($di);
         Log::register($di);

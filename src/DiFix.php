@@ -16,7 +16,7 @@ class DiFix extends Di
      * @param Di $di
      * @codeCoverageIgnore
      */
-    public static function register(Di $di)
+    public static function fix(Di $di)
     {
         if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] > '2010000') {
             $di->setInternalEventsManager($di->getShared('eventsManager'));
