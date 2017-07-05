@@ -14,6 +14,7 @@ use Phalcon\Cache\FrontendInterface;
  */
 class Redis extends PhalconRedis
 {
+    protected $compressThreshold = 2048;
 
     public function _connect()
     {
@@ -27,6 +28,7 @@ class Redis extends PhalconRedis
         ) {
             throw new Exception('Unexpected inconsistency in options');
         }
+        isset($options['compress_threshold']) and $this->compressThreshold = $options['compress_threshold'];
         // @codeCoverageIgnoreEnd
         $host = $options['host'];
         $port = $options['port'];
@@ -69,8 +71,16 @@ class Redis extends PhalconRedis
         if (is_numeric($content)) {
             return $content;
         }
-        if (isset($content{1}) && $content{0} == 'g' && $content{1} == 'z') {
-            $content = gzinflate(base64_decode(substr($content, 2)));
+        if (isset($content{1}) && $content{0} == 'g') {
+            // gb: binary gzip - since 17.7.5
+            if ($content{1} == 'b') {
+                $content = gzinflate(substr($content, 2));
+            } // @codeCoverageIgnoreStart
+            // gz: base64 encoded gzip - since 16.12.2
+            elseif ($content{1} == 'z') {
+                $content = gzinflate(base64_decode(substr($content, 2)));
+            }
+            // @codeCoverageIgnoreEnd
         }
         return $this->_frontend->afterRetrieve($content);
     }
@@ -82,8 +92,11 @@ class Redis extends PhalconRedis
         }
         $content = $this->_frontend->beforeStore($content);
         // Compress big content
-        if (strlen($content) > 2048) {
-            $content = 'gz' . base64_encode(gzdeflate($content, 9));
+        if (strlen($content) > $this->compressThreshold) {
+            // gz: base64 encoded gzip - since 16.12.2
+//            $content = 'gz' . base64_encode(gzdeflate($content, 9));
+            // gb: binary gzip - since 17.7.5
+            $content = 'gb' . gzdeflate($content, 9);
         }
         return $content;
     }
