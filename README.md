@@ -8,11 +8,6 @@ Phalcon + Swoole
 
 ***
 
-**WARNING**: This library is in very early stage of development,  
-use at your own risk!
-
-***
-
 The purpose of this library is to create a high performance  
 web application, which can run in traditional php-fpm mode and  
 service mode.
@@ -23,8 +18,6 @@ by reducing lot of unnecessary and repetitive computing.
 If you have bugs in service mode, you can easily turn off the service  
 mode, you loose some speed (but still fast) to gain more stability,  
 fix your bugs and apply service mode again.
-
-[API Reference](docs/ApiIndex.md)
 
 # Usage
 
@@ -107,6 +100,9 @@ To read the report, please open `index.html` in a web browser.
 * Finite state machine
 * Mail
 * Symfony CLI console
+
+# Documents
+* [API Reference](docs/ApiIndex.md)
 
 
 [![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)

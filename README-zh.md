@@ -8,10 +8,6 @@ Phalcon + Swoole
 
 ***
 
-**警告**：此项目现在处于非常早期开发状态，请慎重使用！
-
-***
-
 本项目的目的是创建一个高性能的 Web 应用程序，既可以运行于传统的 php-fpm  
 模式下，也可以运行在服务模式下。
 
@@ -19,8 +15,6 @@ Phalcon + Swoole
 
 如果在服务模式中出现了 Bug，你可以轻松地关闭服务模式，损失一些性能（但是  
 仍然很快）换取稳定性，待 Bug 修复后再启用服务模式。
-
-[API 参考文档](docs/ApiIndex.md)
 
 # 使用
 
@@ -100,5 +94,8 @@ tests/root/storage/coverage/
 * Finite state machine
 * Mail
 * Symfony CLI console
+
+# 文档
+* [API 参考文档](docs/ApiIndex.md)
 
 [![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
