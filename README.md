@@ -2,11 +2,15 @@
 
 [![Build Status](https://travis-ci.org/phwoolcon/phwoolcon.svg?branch=master)](https://travis-ci.org/phwoolcon/phwoolcon)
 [![Code Coverage](https://codecov.io/gh/phwoolcon/phwoolcon/branch/master/graph/badge.svg)](https://codecov.io/gh/phwoolcon/phwoolcon)
+[![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Supported PHP versions: 5.5 .. 7.1](https://img.shields.io/badge/php-5.5%20~%207.1-blue.svg)
+![Supported Phalcon versions: >= 3.0](https://img.shields.io/badge/Phalcon-%E2%89%A5%203.0-blue.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Phalcon + Swoole
 
 ***
+[中文 Readme](README-zh.md)
 
 The purpose of this library is to create a high performance  
 web application, which can run in traditional php-fpm mode and  
@@ -103,8 +107,3 @@ To read the report, please open `index.html` in a web browser.
 
 # Documents
 * [API Reference](docs/ApiIndex.md)
-
-
-[![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-[中文](README-zh.md)
