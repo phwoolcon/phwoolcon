@@ -21,6 +21,7 @@ class Cli
             // @codeCoverageIgnoreEnd
             $app->add(new $class($name, $di));
         }
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
         return $app;
     }
 
