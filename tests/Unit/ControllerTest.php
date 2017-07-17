@@ -80,7 +80,7 @@ class ControllerTest extends TestCase
     {
         $controller = $this->getTestController();
         $controller->testRedirect($url = 'test-url');
-        $this->assertStringStartsWith('302', $controller->response->getStatusCode());
+        $this->assertStringStartsWith('302', $controller->response->getHeaders()->get('Status'));
         $this->assertEquals(url($url), $controller->response->getHeaders()->get('Location'));
     }
 

@@ -275,7 +275,7 @@ class Service
     {
         $headers = ['status' => '', 'headers' => [], 'set_cookies' => []];
         // status
-        $headers['status'] = 'HTTP/1.1 ' . $response->getStatusCode();
+        $headers['status'] = 'HTTP/1.1 ' . $response->getHeaders()->get('Status');
 
         // headers
         foreach ($response->getHeaders()->toArray() as $name => $value) {
