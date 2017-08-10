@@ -21,6 +21,7 @@ class Connection extends Model
     const STATUS_READY = 'ready';
     const STATUS_RESERVED = 'reserved';
     const STATUS_BURIED = 'buried';
+    const STATUS_DELETED = 'deleted';
 
     protected $_jsonFields = ['meta'];
 
@@ -179,5 +180,13 @@ class Connection extends Model
         $this->setSource($table);
         $this->getWriteConnection()->tableExists($table) or $this->createTable();
         parent::onConstruct();
+    }
+
+    public function softDelete()
+    {
+        $this->status = static::STATUS_DELETED;
+        $this->reserved_until = 0;
+        $this->save();
+        return $this;
     }
 }

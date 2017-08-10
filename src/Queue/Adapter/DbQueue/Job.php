@@ -16,7 +16,7 @@ class Job implements JobInterface
 
     protected function _delete()
     {
-        $this->rawJob->delete();
+        $this->rawJob->softDelete();
     }
 
     protected function _release($delay = 0)
