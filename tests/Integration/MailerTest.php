@@ -72,7 +72,7 @@ EOT;
         $dbQueue = Queue::connection('async_email_sending')->getConnection();
         $dbQueue->getWriteConnection()->delete($dbQueue->getSource());
 
-        $this->assertEquals(0, $dbQueue::count());
+        $this->assertEquals(0, $dbQueue::countSimple(['status' => $dbQueue::STATUS_READY]));
 
         // Prepare queue listener
         $listener = new Queue\Listener();
@@ -90,7 +90,7 @@ EOT;
         $this->assertEquals(1, $result);
 
         // The email should be in the queue
-        $this->assertEquals(1, $dbQueue::count());
+        $this->assertEquals(1, $dbQueue::countSimple(['status' => $dbQueue::STATUS_READY]));
 
         // Pop the queue to send the mail
         $popResult = $listener->pop('async_email_sending', null, 0, 0, 1);
@@ -108,7 +108,7 @@ EOT;
         $this->assertEquals($body, $popBody);
 
         // Now the queue should be empty
-        $this->assertEquals(0, $dbQueue::count());
+        $this->assertEquals(0, $dbQueue::countSimple(['status' => $dbQueue::STATUS_READY]));
     }
 
     public function testSendingEmailSynchronously()
