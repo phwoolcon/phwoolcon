@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon;
 
 use Phalcon\Text as PhalconText;
@@ -33,7 +34,7 @@ class Text extends PhalconText
      *
      * @param string $input
      * @param string $padding
-     * @param int $length
+     * @param int    $length
      * @return string
      */
     public static function padOrTruncate($input, $padding, $length)
@@ -44,5 +45,19 @@ class Text extends PhalconText
     public static function token()
     {
         return bin2hex(random_bytes(16));
+    }
+
+    /**
+     * @param int $type
+     * @param int $length
+     * @return string
+     * @codeCoverageIgnore
+     */
+    public static function random($type = 0, $length = 8)
+    {
+        if ($type === static::RANDOM_ALNUM) {
+            return substr(str_replace(['+', '/'], '', base64_encode(random_bytes($length * 2))), 0, $length);
+        }
+        return parent::random($type, $length);
     }
 }
