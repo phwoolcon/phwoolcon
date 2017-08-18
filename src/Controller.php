@@ -45,6 +45,20 @@ abstract class Controller extends PhalconController
         return 'W/' . dechex(crc32($content));
     }
 
+    /**
+     * Q: Why make the `php://input` encapsulation?
+     * A: I want to use it in service mode, which is impossible to pass data via `php://input` between processes.
+     *    This is not exactly the same as the Phalcon's implementation.
+     * @see \Phalcon\Http\Request::getRawBody()
+     * @return string
+     * @codeCoverageIgnore
+     */
+    protected function getRawPhpInput()
+    {
+        isset($_SERVER['RAW_PHP_INPUT']) or $_SERVER['RAW_PHP_INPUT'] = file_get_contents('php://input');
+        return $_SERVER['RAW_PHP_INPUT'];
+    }
+
     public function initialize()
     {
         $this->pageTitles = [__(Config::get('view.title_suffix'))];
