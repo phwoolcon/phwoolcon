@@ -74,3 +74,8 @@ script:
 after_success:
   # Collect code coverage
   - bash <(curl -s https://codecov.io/bash)
+
+branches:
+  #Don't build tags
+  except:
+  - /^v\d/
