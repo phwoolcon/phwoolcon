@@ -10,6 +10,7 @@
 Phalcon + Swoole
 
 ***
+[为什么要开发 Phwoolcon](https://github.com/phwoolcon/phwoolcon/wiki/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BC%80%E5%8F%91-Phwoolcon)
 
 本项目的目的是创建一个高性能的 Web 应用程序，既可以运行于传统的 php-fpm  
 模式下，也可以运行在服务模式下。
