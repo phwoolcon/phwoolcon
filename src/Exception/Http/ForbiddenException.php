@@ -3,6 +3,10 @@ namespace Phwoolcon\Exception\Http;
 
 use Phwoolcon\Exception\HttpException;
 
+/**
+ * Throw this exception to terminate execution and response a 403 forbidden
+ * @package Phwoolcon\Exception\Http
+ */
 class ForbiddenException extends HttpException
 {
 
