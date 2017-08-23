@@ -3,6 +3,7 @@
 ## [v1.0.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.0.5) (2017-8-23)
 #### Bug Fixes:
 * Logger error in resource update script when DB `query_log` is enabled
+* **Composer**: Remove mcrypt dependency
 #### Tests:
 * **Travis**: Add php 7.2 env
 
