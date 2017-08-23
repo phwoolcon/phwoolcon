@@ -82,8 +82,6 @@ class Session
     public static function register(Di $di)
     {
         static::$di = $di;
-        ini_set('session.use_cookies', 0);
-        ini_set('session.cache_limiter', '');
         $di->remove('session');
         static::$session = null;
         $di->setShared('session', function () {

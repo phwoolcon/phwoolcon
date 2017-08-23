@@ -17,6 +17,10 @@ if (!extension_loaded('phalcon')) {
 
 define('TEST_ROOT_PATH', __DIR__ . '/root');
 
+// PHP 7.2: ini_set(): Headers already sent. You cannot change the session module's ini settings at this time
+ini_get('session.use_cookies') and ini_set('session.use_cookies', 0);
+ini_get('session.cache_limiter') and ini_set('session.cache_limiter', '');
+
 // The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
 $di = new FactoryDefault();
 $_SERVER['PHWOOLCON_ROOT_PATH'] = TEST_ROOT_PATH;

@@ -6,6 +6,7 @@
 * **Composer**: Remove mcrypt dependency
 #### Tests:
 * **Travis**: Add php 7.2 env
+* **Session**: Compatible with php 7.2
 
 ## [v1.0.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.0.4) (2017-8-22)
 #### Features:

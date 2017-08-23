@@ -20,6 +20,10 @@ use Phwoolcon\View;
 
 $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
 
+// PHP 7.2: ini_set(): Headers already sent. You cannot change the session module's ini settings at this time
+ini_get('session.use_cookies') and ini_set('session.use_cookies', 0);
+ini_get('session.cache_limiter') and ini_set('session.cache_limiter', '');
+
 if (is_file($modelTraitFile = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolcon/model_traits.php')) {
     include $modelTraitFile;
 }
