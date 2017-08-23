@@ -11,6 +11,7 @@ use Phwoolcon\Config;
 use Phwoolcon\Db;
 use Phwoolcon\DiFix;
 use Phwoolcon\Events;
+use Phwoolcon\Log;
 
 error_reporting(-1);
 
@@ -47,6 +48,7 @@ if ($firstRun) {
     DiFix::fix($di);
     Db::register($di);
     Cache::register($di);
+    Log::register($di);
     Config::register($di);
     $viewPath = Config::get('view.path', $baseDir . '/app/views/');
     $assetsBasePath = Config::get('view.options.assets_options.base_path', $baseDir . '/public');

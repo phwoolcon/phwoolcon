@@ -1,5 +1,9 @@
 # Phwoolcon Change Logs
 
+## [v1.0.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.0.5) (2017-8-23)
+#### Bug Fixes:
+* Logger error in resource update script when DB `query_log` is enabled
+
 ## [v1.0.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.0.4) (2017-8-22)
 #### Features:
 * Add http redirect exception
