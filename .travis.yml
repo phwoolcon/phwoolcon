@@ -70,7 +70,7 @@ script:
   # Check code style
   - phpcs
   # Running unit test
-  - phpunit --verbose --coverage-clover=coverage.xml
+  - phpunit --stderr --verbose --coverage-clover=coverage.xml
 
 after_success:
   # Collect code coverage
