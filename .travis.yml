@@ -41,7 +41,7 @@ before_install:
   # Disable sendmail
   - echo -e '#!/usr/bin/env bash\nexit 0' | sudo tee /usr/sbin/sendmail
   - echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' > $(php --ini|grep -m 1 "ini files in:"|cut -d ":" -f 2)/sendmail.ini
-  - sudo beanstalkd -l 127.0.0.1 -p 11300 &
+  - service beanstalkd status
   # Update composer
   - composer self-update
   # Install imagick to pass Phalcon compiling
