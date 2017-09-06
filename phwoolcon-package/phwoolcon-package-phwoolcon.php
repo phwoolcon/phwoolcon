@@ -18,6 +18,7 @@ return [
                 'service' => Command\ServiceCommand::class,
                 'queue:consume' => Command\QueueConsumeCommand::class,
                 'phpunit:pick-package' => Command\PhpunitPickPackageCommand::class,
+                'package:create' => Command\Package\CreateCommand::class,
             ],
         ],
         'class_aliases' => [

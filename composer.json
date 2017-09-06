@@ -26,6 +26,9 @@
         "swiftmailer/swiftmailer": "~5.4.2",
         "opis/closure": "~2.3.0"
     },
+    "require-dev": {
+        "phwoolcon/skeleton": "dev-master"
+    },
     "suggest": {
         "ext-swoole": "~1.8"
     },
@@ -47,5 +50,11 @@
         "branch-alias": {
             "dev-master": "1.0.x-dev"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git@github.com:phwoolcon/skeleton.git"
+        }
+    ]
 }

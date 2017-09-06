@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+cd "$(dirname "$( dirname "${BASH_SOURCE[0]}" )")"
+echo Phwoolcon Skeleton Packager
+echo
+echo Working directory: `pwd`
+echo
+
+# Run composer update
+composer update
+
+echo Copying skeleton from composer...
+rm -rf ignore/skeleton
+cp -r vendor/phwoolcon/skeleton/ ignore/skeleton
+
+echo Creating tar package...
+pushd ignore > /dev/null
+rm -rf skeleton/.git
+mkdir -p skeleton/phwoolcon-package/assets skeleton/phwoolcon-package/config skeleton/phwoolcon-package/views
+tar --owner=0 --group=0 -cf ../src/Cli/Command/Package/skeleton.tar skeleton
+popd > /dev/null
+
+ls -lah --color src/Cli/Command/Package/skeleton.tar
+echo
+echo Done
