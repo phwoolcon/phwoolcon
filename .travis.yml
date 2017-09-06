@@ -41,14 +41,14 @@ before_install:
   # Disable sendmail
   - echo -e '#!/usr/bin/env bash\nexit 0' | sudo tee /usr/sbin/sendmail
   - echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' > $(php --ini|grep -m 1 "ini files in:"|cut -d ":" -f 2)/sendmail.ini
-  - sudo beanstalkd -d -l 127.0.0.1 -p 11300
+  - sudo beanstalkd -l 127.0.0.1 -p 11300 &
   # Update composer
   - composer self-update
   # Install imagick to pass Phalcon compiling
   - printf "\n" | pecl install imagick
   # Install Swoole
   - pecl install swoole
-  - phpenv config-add php-ext.ini
+  - phpenv config-add tests/travis/php-ext.ini
   # Install Phalcon
   - bin/ci-install-phalcon
   # Install Phwoolcon
