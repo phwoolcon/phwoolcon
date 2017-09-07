@@ -53,8 +53,6 @@ before_install:
   - bin/ci-install-phalcon
   # Install Phwoolcon
   - composer install --prefer-source --no-interaction
-  # Install phpcs
-  - pear install pear/PHP_CodeSniffer
   - phpenv rehash
   - php -i|grep include_path
 
@@ -70,7 +68,7 @@ before_script:
 
 script:
   # Check code style
-  - phpcs
+  - vendor/bin/phpcs
   # Running unit test
   - phpunit --stderr --verbose --coverage-clover=coverage.xml
 

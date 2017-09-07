@@ -27,6 +27,7 @@
         "opis/closure": "~2.3.0"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "~3.0",
         "phwoolcon/skeleton": "dev-master"
     },
     "suggest": {
