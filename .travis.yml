@@ -44,6 +44,7 @@ before_install:
   - sudo service beanstalkd restart
   # Update composer
   - composer self-update
+  - pecl channel-update pecl.php.net
   # Install imagick to pass Phalcon compiling
   - printf "\n" | pecl install imagick
   # Install Swoole
@@ -54,7 +55,6 @@ before_install:
   # Install Phwoolcon
   - composer install --prefer-source --no-interaction
   - phpenv rehash
-  - php -i|grep include_path
 
 before_script:
   # Update dependencies
