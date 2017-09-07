@@ -63,7 +63,7 @@ before_script:
   - composer update --no-interaction --prefer-source
   # Create database
   - mysql -uroot -e 'CREATE DATABASE `phwoolcon_test` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;'
-  - mysql -uroot -e "GRANT ALL PRIVILEGES ON `phwoolcon_test`.* TO 'travis'@'%';";
+  - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'%';";
   # Print Phalcon and Swoole info
   - php --ri phalcon
   - php --ri swoole
