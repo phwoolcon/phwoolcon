@@ -39,5 +39,19 @@ return [
                 'Widget' => Phwoolcon\View\Widget::class,
             ],
         ],
+        'assets' => [
+            'ie-hack-css' => [],
+            'ie-hack-js' => [
+                'phwoolcon/ie/html-elements.js',
+                'phwoolcon/ie/add-event-listener.js',
+                'phwoolcon/ie/es5-shim-4.5.9.min.js',
+                'phwoolcon/ie/es5-sham-4.5.9.min.js',
+                'phwoolcon/ie/json2.min.js',
+                'phwoolcon/ie/es6-shim-0.35.3.min.js',
+                'phwoolcon/ie/es6-sham-0.35.3.min.js',
+                'phwoolcon/ie/html5shiv-3.7.3.js',
+            ],
+            'ie-hack-body-js' => [],
+        ],
     ],
 ];

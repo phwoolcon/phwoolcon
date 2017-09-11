@@ -1,0 +1,1 @@
+window.HTMLElement || (HTMLElement = Element);
