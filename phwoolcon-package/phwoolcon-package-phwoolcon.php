@@ -50,8 +50,15 @@ return [
                 'phwoolcon/ie/es6-shim-0.35.3.min.js',
                 'phwoolcon/ie/es6-sham-0.35.3.min.js',
                 'phwoolcon/ie/html5shiv-3.7.3.js',
+                'phwoolcon/ie/html5-formdata-polyfilll.min.js',
+                'phwoolcon/ie/fetch-2.0.3.min.js',
             ],
             'ie-hack-body-js' => [],
+            'phwoolcon-js' => [
+                'phwoolcon/js-cookie-2.1.4.min.js',
+                'phwoolcon/simpleStorage-0.2.1.min.js',
+                'phwoolcon/phwoolcon.js',
+            ],
         ],
     ],
 ];
