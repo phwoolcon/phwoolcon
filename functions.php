@@ -400,6 +400,16 @@ function storagePath($path = null)
 }
 
 /**
+ * @param string $path
+ * @return string
+ * @codeCoverageIgnore
+ */
+function publicPath($path = null)
+{
+    return $_SERVER['PHWOOLCON_ROOT_PATH'] . '/public' . ($path ? '/' . $path : '');
+}
+
+/**
  * Copy dir by symlink files, override destination files, if exists
  *
  * @param string $source
