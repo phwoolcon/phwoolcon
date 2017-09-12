@@ -30,6 +30,7 @@ if (is_file($modelTraitFile = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolc
 
 Events::register($di);
 DiFix::fix($di);
+DynamicTrait::register($di);
 Db::register($di);
 Cache::register($di);
 Log::register($di);
@@ -42,7 +43,6 @@ Cookies::register($di);
 Session::register($di);
 View::register($di);
 Queue::register($di);
-DynamicTrait::register($di);
 Mailer::register($di);
 
 $loader->registerNamespaces(Config::get('app.autoload.namespaces', []), true);
