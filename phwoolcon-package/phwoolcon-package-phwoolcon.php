@@ -55,6 +55,7 @@ return [
             ],
             'ie-hack-body-js' => [],
             'phwoolcon-js' => [
+                'phwoolcon/utils.js',
                 'phwoolcon/js-cookie-2.1.4.min.js',
                 'phwoolcon/simpleStorage-0.2.1.min.js',
                 'phwoolcon/phwoolcon.js',
