@@ -25,6 +25,7 @@ return [
             0 => [
                 'Config' => Phwoolcon\Config::class,
                 'Db' => Phwoolcon\Db::class,
+                'ErrorCodes' => Phwoolcon\ErrorCodes::class,
                 'I18n' => Phwoolcon\I18n::class,
                 'Log' => Phwoolcon\Log::class,
                 'Queue' => Phwoolcon\Queue::class,
