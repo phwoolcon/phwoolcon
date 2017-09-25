@@ -45,7 +45,7 @@ class ErrorCodes
         /* @var I18n $i18n */
         $i18n = static::$di->getShared('i18n');
         $locales = $i18n->loadLocale(I18n::getCurrentLocale());
-        $errorCodes = fnGet($locales, 'packages.error_codes');
+        $errorCodes = fnGet($locales, 'packages.error_codes', []);
         foreach ($errorCodes as $code => $message) {
             $name = 'get' . Text::camelize($code);
             $parameters = array_map(function ($field) {
