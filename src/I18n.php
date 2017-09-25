@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon;
 
 use Phalcon\Di;
@@ -127,8 +128,8 @@ class I18n extends Adapter implements ServiceAwareInterface
             in_array($package, ['error_code']) and $package = 'error_codes';
             $packageLocale = (array)include $file;
             isset($packages[$package]) or $packages[$package] = [];
-            $packages[$package] = array_merge($packages[$package], $packageLocale);
-            $package == 'error_codes' or $combined = array_merge($combined, $packageLocale);
+            $packages[$package] = array_replace($packages[$package], $packageLocale);
+            $package == 'error_codes' or $combined = array_replace($combined, $packageLocale);
         }
         $this->locale[$locale] = compact('combined', 'packages');
         $useCache and Cache::set($cacheKey, $this->locale[$locale]);

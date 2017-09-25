@@ -47,9 +47,9 @@ class ErrorCodes
         $locales = $i18n->loadLocale(I18n::getCurrentLocale());
         $errorCodes = fnGet($locales, 'packages.error_codes', []);
         foreach ($errorCodes as $code => $message) {
-            $name = 'get' . Text::camelize($code);
+            $name = 'get' . Text::camelize((string)$code);
             $parameters = array_map(function ($field) {
-                return '$' . lcfirst(Text::camelize($field));
+                return '$' . lcfirst(Text::camelize((string)$field));
             }, static::detectPlaceholders($message));
             $parameters = implode(', ', $parameters);
             $classContent[] = <<<METHOD
