@@ -110,13 +110,13 @@ class I18n extends Adapter implements ServiceAwareInterface
     public function loadLocale($locale, $force = false)
     {
         if (isset($this->locale[$locale]) && !$force) {
-            return $this;
+            return $this->locale[$locale];
         }
         $useCache = $this->options['cache_locale'];
         $cacheKey = 'locale.' . $locale;
         if ($useCache && !$force && $cached = Cache::get($cacheKey)) {
             $this->locale[$locale] = $cached;
-            return $this;
+            return $this->locale[$locale];
         }
         $packages = [];
         $combined = [];
@@ -124,14 +124,15 @@ class I18n extends Adapter implements ServiceAwareInterface
         $localeFiles = array_merge(glob($localeDir . '/*.php'), glob($localeDir . '/*/*.php'));
         foreach ($localeFiles as $file) {
             $package = pathinfo($file, PATHINFO_FILENAME);
+            in_array($package, ['error_code']) and $package = 'error_codes';
             $packageLocale = (array)include $file;
             isset($packages[$package]) or $packages[$package] = [];
             $packages[$package] = array_merge($packages[$package], $packageLocale);
-            $combined = array_merge($combined, $packageLocale);
+            $package == 'error_codes' or $combined = array_merge($combined, $packageLocale);
         }
         $this->locale[$locale] = compact('combined', 'packages');
         $useCache and Cache::set($cacheKey, $this->locale[$locale]);
-        return $this;
+        return $this->locale[$locale];
     }
 
     protected function loadUndefinedLocaleStrings()
