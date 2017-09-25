@@ -26,4 +26,19 @@ class ErrorCodesTest extends TestCase
         $this->assertEquals('test_param', $code);
         $this->assertEquals('Test error message with foo and bar', $message);
     }
+
+    public function testIdeHelperGenerator()
+    {
+        $ideHelper = ErrorCodes::ideHelperGenerator();
+        $this->assertEquals(<<<'METHOD'
+    public static function getTestError() {
+        return ['test_error', 'Test error message'];
+    }
+
+    public static function getTestParam($param, $anotherParam) {
+        return ['test_param', 'Test error message with %param% and %another_param%'];
+    }
+METHOD
+            , $ideHelper);
+    }
 }

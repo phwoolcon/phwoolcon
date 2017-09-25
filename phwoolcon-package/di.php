@@ -7,6 +7,7 @@ use Phwoolcon\Config;
 use Phwoolcon\Cookies;
 use Phwoolcon\Db;
 use Phwoolcon\DiFix;
+use Phwoolcon\ErrorCodes;
 use Phwoolcon\Events;
 use Phwoolcon\I18n;
 use Phwoolcon\Log;
@@ -31,6 +32,7 @@ if (is_file($modelTraitFile = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor/phwoolc
 Events::register($di);
 DiFix::fix($di);
 DynamicTrait::register($di);
+ErrorCodes::register($di);
 Db::register($di);
 Cache::register($di);
 Log::register($di);

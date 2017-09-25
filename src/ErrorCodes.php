@@ -19,10 +19,6 @@ class ErrorCodes
 
     protected $errors = [];
 
-    public function __construct()
-    {
-    }
-
     public static function __callStatic($name, $arguments)
     {
         static::$instance or static::$instance = static::$di->getShared('error_codes');
@@ -33,6 +29,36 @@ class ErrorCodes
         // @codeCoverageIgnoreStart
         return call_user_func_array([static::$instance, $name], $arguments);
         // @codeCoverageIgnoreEnd
+    }
+
+    protected static function detectPlaceholders($message)
+    {
+        $pattern = '/%([^%]*)%/';
+        preg_match_all($pattern, $message, $matches);
+        $placeholders = isset($matches[1]) ? $matches[1] : [];
+        return $placeholders;
+    }
+
+    public static function ideHelperGenerator()
+    {
+        $classContent = [];
+        /* @var I18n $i18n */
+        $i18n = static::$di->getShared('i18n');
+        $locales = $i18n->loadLocale(I18n::getCurrentLocale());
+        $errorCodes = fnGet($locales, 'packages.error_codes');
+        foreach ($errorCodes as $code => $message) {
+            $name = 'get' . Text::camelize($code);
+            $parameters = array_map(function ($field) {
+                return '$' . lcfirst(Text::camelize($field));
+            }, static::detectPlaceholders($message));
+            $parameters = implode(', ', $parameters);
+            $classContent[] = <<<METHOD
+    public static function {$name}({$parameters}) {
+        return ['{$code}', '{$message}'];
+    }
+METHOD;
+        }
+        return implode(PHP_EOL . PHP_EOL, $classContent);
     }
 
     public static function register(Di $di)
@@ -61,13 +87,5 @@ class ErrorCodes
             $errorMessage = __($errorCode, $params, $package);
         }
         return [$errorCode, $errorMessage];
-    }
-
-    protected function detectPlaceholders($message)
-    {
-        $pattern = '/%([^%]*)%/';
-        preg_match_all($pattern, $message, $matches);
-        $placeholders = isset($matches[1]) ? $matches[1] : [];
-        return $placeholders;
     }
 }
