@@ -3,4 +3,4 @@ cd "$(dirname "$( dirname "${BASH_SOURCE[0]}" )")"
 rm -rf /tmp/phwoolcon-test/
 > tests/root/storage/logs/phwoolcon.log
 > tests/root/storage/logs/service.log
-phpunit --coverage-html tests/root/storage/coverage
+phpunit --coverage-html tests/root/storage/coverage "$@"
