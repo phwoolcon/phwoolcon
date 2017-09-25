@@ -120,9 +120,14 @@ class I18n extends Adapter implements ServiceAwareInterface
         }
         $packages = [];
         $combined = [];
-        foreach (glob($this->localePath . '/' . $this->currentLocale . '/*.php') as $file) {
+        $localeDir = $this->localePath . '/' . $this->currentLocale;
+        $localeFiles = array_merge(glob($localeDir . '/*.php'), glob($localeDir . '/*/*.php'));
+        foreach ($localeFiles as $file) {
             $package = pathinfo($file, PATHINFO_FILENAME);
-            $combined = array_merge($combined, $packages[$package] = (array)include $file);
+            $packageLocale = (array)include $file;
+            isset($packages[$package]) or $packages[$package] = [];
+            $packages[$package] = array_merge($packages[$package], $packageLocale);
+            $combined = array_merge($combined, $packageLocale);
         }
         $this->locale[$locale] = compact('combined', 'packages');
         $useCache and Cache::set($cacheKey, $this->locale[$locale]);
