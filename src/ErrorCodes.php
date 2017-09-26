@@ -4,6 +4,41 @@ namespace Phwoolcon;
 
 use Phalcon\Di;
 
+/**
+ * Class ErrorCodes
+ *
+ * Usage:
+ * 1. Define error codes in a locale file `error_codes.php`
+ * ```php
+ * <?php
+ * return [
+ *     'foo_error' => 'The foo error message: %param%',
+ *     '1234' => 'Some error message for 1234',
+ * ];
+ * ```
+ * 2. `bin/dump-autoload`
+ * 3. Enjoy the magic methods:
+ * ```php
+ * <?php
+ *
+ * use ErrorCodes;
+ *
+ * list($errorCode, $errorMessage) = ErrorCodes::getFooError('bar');
+ * var_dump($errorCode, $errorMessage); // prints 'foo_error' and 'The foo error message: bar'
+ *
+ * ErrorCodes::throw1234(RuntimeException::class); // This is identical to:
+ *                                                 // $errorMessage = 'Some error message for 1234';
+ *                                                 // $errorCode = 1234;
+ *                                                 // throw new RuntimeException($errorMessage, $errorCode)
+ *
+ * ErrorCodes::getFooError(RuntimeException::class, 'bar'); // This is identical to:
+ *                                                 // $errorMessage = 'The foo error message: bar';
+ *                                                 // $errorCode = 0; // Error code in a exception must be a integer
+ *                                                 // throw new RuntimeException($errorMessage, $errorCode)
+ * ```
+ *
+ * @package Phwoolcon
+ */
 class ErrorCodes
 {
 
@@ -26,6 +61,11 @@ class ErrorCodes
             $errorCode = Text::uncamelize(substr($name, 3));
             return call_user_func([static::$instance, 'getDetails'], $errorCode, $arguments);
         }
+        if (Text::startsWith($name, 'throw')) {
+            $errorCode = Text::uncamelize(substr($name, 5));
+            $exception = array_shift($arguments);
+            return call_user_func([static::$instance, 'throwException'], $errorCode, $exception, $arguments);
+        }
         // @codeCoverageIgnoreStart
         return call_user_func_array([static::$instance, $name], $arguments);
         // @codeCoverageIgnoreEnd
@@ -47,14 +87,24 @@ class ErrorCodes
         $locales = $i18n->loadLocale(I18n::getCurrentLocale());
         $errorCodes = fnGet($locales, 'packages.error_codes', []);
         foreach ($errorCodes as $code => $message) {
-            $name = 'get' . Text::camelize((string)$code);
+            $name = Text::camelize((string)$code);
             $parameters = array_map(function ($field) {
                 return '$' . lcfirst(Text::camelize((string)$field));
             }, static::detectPlaceholders($message));
+            $throwCode = (int)$code;
+            $throwMessage = $message;
+            is_numeric($code) or $throwMessage .= ' [' . $code . ']';
+            $throwParameters = $parameters;
+            array_unshift($throwParameters, '$exception');
             $parameters = implode(', ', $parameters);
+            $throwParameters = implode(', ', $throwParameters);
             $classContent[] = <<<METHOD
-    public static function {$name}({$parameters}) {
+    public static function get{$name}({$parameters}) {
         return ['{$code}', '{$message}'];
+    }
+
+    public static function throw{$name}({$throwParameters}) {
+        throw new \$exception('{$throwMessage}', {$throwCode});
     }
 METHOD;
         }
@@ -87,5 +137,12 @@ METHOD;
             $errorMessage = __($errorCode, $params, $package);
         }
         return [$errorCode, $errorMessage];
+    }
+
+    protected function throwException($errorCode, $exception, array $arguments)
+    {
+        $errorMessage = $this->getDetails($errorCode, $arguments)[1];
+        is_numeric($errorCode) or $errorMessage .= ' [' . $errorCode . ']';
+        throw new $exception($errorMessage, (int)$errorCode);
     }
 }
