@@ -16,25 +16,25 @@ use Phalcon\Di;
  *     '1234' => 'Some error message for 1234',
  * ];
  * ```
- * 2. `bin/dump-autoload`
+ * 2. `bin/dump-autoload` to generate the IDE helper
  * 3. Enjoy the magic methods:
  * ```php
  * <?php
  *
- * use ErrorCodes;
+ * use ErrorCodes; // Use the alias instead of Phwoolcon\ErrorCodes;
  *
  * list($errorCode, $errorMessage) = ErrorCodes::getFooError('bar');
- * var_dump($errorCode, $errorMessage); // prints 'foo_error' and 'The foo error message: bar'
+ * var_dump($errorCode, $errorMessage);             // prints 'foo_error' and 'The foo error message: bar'
  *
- * ErrorCodes::throw1234(RuntimeException::class); // This is identical to:
- *                                                 // $errorMessage = 'Some error message for 1234';
- *                                                 // $errorCode = 1234;
- *                                                 // throw new RuntimeException($errorMessage, $errorCode)
+ * throw ErrorCodes::gen1234(RuntimeException::class); // This is identical to:
+ *                                                  // $errorMessage = 'Some error message for 1234';
+ *                                                  // $errorCode = 1234;
+ *                                                  // throw new RuntimeException($errorMessage, $errorCode)
  *
- * ErrorCodes::getFooError(RuntimeException::class, 'bar'); // This is identical to:
- *                                                 // $errorMessage = 'The foo error message: bar';
- *                                                 // $errorCode = 0; // Error code in a exception must be a integer
- *                                                 // throw new RuntimeException($errorMessage, $errorCode)
+ * throw ErrorCodes::genFooError(RuntimeException::class, 'bar'); // This is identical to:
+ *                                                  // $errorMessage = 'The foo error message: bar [foo_error]';
+ *                                                  // $errorCode = 0; // Error code in a exception must be a integer
+ *                                                  // throw new RuntimeException($errorMessage, $errorCode)
  * ```
  *
  * @package Phwoolcon
@@ -52,19 +52,17 @@ class ErrorCodes
      */
     protected static $instance;
 
-    protected $errors = [];
-
     public static function __callStatic($name, $arguments)
     {
         static::$instance or static::$instance = static::$di->getShared('error_codes');
-        if (Text::startsWith($name, 'get')) {
+        if (Text::startsWith($name, 'get', false)) {
             $errorCode = Text::uncamelize(substr($name, 3));
             return call_user_func([static::$instance, 'getDetails'], $errorCode, $arguments);
         }
-        if (Text::startsWith($name, 'throw')) {
-            $errorCode = Text::uncamelize(substr($name, 5));
+        if (Text::startsWith($name, 'gen', false)) {
+            $errorCode = Text::uncamelize(substr($name, 3));
             $exception = array_shift($arguments);
-            return call_user_func([static::$instance, 'throwException'], $errorCode, $exception, $arguments);
+            return call_user_func([static::$instance, 'generateException'], $exception, $errorCode, $arguments);
         }
         // @codeCoverageIgnoreStart
         return call_user_func_array([static::$instance, $name], $arguments);
@@ -91,20 +89,20 @@ class ErrorCodes
             $parameters = array_map(function ($field) {
                 return '$' . lcfirst(Text::camelize((string)$field));
             }, static::detectPlaceholders($message));
-            $throwCode = (int)$code;
-            $throwMessage = $message;
-            is_numeric($code) or $throwMessage .= ' [' . $code . ']';
-            $throwParameters = $parameters;
-            array_unshift($throwParameters, '$exception');
+            $exceptionCode = (int)$code;
+            $exceptionMessage = $message;
+            is_numeric($code) or $exceptionMessage .= ' [' . $code . ']';
+            $exceptionParameters = $parameters;
+            array_unshift($exceptionParameters, '$exception');
             $parameters = implode(', ', $parameters);
-            $throwParameters = implode(', ', $throwParameters);
+            $exceptionParameters = implode(', ', $exceptionParameters);
             $classContent[] = <<<METHOD
     public static function get{$name}({$parameters}) {
         return ['{$code}', '{$message}'];
     }
 
-    public static function throw{$name}({$throwParameters}) {
-        throw new \$exception('{$throwMessage}', {$throwCode});
+    public static function gen{$name}({$exceptionParameters}) {
+        return new \$exception('{$exceptionMessage}', {$exceptionCode});
     }
 METHOD;
         }
@@ -119,6 +117,13 @@ METHOD;
         $di->setShared('error_codes', function () {
             return new static;
         });
+    }
+
+    protected function generateException($exception, $errorCode, array $arguments)
+    {
+        $errorMessage = $this->getDetails($errorCode, $arguments)[1];
+        is_numeric($errorCode) or $errorMessage .= ' [' . $errorCode . ']';
+        return new $exception($errorMessage, (int)$errorCode);
     }
 
     protected function getDetails($errorCode, array $arguments)
@@ -137,12 +142,5 @@ METHOD;
             $errorMessage = __($errorCode, $params, $package);
         }
         return [$errorCode, $errorMessage];
-    }
-
-    protected function throwException($errorCode, $exception, array $arguments)
-    {
-        $errorMessage = $this->getDetails($errorCode, $arguments)[1];
-        is_numeric($errorCode) or $errorMessage .= ' [' . $errorCode . ']';
-        throw new $exception($errorMessage, (int)$errorCode);
     }
 }
