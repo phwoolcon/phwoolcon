@@ -14,6 +14,7 @@ use Phalcon\Di;
  * return [
  *     'foo_error' => 'The foo error message: %param%',
  *     '1234' => 'Some error message for 1234',
+ *     '2345_with_annotation' => 'Some numeric error code with annotation',
  * ];
  * ```
  * 2. `bin/dump-autoload` to generate the IDE helper
@@ -21,19 +22,24 @@ use Phalcon\Di;
  * ```php
  * <?php
  *
- * use ErrorCodes; // Use the alias instead of Phwoolcon\ErrorCodes;
+ * use ErrorCodes;                                  // Use the alias instead of Phwoolcon\ErrorCodes;
  *
  * list($errorCode, $errorMessage) = ErrorCodes::getFooError('bar');
  * var_dump($errorCode, $errorMessage);             // prints 'foo_error' and 'The foo error message: bar'
  *
- * throw ErrorCodes::gen1234(RuntimeException::class); // This is identical to:
+ * throw ErrorCodes::gen1234(RuntimeException::class);                  // This is identical to:
  *                                                  // $errorMessage = 'Some error message for 1234';
  *                                                  // $errorCode = 1234;
  *                                                  // throw new RuntimeException($errorMessage, $errorCode)
  *
- * throw ErrorCodes::genFooError(RuntimeException::class, 'bar'); // This is identical to:
+ * throw ErrorCodes::gen2345WithAnnotation(RuntimeException::class);    // This is identical to:
+ *                                                  // $errorMessage = 'Some numeric error code with annotation';
+ *                                                  // $errorCode = 2345; // Annotation removed
+ *                                                  // throw new RuntimeException($errorMessage, $errorCode)
+ *
+ * throw ErrorCodes::genFooError(RuntimeException::class, 'bar');       // This is identical to:
  *                                                  // $errorMessage = 'The foo error message: bar [foo_error]';
- *                                                  // $errorCode = 0; // Error code in a exception must be a integer
+ *                                                  // $errorCode = 0;  // Error code in a exception must be a integer
  *                                                  // throw new RuntimeException($errorMessage, $errorCode)
  * ```
  *
@@ -77,21 +83,34 @@ class ErrorCodes
         return $placeholders;
     }
 
+    /**
+     * @param string $locale
+     * @return array
+     */
+    public static function getAllErrorCodes($locale = null)
+    {
+        /* @var I18n $i18n */
+        $i18n = static::$di->getShared('i18n');
+        $locale or $locale = I18n::getCurrentLocale();
+        $locales = $i18n->loadLocale($locale);
+        return fnGet($locales, 'packages.error_codes', []);
+    }
+
     public static function ideHelperGenerator()
     {
         $classContent = [];
-        /* @var I18n $i18n */
-        $i18n = static::$di->getShared('i18n');
-        $locales = $i18n->loadLocale(I18n::getCurrentLocale());
-        $errorCodes = fnGet($locales, 'packages.error_codes', []);
-        foreach ($errorCodes as $code => $message) {
+        foreach (static::getAllErrorCodes() as $code => $message) {
             $name = Text::camelize((string)$code);
             $parameters = array_map(function ($field) {
                 return '$' . lcfirst(Text::camelize((string)$field));
             }, static::detectPlaceholders($message));
             $exceptionCode = (int)$code;
             $exceptionMessage = $message;
-            is_numeric($code) or $exceptionMessage .= ' [' . $code . ']';
+            if ($exceptionCode > 0) {
+                $code = $exceptionCode;
+            } else {
+                $exceptionMessage .= ' [' . $code . ']';
+            }
             $exceptionParameters = $parameters;
             array_unshift($exceptionParameters, '$exception');
             $parameters = implode(', ', $parameters);
@@ -121,9 +140,10 @@ METHOD;
 
     protected function generateException($exception, $errorCode, array $arguments)
     {
-        $errorMessage = $this->getDetails($errorCode, $arguments)[1];
-        is_numeric($errorCode) or $errorMessage .= ' [' . $errorCode . ']';
-        return new $exception($errorMessage, (int)$errorCode);
+        $exceptionMessage = $this->getDetails($errorCode, $arguments)[1];
+        $exceptionCode = (int)$errorCode;
+        $exceptionCode > 0 or $exceptionMessage .= ' [' . $errorCode . ']';
+        return new $exception($exceptionMessage, $exceptionCode);
     }
 
     protected function getDetails($errorCode, array $arguments)
@@ -141,6 +161,7 @@ METHOD;
             }
             $errorMessage = __($errorCode, $params, $package);
         }
+        (int)$errorCode > 0 and $errorCode = (int)$errorCode;
         return [$errorCode, $errorMessage];
     }
 }

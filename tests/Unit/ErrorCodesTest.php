@@ -44,6 +44,19 @@ class ErrorCodesTest extends TestCase
         $this->assertEquals('Test error message [test_error]', $e->getMessage());
     }
 
+    public function testNumericCodeWithAnnotation()
+    {
+        list($code, $message) = ErrorCodes::get2345WithAnnotation();
+        $this->assertEquals($expectedCode = '2345', $code);
+        $this->assertEquals($expectedMessage = 'Test numeric error code with annotation', $message);
+
+        $exception = LogicException::class;
+        $e = ErrorCodes::gen2345WithAnnotation($exception);
+        $this->assertInstanceOf($exception, $e);
+        $this->assertEquals($expectedCode, $e->getCode());
+        $this->assertEquals($expectedMessage, $e->getMessage());
+    }
+
     public function testIdeHelperGenerator()
     {
         $ideHelper = ErrorCodes::ideHelperGenerator();
@@ -72,6 +85,14 @@ class ErrorCodesTest extends TestCase
 
     public static function gen1234($exception) {
         return new $exception('Test numeric error code', 1234);
+    }
+
+    public static function get2345WithAnnotation() {
+        return ['2345', 'Test numeric error code with annotation'];
+    }
+
+    public static function gen2345WithAnnotation($exception) {
+        return new $exception('Test numeric error code with annotation', 2345);
     }
 METHOD
             , $ideHelper);
