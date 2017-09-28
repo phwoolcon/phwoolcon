@@ -125,7 +125,7 @@ class I18n extends Adapter implements ServiceAwareInterface
         $localeFiles = array_merge(glob($localeDir . '/*.php'), glob($localeDir . '/*/*.php'));
         foreach ($localeFiles as $file) {
             $package = pathinfo($file, PATHINFO_FILENAME);
-            in_array($package, ['error_code']) and $package = 'error_codes';
+            $package == 'error_code' and $package = 'error_codes';
             $packageLocale = (array)include $file;
             isset($packages[$package]) or $packages[$package] = [];
             $packages[$package] = array_replace($packages[$package], $packageLocale);
@@ -151,6 +151,7 @@ class I18n extends Adapter implements ServiceAwareInterface
     public function query($string, $params = null, $package = null)
     {
         $locale = $this->currentLocale;
+        $package == 'error_code' and $package = 'error_codes';
         if ($package && isset($this->locale[$locale]['packages'][$package][$string])) {
             $translation = $this->locale[$locale]['packages'][$package][$string];
         } elseif (isset($this->locale[$locale]['combined'][$string])) {
