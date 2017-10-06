@@ -198,9 +198,10 @@ function fileSaveArray($filename, $array, callable $filter = null)
 function fileSaveInclude($target, array $includes)
 {
     $content = '<?php' . PHP_EOL;
+    $ds = DIRECTORY_SEPARATOR;
     foreach ($includes as $file) {
         if (Text::startsWith($file, $_SERVER['PHWOOLCON_ROOT_PATH'])) {
-            $relativePath = str_replace($_SERVER['PHWOOLCON_ROOT_PATH'], '', $file);
+            $relativePath = str_replace($_SERVER['PHWOOLCON_ROOT_PATH'] . $ds, '/', $file);
             $content .= "include ROOT_PATH . '{$relativePath}';" . PHP_EOL;
         } // @codeCoverageIgnoreStart
         else {
