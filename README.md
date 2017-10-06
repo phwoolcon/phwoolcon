@@ -33,7 +33,7 @@ to start a new project.
 Or add this library to your project by composer:
 
 ```
-composer require "phwoolcon/phwoolcon":"dev-master"
+composer require phwoolcon/phwoolcon
 ```
 
 ## Code Style Checking

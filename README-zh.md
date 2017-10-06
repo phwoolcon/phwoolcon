@@ -28,7 +28,7 @@ Phalcon + Swoole
 你也可以用 composer 把 Phwoolcon 库加入到你的项目中：
 
 ```
-composer require "phwoolcon/phwoolcon":"dev-master"
+composer require phwoolcon/phwoolcon
 ```
 
 ## 代码风格检查
