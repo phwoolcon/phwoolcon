@@ -1,5 +1,9 @@
 # Phwoolcon Change Logs
 
+## [v1.1.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.3) (2017-10-xx)
+#### Bug Fixes:
+* Windows compatibility
+
 ## [v1.1.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.2) (2017-9-27)
 #### Features:
 * **Error Codes**:
@@ -31,7 +35,7 @@
   - Remove jQuery dependency
 
 #### Bug Fixes:
-* Adjust register sequence of servicies
+* Adjust register sequence of services
 
 ## [v1.0.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.0.7) (2017-9-7)
 #### Features:
