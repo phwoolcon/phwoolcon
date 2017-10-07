@@ -4,9 +4,7 @@ use Phalcon\Logger;
 
 return [
     '_black_list' => [
-        'autoload',
         'class_aliases',
-        'on_phwoolcon_update',
         'name',
         'version',
     ],
@@ -18,10 +16,6 @@ return [
     'enable_https' => false,
     'secure_routes' => [],
     'use_lite_router' => true,
-    'autoload' => [
-        'namespaces' => [
-        ],
-    ],
     'timezone' => 'UTC',
     'url' => 'http://localhost',
     'site_path' => '',
@@ -30,8 +24,5 @@ return [
         'adapter' => 'file',
         'level' => Logger::NOTICE,
         'file' => 'phwoolcon.log',
-    ],
-    'on_phwoolcon_update' => [
-        'replace_config' => true,
     ],
 ];
