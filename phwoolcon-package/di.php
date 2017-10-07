@@ -9,6 +9,7 @@ use Phwoolcon\Db;
 use Phwoolcon\DiFix;
 use Phwoolcon\ErrorCodes;
 use Phwoolcon\Events;
+use Phwoolcon\Http\Client as HttpClient;
 use Phwoolcon\I18n;
 use Phwoolcon\Log;
 use Phwoolcon\Mailer;
@@ -46,8 +47,8 @@ Session::register($di);
 View::register($di);
 Queue::register($di);
 Mailer::register($di);
+HttpClient::register($di);
 
-$loader->registerNamespaces(Config::get('app.autoload.namespaces', []), true);
 if ($timezone = Config::get('app.timezone')) {
     date_default_timezone_set($timezone);
 }

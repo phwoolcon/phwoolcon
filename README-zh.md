@@ -97,7 +97,8 @@ tests/root/storage/coverage/
 * Lighten route dispatcher
 * Internalization
 * Finite state machine
-* Mail
+* Simple HTTP client
+* Swift Mailer
 * Symfony CLI console
 
 # 文档
