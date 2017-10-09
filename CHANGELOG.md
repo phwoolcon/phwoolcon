@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.1.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.3) (2017-10-xx)
+## [v1.1.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.3) (2017-10-9)
 #### Features:
 * Add HTTP client
 #### Bug Fixes:
