@@ -21,10 +21,10 @@
         "ext-mbstring": "*",
         "ext-phalcon": "~3.0",
         "phwoolcon/fsm": "~1.0",
-        "symfony/console": "~3.0.0",
-        "pda/pheanstalk": "~3.1.0",
-        "swiftmailer/swiftmailer": "~5.4.2",
-        "opis/closure": "~2.3.0"
+        "symfony/console": "~3.0",
+        "pda/pheanstalk": "~3.1",
+        "swiftmailer/swiftmailer": "~5.4|~6.0",
+        "opis/closure": "3.0.1"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~3.0",

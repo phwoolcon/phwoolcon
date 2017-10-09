@@ -1,5 +1,9 @@
 # Phwoolcon Change Logs
 
+## [v1.1.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.4) (2017-10-xx)
+#### Features:
+* **Composer**: Update dependency versions
+
 ## [v1.1.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.3) (2017-10-9)
 #### Features:
 * Add HTTP client

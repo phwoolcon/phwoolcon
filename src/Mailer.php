@@ -56,18 +56,18 @@ class Mailer
                 $username = fnGet($config, 'smtp_username');
                 $password = fnGet($config, 'smtp_password');
 
-                $transport = Swift_SmtpTransport::newInstance($host, $port, $encryption);
+                $transport = new Swift_SmtpTransport($host, $port, $encryption);
                 $transport->setUsername($username)->setPassword($password);
                 break;
             // @codeCoverageIgnoreStart
             case 'sendmail':
-                $transport = Swift_SendmailTransport::newInstance();
+                $transport = new Swift_SendmailTransport();
                 break;
             default:
                 throw new Swift_SwiftException('Please specify available driver in mail config');
             // @codeCoverageIgnoreEnd
         }
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = new Swift_Mailer($transport);
         $this->mailerLibrary = $mailer;
     }
 
@@ -92,7 +92,7 @@ class Mailer
             $filename = isset($definition['file_name']) ? $definition['file_name'] : null;
             $contentType = isset($definition['file_type']) ? $definition['file_type'] : null;
             if (isset($definition['data'])) {
-                $attachments[] = Swift_Attachment::newInstance($definition['data'], $filename, $contentType);
+                $attachments[] = new Swift_Attachment($definition['data'], $filename, $contentType);
             } elseif (isset($definition['path']) && is_file($definition['path'])) {
                 $attachment = Swift_Attachment::fromPath($definition['path'], $contentType);
                 $filename and $attachment->setFilename($filename);
@@ -121,7 +121,7 @@ class Mailer
     {
         // Fetch body text
         $bodyText = isset($body['body']) ? $body['body'] : $body;
-        $message = Swift_Message::newInstance($subject, $bodyText, $contentType);
+        $message = new Swift_Message($subject, $bodyText, $contentType);
 
         // Process attachments
         if (isset($body['attach'])) {
