@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.1.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.4) (2017-10-xx)
+## [v1.1.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.4) (2017-10-12)
 #### Features:
 * **Composer**: Update dependency versions
 * **Assets**:
