@@ -3,6 +3,7 @@
 ## [v1.1.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.4) (2017-10-xx)
 #### Features:
 * **Composer**: Update dependency versions
+* **Assets**: Add `$p.trace()` to phwoolcon.js
 
 ## [v1.1.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.3) (2017-10-9)
 #### Features:
