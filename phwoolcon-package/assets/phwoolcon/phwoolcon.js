@@ -17,6 +17,11 @@
                 console.log.apply(w, arguments);
             }
         },
+        trace: function () {
+            if (this.options.debug) {
+                (console.trace || console.log).apply(w, arguments);
+            }
+        },
         jsonToFormData: function (json) {
             var formData = new FormData();
             Object.keys(json).forEach(function (key) {
