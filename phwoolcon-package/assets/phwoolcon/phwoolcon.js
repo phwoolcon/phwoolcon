@@ -28,6 +28,31 @@
                 formData.append(key, json[key])
             });
             return formData;
+        },
+        jsonToFormUrlEncoded: function (json) {
+            return Object.keys(json).map(function (key) {
+                return encodeURIComponent(key) + "=" + encodeURIComponent(json[key]);
+            }).join("&");
+        },
+        ajax: {
+            get: function (url, headers) {
+                headers || (headers = {});
+                return fetch(url, {
+                    method: "GET",
+                    headers: headers,
+                    credentials: "same-origin"
+                })
+            },
+            post: function (url, data, headers) {
+                headers || (headers = {});
+                headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+                return fetch(url, {
+                    method: "POST",
+                    headers: headers,
+                    body: $p.jsonToFormUrlEncoded(data),
+                    credentials: "same-origin"
+                })
+            }
         }
     };
 }(window);
