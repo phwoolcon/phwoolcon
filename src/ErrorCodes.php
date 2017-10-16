@@ -89,6 +89,11 @@ class ErrorCodes
      */
     public static function getAllErrorCodes($locale = null)
     {
+        // @codeCoverageIgnoreStart
+        if (!static::$di) {
+            return [];
+        }
+        // @codeCoverageIgnoreEnd
         /* @var I18n $i18n */
         $i18n = static::$di->getShared('i18n');
         $locale or $locale = I18n::getCurrentLocale();
