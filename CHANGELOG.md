@@ -1,5 +1,11 @@
 # Phwoolcon Change Logs
 
+## [v1.1.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.5) (2017-10-xx)
+#### Features:
+* **Assets**: Add `document.head` IE8 polyfill
+#### Bug Fixes:
+* **Error Codes**: Skip `getAllErrorCodes()` in the first run because DI not ready
+
 ## [v1.1.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.4) (2017-10-12)
 #### Features:
 * **Composer**: Update dependency versions
