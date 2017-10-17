@@ -53,6 +53,7 @@ return [
                 'phwoolcon/ie/html5shiv-3.7.3.js',
                 'phwoolcon/ie/html5-formdata-polyfilll.min.js',
                 'phwoolcon/ie/fetch-2.0.3.min.js',
+                'phwoolcon/ie/console-fix.js',
             ],
             'ie-hack-body-js' => [],
             'phwoolcon-js' => [

@@ -13,7 +13,7 @@
             return Cookies.set(name, value, Object.assign({}, w.$p.options.cookies, options));
         },
         log: function () {
-            if (this.options.debug) {
+            if (this.options.debug && console.log) {
                 console.log.apply(w, arguments);
             }
         },
