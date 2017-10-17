@@ -2,7 +2,11 @@
 
 ## [v1.1.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.5) (2017-10-xx)
 #### Features:
-* **Assets**: Add `document.head` IE8 polyfill
+* **Assets**:
+  - Add `document.head` IE8 polyfill
+  - Add `console.log.apply` IE8 polyfill
+  - Sort resources with flag SORT_NATURAL
+
 #### Bug Fixes:
 * **Error Codes**: Skip `getAllErrorCodes()` in the first run because DI not ready
 
