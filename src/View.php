@@ -5,12 +5,12 @@ use Exception;
 use Phalcon\Assets\Filters\Cssmin;
 use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Assets\Manager;
-use Phwoolcon\Assets\Resource\Css;
-use Phwoolcon\Assets\Resource\Js;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Di;
 use Phalcon\Mvc\View as PhalconView;
 use Phalcon\Mvc\View\Exception as ViewException;
+use Phwoolcon\Assets\Resource\Css;
+use Phwoolcon\Assets\Resource\Js;
 use Phwoolcon\Assets\ResourceTrait;
 use Phwoolcon\Daemon\ServiceAwareInterface;
 
@@ -193,7 +193,9 @@ class View extends PhalconView implements ServiceAwareInterface
     public static function getParam($key, $default = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
-        return fnGet(static::$instance->_params, $key, $default, '.');
+        $view = static::$instance;
+        $source = $_SERVER['PHWOOLCON_PHALCON_VERSION'] >= '3020300' ? $view->_viewParams : $view->_params;
+        return fnGet($source, $key, $default, '.');
     }
 
     public static function getPhwoolconJsOptions()
