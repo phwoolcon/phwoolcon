@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon;
 
 use Closure;
@@ -18,7 +19,7 @@ class DiFix extends Di
      */
     public static function fix(Di $di)
     {
-        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] > '2010000') {
+        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] > 2010000) {
             $di->setInternalEventsManager($di->getShared('eventsManager'));
             Events::attach('di:beforeServiceResolve', function (Event $event) {
                 /* @var Di $di */

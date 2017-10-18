@@ -43,7 +43,7 @@ if ($firstRun) {
     $cachePath = $baseDir . '/storage/cache';
     is_dir($cachePath) or mkdir($cachePath, 0755, true);
 } else {
-    $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
+    $_SERVER['PHWOOLCON_PHALCON_VERSION'] = (int)Version::getId();
     Events::register($di);
     DiFix::fix($di);
     Db::register($di);

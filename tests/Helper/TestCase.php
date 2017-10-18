@@ -58,7 +58,7 @@ class TestCase extends PhpunitTestCase
     public function setUp()
     {
         $_SERVER['SCRIPT_NAME'] = '/index.php';
-        $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
+        $_SERVER['PHWOOLCON_PHALCON_VERSION'] = (int)Version::getId();
         /* @var Di $di */
         $di = $this->di = Di::getDefault();
         Events::register($di);

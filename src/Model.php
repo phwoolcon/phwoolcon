@@ -83,7 +83,7 @@ abstract class Model extends PhalconModel
     {
         // Phalcon prepareSave() Polyfill
         // @codeCoverageIgnoreStart
-        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] < '2001100') {
+        if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] < 2001100) {
             $this->prepareSave();
         }
         // @codeCoverageIgnoreEnd
