@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon;
 
 use Exception;
@@ -7,6 +8,7 @@ use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Assets\Manager;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Di;
+use Phalcon\Http\Response;
 use Phalcon\Mvc\View as PhalconView;
 use Phalcon\Mvc\View\Exception as ViewException;
 use Phwoolcon\Assets\Resource\Css;
@@ -35,6 +37,10 @@ class View extends PhalconView implements ServiceAwareInterface
      * @var Manager
      */
     public $assets;
+    /**
+     * @var Response
+     */
+    public $response;
 
     public function __construct($config = null)
     {
@@ -193,9 +199,7 @@ class View extends PhalconView implements ServiceAwareInterface
     public static function getParam($key, $default = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
-        $view = static::$instance;
-        $source = $_SERVER['PHWOOLCON_PHALCON_VERSION'] >= '3020300' ? $view->_viewParams : $view->_params;
-        return fnGet($source, $key, $default, '.');
+        return fnGet(static::$instance->_viewParams, $key, $default, '.');
     }
 
     public static function getPhwoolconJsOptions()
@@ -203,7 +207,7 @@ class View extends PhalconView implements ServiceAwareInterface
         static::$instance or static::$instance = static::$di->getShared('view');
         $options = Events::fire('view:generatePhwoolconJsOptions', static::$instance, [
             'baseUrl' => url(''),
-            'debug' => static::$instance->config['debug'],
+            'debug'   => static::$instance->config['debug'],
         ]) ?: [];
         return $options;
     }
@@ -302,6 +306,16 @@ class View extends PhalconView implements ServiceAwareInterface
     public function render($controllerName, $actionName, $params = null)
     {
         try {
+            // @codeCoverageIgnoreStart
+            if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] < 3020300) {
+                /**
+                 * Breaking change in phalcon 3.2.3:
+                 *
+                 * @see https://github.com/phalcon/cphalcon/commit/3f703832786c7fb7a420bcf31ea0953ba538591d
+                 */
+                $params and $this->_viewParams = $params;
+            }
+            // @codeCoverageIgnoreEnd
             $this->start();
             $result = parent::render($controllerName, $actionName, $params);
             $this->finish();
@@ -330,7 +344,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_content = null;
         $this->_templatesBefore = [];
         $this->_templatesAfter = [];
-        $this->_params = [];
+        $this->_viewParams = [];
         return $this;
     }
 
@@ -349,6 +363,6 @@ class View extends PhalconView implements ServiceAwareInterface
 
     public function setParams(array $params)
     {
-        $this->_params = $params;
+        $this->_viewParams = $params;
     }
 }
