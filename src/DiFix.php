@@ -16,6 +16,8 @@ class DiFix extends Di
      *
      * @param Di $di
      * @codeCoverageIgnore
+     * @see https://github.com/phalcon/cphalcon/issues/11709
+     * @see https://github.com/phalcon/cphalcon/commit/d67bef6cd22ca35795681b61d1c331cdefa24b09#diff-aaf42492472386533320a8415b05c5a6
      */
     public static function fix(Di $di)
     {
