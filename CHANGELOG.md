@@ -5,7 +5,7 @@
 * **Assets**:
   - Add `document.head` IE8 polyfill
   - Add `console.log.apply` IE8 polyfill
-  - Sort resources with flag SORT_NATURAL
+  - Sort resources with flag `SORT_NATURAL`
 * Compatible with Phalcon 3.2.3, which introduces a [backward incompatible change](https://github.com/phalcon/cphalcon/commit/3f703832786c7fb7a420bcf31ea0953ba538591d)
 
 #### Bug Fixes:
