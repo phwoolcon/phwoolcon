@@ -224,6 +224,7 @@ class RouterTest extends TestCase
 
     public function testGenerateErrorPage()
     {
+        $this->getView()->reset();
         $this->assertEquals('404 NOT FOUND', Router::generateErrorPage('404', '404 PAGE TITLE'));
     }
 

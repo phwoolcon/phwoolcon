@@ -50,6 +50,7 @@ class ControllerTest extends TestCase
 
     public function testRender()
     {
+        $this->getView()->reset();
         $controller = $this->getTestController();
         $controller->render('test', 'controller-render');
         $this->assertEquals('TEST CONTROLLER RENDER', $controller->response->getContent());
