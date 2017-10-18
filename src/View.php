@@ -306,18 +306,16 @@ class View extends PhalconView implements ServiceAwareInterface
     public function render($controllerName, $actionName, $params = null)
     {
         try {
-            // @codeCoverageIgnoreStart
-            if ($_SERVER['PHWOOLCON_PHALCON_VERSION'] < 3020300) {
-                /**
-                 * Breaking change in phalcon 3.2.3:
-                 *
-                 * @see https://github.com/phalcon/cphalcon/commit/3f703832786c7fb7a420bcf31ea0953ba538591d
-                 */
-                $params and $this->_viewParams = $params;
-            }
-            // @codeCoverageIgnoreEnd
+            /**
+             * 1. Breaking change in phalcon 3.2.3:
+             * @see https://github.com/phalcon/cphalcon/commit/3f703832786c7fb7a420bcf31ea0953ba538591d
+             *
+             * 2. Set `$this->_viewParams` directly to avoid error:
+             *    `First argument is not an array` error in `parent::setVars()`
+             */
+            $params and $this->_viewParams = $params;
             $this->start();
-            $result = parent::render($controllerName, $actionName, $params);
+            $result = parent::render($controllerName, $actionName);
             $this->finish();
             $this->response->setContent($this->getContent());
             return $result;

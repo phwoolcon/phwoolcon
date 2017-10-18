@@ -6,9 +6,15 @@
   - Add `document.head` IE8 polyfill
   - Add `console.log.apply` IE8 polyfill
   - Sort resources with flag SORT_NATURAL
+* Compatible with Phalcon 3.2.3, which introduces a [backward incompatible change](https://github.com/phalcon/cphalcon/commit/3f703832786c7fb7a420bcf31ea0953ba538591d)
 
 #### Bug Fixes:
 * **Error Codes**: Skip `getAllErrorCodes()` in the first run because DI not ready
+* Use numeric version id for `$_SERVER['PHWOOLCON_PHALCON_VERSION']`
+* Set `$this->_viewParams` directly to avoid `First argument is not an array` error in `Phalcon\Mvc\View::setVars()`
+
+#### Tests:
+Run phpunit from `vendor/bin`
 
 ## [v1.1.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.4) (2017-10-12)
 #### Features:
