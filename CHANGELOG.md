@@ -6,6 +6,9 @@
 * Update Phwoolcon skeleton:
   - `.editorconfig`: Do not insert final newline for minimized js/css
 
+#### Bug Fixes:
+* **Assets**: `$p.log()` throws `Uncaught TypeError: Illegal invocation` in old Chrome browser
+
 ## [v1.1.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.5) (2017-10-18)
 #### Features:
 * **Assets**:

@@ -13,13 +13,13 @@
             return Cookies.set(name, value, Object.assign({}, w.$p.options.cookies, options));
         },
         log: function () {
-            if (this.options.debug && console.log) {
-                console.log.apply(w, arguments);
+            if (this.options.debug) {
+                console.log.apply(console, arguments);
             }
         },
         trace: function () {
             if (this.options.debug) {
-                (console.trace || console.log).apply(w, arguments);
+                (console.trace || console.log).apply(console, arguments);
             }
         },
         jsonToFormData: function (json) {
