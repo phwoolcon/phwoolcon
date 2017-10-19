@@ -3,6 +3,8 @@
 ## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-xx)
 #### Features:
 * **View**: Generate more detailed IDE helper for `Widget` class
+* Update Phwoolcon skeleton:
+  - `.editorconfig`: Do not insert final newline for minimized js/css
 
 ## [v1.1.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.5) (2017-10-18)
 #### Features:
