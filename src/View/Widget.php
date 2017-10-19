@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\View;
 
 use Closure;
@@ -6,9 +7,11 @@ use Phalcon\Tag;
 use Phwoolcon\Exception\WidgetException;
 use Phwoolcon\Util\Reflection\Stringify\Parameter;
 use ReflectionFunction;
+use ReflectionMethod;
 
 /**
  * Class Widget
+ *
  * @package Phwoolcon\View
  *
  * @method static string label(array $parameters, string $innerHtml)
@@ -197,9 +200,29 @@ class Widget
                 foreach ($reflection->getParameters() as $param) {
                     $parameters[] = Parameter::cast($param);
                 }
+                $parameters = implode(', ', $parameters);
+                $classContent[] = "    public static function {$name}({$parameters}) {}";
+            } elseif (is_array($definition)) {
+                list($class, $method) = $definition;
+                $reflection = new ReflectionMethod($class, $method);
+                $invocationParameters = [];
+                foreach ($reflection->getParameters() as $param) {
+                    $parameters[] = Parameter::cast($param);
+                    $invocationParameters[] = '$' . $param->getName();
+                }
+                $parameters = str_replace(["\r", "\n", ' ('], ['', '', '('], implode(', ', $parameters));
+                $invocationParameters = implode(', ', $invocationParameters);
+                $isStaticCall = is_string($class);
+                $invocation = $isStaticCall ? $class . '::' : '(new ' . get_class($class) . ')->';
+                $invocation .= $method;
+                $classContent[] = <<<METHOD
+    public static function {$name}({$parameters}) {
+        return {$invocation}({$invocationParameters});
+    }
+METHOD;
+            } else {
+                $classContent[] = "    public static function {$name}() {}";
             }
-            $parameters = implode(', ', $parameters);
-            $classContent[] = "    public static function {$name}({$parameters}) {}";
         }
         return implode(PHP_EOL . PHP_EOL, $classContent);
     }

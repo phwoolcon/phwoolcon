@@ -1,6 +1,10 @@
 # Phwoolcon Change Logs
 
-## [v1.1.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.5) (2017-10-xx)
+## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-xx)
+#### Features:
+* **View**: Generate more detailed IDE helper for `Widget` class
+
+## [v1.1.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.5) (2017-10-18)
 #### Features:
 * **Assets**:
   - Add `document.head` IE8 polyfill

@@ -1,9 +1,11 @@
 <?php
+
 namespace Phwoolcon\Tests\Unit\View;
 
 use Phalcon\Tag;
 use Phwoolcon\Exception\WidgetException;
 use Phwoolcon\Tests\Helper\TestCase;
+use Phwoolcon\Tests\Helper\TestWidget;
 use Phwoolcon\View\Widget;
 
 class WidgetTest extends TestCase
@@ -36,11 +38,11 @@ class WidgetTest extends TestCase
 
         // Test expanded multiple choose
         $widget = Widget::multipleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $startsWith = '<label for="hello_0"><input type="checkbox" id="hello_0" name="data[hello]" value="hello"';
@@ -52,13 +54,13 @@ class WidgetTest extends TestCase
 
         // Test checked expanded multiple choose with label on left
         $widget = Widget::multipleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
-            'value' => 'hello',
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
+            'value'   => 'hello',
             'labelOn' => 'left',
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $this->assertStringStartsWith('<label for="hello_0">world', $widget);
@@ -69,12 +71,12 @@ class WidgetTest extends TestCase
 
         // Test multiple choose with select
         $widget = Widget::multipleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
-            'expand' => false,
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
+            'expand'  => false,
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $this->assertContains('select id="hello" name="data[hello]"', $widget);
@@ -83,13 +85,13 @@ class WidgetTest extends TestCase
 
         // Test selected multiple choose with select
         $widget = Widget::multipleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
-            'value' => ['hello', 'foo'],
-            'expand' => false,
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
+            'value'   => ['hello', 'foo'],
+            'expand'  => false,
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $this->assertContains('select id="hello" name="data[hello]"', $widget);
@@ -118,11 +120,11 @@ class WidgetTest extends TestCase
 
         // Test expanded single choose
         $widget = Widget::singleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $startsWith = '<label for="hello_0"><input type="radio" id="hello_0" name="data[hello]" value="hello"';
@@ -134,13 +136,13 @@ class WidgetTest extends TestCase
 
         // Test checked expanded single choose with label on left
         $widget = Widget::singleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
-            'value' => 'hello',
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
+            'value'   => 'hello',
             'labelOn' => 'left',
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $this->assertStringStartsWith('<label for="hello_0">world', $widget);
@@ -151,12 +153,12 @@ class WidgetTest extends TestCase
 
         // Test single choose with select
         $widget = Widget::singleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
-            'expand' => false,
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
+            'expand'  => false,
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $this->assertContains('select id="hello" name="data[hello]"', $widget);
@@ -165,13 +167,13 @@ class WidgetTest extends TestCase
 
         // Test selected single choose with select
         $widget = Widget::singleChoose([
-            'id' => 'hello',
-            'name' => 'data[hello]',
-            'value' => 'hello',
-            'expand' => false,
+            'id'      => 'hello',
+            'name'    => 'data[hello]',
+            'value'   => 'hello',
+            'expand'  => false,
             'options' => [
                 'hello' => 'world',
-                'foo' => 'bar',
+                'foo'   => 'bar',
             ],
         ]);
         $this->assertContains('select id="hello" name="data[hello]"', $widget);
@@ -219,6 +221,19 @@ class WidgetTest extends TestCase
         });
         $expected = '    public static function hello(array $parameters, &$null = null, ' .
             '$true = true, $false = false, $const = PHP_EOL, stdClass $class = null, callable $callable = null) {}';
+        $this->assertEquals($expected, Widget::ideHelperGenerator());
+
+        Widget::define('hello', [new TestWidget(), 'hello']);
+        Widget::define('helloStatic', [TestWidget::class, 'helloStatic']);
+        $expected = <<<'METHODS'
+    public static function hello($p1) {
+        return (new Phwoolcon\Tests\Helper\TestWidget)->hello($p1);
+    }
+
+    public static function helloStatic($p1, array $p2 = array()) {
+        return Phwoolcon\Tests\Helper\TestWidget::helloStatic($p1, $p2);
+    }
+METHODS;
         $this->assertEquals($expected, Widget::ideHelperGenerator());
     }
 }
