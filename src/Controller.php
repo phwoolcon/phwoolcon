@@ -65,7 +65,18 @@ abstract class Controller extends PhalconController
         isset($this->view) and $this->view->reset();
     }
 
-    public function render($path, $view, array $params = [])
+    /**
+     * `Controller::render(string $path[, string $view[, array $params]])`
+     *
+     * Or use two-parameter invocation: @since v1.1.6
+     * `Controller::render(string $path[, array $params])`
+     *
+     * @param  string      $path
+     * @param string|array $view
+     * @param array        $params
+     * @return bool|\Phalcon\Mvc\View
+     */
+    public function render($path, $view = '', array $params = [])
     {
         $params['page_title'] = $this->pageTitles;
         return $this->view->render($path, $view, $params);

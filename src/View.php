@@ -61,6 +61,7 @@ class View extends PhalconView implements ServiceAwareInterface
 
     protected function _engineRender($engines, $viewPath, $silence, $mustClean, BackendInterface $cache = null)
     {
+        $viewPath = trim($viewPath, '/');
         $silence = $silence && !$this->config['debug'];
         $this->_options['debug_wrapper'] = $this->config['debug'] ?
             ($viewPath == $this->_mainView ? null : $this->getDebugWrapper($viewPath)) : null;
@@ -274,7 +275,18 @@ class View extends PhalconView implements ServiceAwareInterface
         return $this;
     }
 
-    public static function make($path, $file, $params = null)
+    /**
+     * `View::make(string $path[, string $file[, array $params]])`
+     *
+     * Or use two-parameter invocation: @since v1.1.6
+     * `View::make(string $path[, array $params])`
+     *
+     * @param string       $path
+     * @param string|array $file
+     * @param array        $params
+     * @return string
+     */
+    public static function make($path, $file = '', $params = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         return static::$instance->render($path, $file, $params)->getContent();
@@ -303,11 +315,36 @@ class View extends PhalconView implements ServiceAwareInterface
         });
     }
 
-    public function render($controllerName, $actionName, $params = null)
+    /**
+     * Use like Phalcon:
+     * `View::render(string $controllerName[, string $actionName[, array $params]])`
+     * ```php
+     * $this->render($controllerName, $actionName, ['some_var' => 'var_value']);
+     * ```
+     *
+     * Or use two-parameter invocation: @since v1.1.6
+     * `View::render(string $path[, array $params])`
+     *
+     * ```php
+     * $this->render($path, ['some_var' => 'var_value']);
+     * ```
+     *
+     * @param string       $controllerName The controller name, or the template path    (two-parameter invocation)
+     * @param string|array $actionName     The action name, or the parameters           (two-parameter invocation)
+     * @param array        $params
+     * @return bool|PhalconView
+     * @throws Exception
+     */
+    public function render($controllerName, $actionName = '', $params = null)
     {
         try {
+            if (is_array($actionName)) {
+                $params = $actionName;
+                $actionName = '';
+            }
             /**
              * 1. Breaking change in phalcon 3.2.3:
+             *
              * @see https://github.com/phalcon/cphalcon/commit/3f703832786c7fb7a420bcf31ea0953ba538591d
              *
              * 2. Set `$this->_viewParams` directly to avoid error:

@@ -2,7 +2,14 @@
 
 ## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-xx)
 #### Features:
-* **View**: Generate more detailed IDE helper for `Widget` class
+* **View**:
+  - Generate more detailed IDE helper for `Widget` class
+  - Two-parameter invocation on `View::render()`  
+    - Phalcon like:  
+      `View::render(string $controllerName[, string $actionName[, array $params]])`
+    - Two-parameter:  
+      `View::render(string $path[, array $params])`
+
 * Update Phwoolcon skeleton:
   - `.editorconfig`: Do not insert final newline for minimized js/css
 

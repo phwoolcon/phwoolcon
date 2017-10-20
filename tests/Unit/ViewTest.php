@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\Tests\Unit;
 
 use Phwoolcon\Cache\Clearer;
@@ -38,6 +39,15 @@ class ViewTest extends TestCase
         $this->assertEquals("TEST MAKE", View::make('test', 'make'), 'Bad View::make() content');
     }
 
+    public function testRenderWithTwoParameters()
+    {
+        View::noHeader(true);
+        View::noFooter(true);
+        $this->assertEquals("I got the world", View::make('test/two-parameters', [
+            'param' => 'the world',
+        ]), 'Bad View::render() content with 2 parameters');
+    }
+
     public function testPhpTemplateInclude()
     {
         $this->assertEquals("TEST MAKE", View::make('test', 'include'), 'Bad View Php engine include content');
@@ -48,8 +58,8 @@ class ViewTest extends TestCase
         /* @var View $view */
         $view = $this->di->getShared('view');
         $view->setParams($params = [
-            'page_title' => 'Test Title',
-            'page_keywords' => 'Test Keyword1,Test Keyword2',
+            'page_title'       => 'Test Title',
+            'page_keywords'    => 'Test Keyword1,Test Keyword2',
             'page_description' => 'Test Description',
         ]);
         $this->assertEquals($params['page_title'], View::getPageTitle());
