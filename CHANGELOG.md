@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-xx)
+## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-20)
 #### Features:
 * **View**:
   - Generate more detailed IDE helper for `Widget` class
