@@ -339,7 +339,7 @@ class View extends PhalconView implements ServiceAwareInterface
     {
         try {
             if (is_array($actionName)) {
-                $params = $actionName;
+                $params = $params ? $actionName + $params : $actionName;
                 $actionName = '';
             }
             /**
