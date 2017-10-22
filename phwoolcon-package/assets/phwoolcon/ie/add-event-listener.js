@@ -1,53 +1,32 @@
-/**
- * addEventListener polyfill 1.0 / Eirik Backer / MIT Licence
- * @see https://gist.github.com/eirikbacker/2864711
- */
-window.addEventListener || (function (w, d) {
-    function docHijack(p) {
-        var old = d[p];
-        d[p] = function (v) {
-            return addListen(old(v))
-        }
-    }
+!window.addEventListener && (function (WindowPrototype, DocumentPrototype, ElementPrototype, addEventListener, removeEventListener, dispatchEvent, registry) {
+    WindowPrototype[addEventListener] = DocumentPrototype[addEventListener] = ElementPrototype[addEventListener] = function (type, listener) {
+        var target = this;
 
-    function addEvent(on, fn, self) {
-        return (self = this).attachEvent('on' + on, function (e) {
-            e = e || w.event;
-            e.preventDefault = e.preventDefault || function () {
-                e.returnValue = false;
+        registry.unshift([target, type, listener, function (event) {
+            event.currentTarget = target;
+            event.preventDefault = function () {
+                event.returnValue = false
             };
-            e.stopPropagation = e.stopPropagation || function () {
-                e.cancelBubble = true;
+            event.stopPropagation = function () {
+                event.cancelBubble = true
             };
-            fn.call(self, e);
-        });
-    }
+            event.target = event.srcElement || target;
 
-    function addListen(obj, i) {
-        if (i = obj.length) {
-            while (i--) {
-                obj[i].addEventListener = addEvent;
+            listener.call(target, event);
+        }]);
+
+        this.attachEvent("on" + type, registry[0][3]);
+    };
+
+    WindowPrototype[removeEventListener] = DocumentPrototype[removeEventListener] = ElementPrototype[removeEventListener] = function (type, listener) {
+        for (var index = 0, register; register = registry[index]; ++index) {
+            if (register[0] == this && register[1] == type && register[2] == listener) {
+                return this.detachEvent("on" + type, registry.splice(index, 1)[0][3]);
             }
         }
-        else {
-            obj.addEventListener = addEvent;
-        }
-        return obj;
-    }
+    };
 
-    addListen([d, w]);
-    //IE8
-    if ('Element' in w) {
-        w.Element.prototype.addEventListener = addEvent;
-    } //IE < 8
-    else {
-        // Make sure we also init at domReady
-        d.attachEvent('onreadystatechange', function () {
-            addListen(d.all)
-        });
-        docHijack('getElementsByTagName');
-        docHijack('getElementById');
-        docHijack('createElement');
-        addListen(d.all);
-    }
-})(window, document);
+    WindowPrototype[dispatchEvent] = DocumentPrototype[dispatchEvent] = ElementPrototype[dispatchEvent] = function (eventObject) {
+        return this.fireEvent("on" + eventObject.type, eventObject);
+    };
+})(Window.prototype, HTMLDocument.prototype, Element.prototype, "addEventListener", "removeEventListener", "dispatchEvent", []);
