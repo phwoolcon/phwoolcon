@@ -33,6 +33,7 @@ class View extends PhalconView implements ServiceAwareInterface
     protected $_defaultTheme;
     protected $_loadedThemes = [];
     protected $_viewsDir;
+    protected $_assetsCdnPrefix = '';
     /**
      * @var Manager
      */
@@ -53,6 +54,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_layout = $config['default_layout'];
         $this->config = $config;
         $this->registerEngines($config['engines']);
+        $this->_assetsCdnPrefix = trim(url($config['options']['assets_options']['cdn_prefix']), '/');
 
         $basePath = $this->config['options']['assets_options']['base_path'];
         ResourceTrait::setBasePath($basePath);
@@ -270,7 +272,7 @@ class View extends PhalconView implements ServiceAwareInterface
             $contentHash and $targetUri .= '.' . $contentHash;
             $targetUri .= '.' . $resourceType;
             $collection->setTargetPath($basePath . $targetUri)
-                ->setTargetUri(url($targetUri));
+                ->setTargetUri($this->_assetsCdnPrefix . $targetUri);
         }
         return $this;
     }
