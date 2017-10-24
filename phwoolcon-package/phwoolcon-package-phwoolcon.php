@@ -44,7 +44,7 @@ return [
             'ie-hack-css' => [],
             'ie-hack-js' => [
                 'phwoolcon/ie/html-elements.js',
-                'phwoolcon/ie/add-event-listener.js',
+                'phwoolcon/ie/add-event-listener.min.js',
                 'phwoolcon/ie/es5-shim-4.5.9.min.js',
                 'phwoolcon/ie/es5-sham-4.5.9.min.js',
                 'phwoolcon/ie/json2.min.js',
