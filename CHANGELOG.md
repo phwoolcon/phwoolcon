@@ -3,6 +3,9 @@
 ## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-xx)
 #### Features:
 * **View**: CDN support for compiled assets by config `view.options.assets_options.cdn_prefix`
+* **Assets**:
+  - Add `addEventListener`, `removeEventListener`, `dispatchEvent`, `CustomEvent` IE8 polyfill
+  - Add `Element.prototype.matches` IE8 polyfill
 
 ## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-20)
 #### Features:
