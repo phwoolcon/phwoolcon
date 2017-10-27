@@ -60,6 +60,7 @@ return [
             'compiled_dir' => 'static',
             'cache_assets' => true,
             'apply_filter' => true,
+            'cdn_prefix' => 'https://cdn.example.com',
         ],
     ],
     'engines' => [
