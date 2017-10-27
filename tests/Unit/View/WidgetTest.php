@@ -4,12 +4,20 @@ namespace Phwoolcon\Tests\Unit\View;
 
 use Phalcon\Tag;
 use Phwoolcon\Exception\WidgetException;
+use Phwoolcon\Session;
 use Phwoolcon\Tests\Helper\TestCase;
 use Phwoolcon\Tests\Helper\TestWidget;
 use Phwoolcon\View\Widget;
 
 class WidgetTest extends TestCase
 {
+
+    public function testCsrfTokenField()
+    {
+        $widget = Widget::csrfTokenField();
+        $this->assertStringStartsWith('<input type="hidden" name="_token" value="', $widget);
+        $this->assertContains(Session::getCsrfToken(), $widget);
+    }
 
     public function testLabel()
     {

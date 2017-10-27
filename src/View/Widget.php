@@ -5,6 +5,7 @@ namespace Phwoolcon\View;
 use Closure;
 use Phalcon\Tag;
 use Phwoolcon\Exception\WidgetException;
+use Phwoolcon\Session;
 use Phwoolcon\Util\Reflection\Stringify\Parameter;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -14,6 +15,8 @@ use ReflectionMethod;
  *
  * @package Phwoolcon\View
  *
+ * @method static string csrfTokenField()
+ * @uses    Widget::builtInCsrfTokenField()
  * @method static string label(array $parameters, string $innerHtml)
  * @uses    Widget::builtInLabel()
  * @method static string multipleChoose(array $parameters)
@@ -47,6 +50,14 @@ class Widget
         } else {
             throw new WidgetException(__('Undefined widget "%name%"', ['name' => $name]));
         }
+    }
+
+    protected static function builtInCsrfTokenField()
+    {
+        $token = Session::getCsrfToken();
+        return <<<TAG
+<input type="hidden" name="_token" value="{$token}" autocomplete="off">
+TAG;
     }
 
     /**
