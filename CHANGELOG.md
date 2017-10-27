@@ -8,6 +8,7 @@
 * **Assets**:
   - Add `addEventListener`, `removeEventListener`, `dispatchEvent`, `CustomEvent` IE8 polyfill
   - Add `Element.prototype.matches` IE8 polyfill
+  - Toggle html class `has-js`/`no-js`
 
 ## [v1.1.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.6) (2017-10-20)
 #### Features:
