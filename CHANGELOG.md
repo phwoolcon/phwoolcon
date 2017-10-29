@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-xx)
+## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-29)
 #### Features:
 * **View**:
   - CDN support for compiled assets by config `view.options.assets_options.cdn_prefix`
