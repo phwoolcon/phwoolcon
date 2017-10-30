@@ -382,6 +382,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_templatesBefore = [];
         $this->_templatesAfter = [];
         $this->_viewParams = [];
+        $this->_mainView = $this->config['top_level'];
         return $this;
     }
 
