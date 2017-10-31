@@ -1,8 +1,8 @@
 <?php
+
 namespace Phwoolcon;
 
 use Phalcon\Di;
-use Phwoolcon\Queue;
 use Phwoolcon\Queue\Adapter\JobTrait;
 use Swift;
 use Swift_Attachment;
@@ -41,11 +41,13 @@ class Mailer
     protected $queue;
     protected $config;
     protected $sender;
+    protected $logContent = true;
 
     protected function __construct($config)
     {
         $this->config = $config;
         $this->enabled = fnGet($config, 'enabled');
+        $this->logContent = fnGet($config, 'log_content');
         $this->async = fnGet($config, 'async') && ($this->queue = Queue::connection('async_email_sending'));
         $this->sender = [fnGet($config, 'sender.address') => fnGet($config, 'sender.name')];
         switch (fnGet($config, 'driver')) {
@@ -110,6 +112,23 @@ class Mailer
     {
         static::$instance === null and static::$instance = static::$di->getShared('mailer');
         call_user_func_array([static::$instance, 'realSend'], $payload);
+    }
+
+    protected function log($to, $subject, $body, $contentType, $cc)
+    {
+        $fileExt = $contentType == static::CONTENT_TYPE_HTML ? '.html' : '.txt';
+        $firstTo = $to;
+        if (is_array($to)) {
+            foreach ($to as $email => $name) {
+                $firstTo = is_numeric($email) ? $name : $email;
+                break;
+            }
+        }
+
+        $dir = dirname($logFile = storagePath('mail/' . date('Ymd-His') . '.' . $firstTo . $fileExt));
+        is_dir($dir) or mkdir($dir, 0777, true);
+        $bodyText = is_array($body) ? $body['body'] : $body;
+        file_put_contents($logFile, $bodyText . "\n\n" . var_export(compact('to', 'subject', 'cc'), true));
     }
 
     protected function queue($to, $subject, $body, $contentType = self::CONTENT_TYPE_TEXT, $cc = null)
@@ -190,6 +209,7 @@ class Mailer
     {
         static::$instance === null and static::$instance = static::$di->getShared('mailer');
         $mailer = static::$instance;
+        $mailer->logContent and $mailer->log($to, $subject, $body, $contentType, $cc);
         if (!$mailer->enabled) {
             return 0;
         } elseif ($mailer->async && $mailer->queue) {

@@ -1,6 +1,7 @@
 <?php
 return [
     'enabled' => true,
+    'log_content' => true,
     'driver' => 'smtp',
     'smtp_host' => 'localhost',
     'smtp_port' => 2500,

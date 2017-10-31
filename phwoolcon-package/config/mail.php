@@ -5,7 +5,8 @@ return [
         'from.address',
         'from.name',
     ],
-    'enabled' => false,
+    'enabled'     => false,
+    'log_content' => true,
 
     /**
      *--------------------------------------------------------------------------
@@ -16,13 +17,14 @@ return [
      * The 'mail' option is prohibited due to CVE-2016-10033 and CVE-2016-10045
      *
      */
-    'driver' => 'smtp',
-    'smtp_host' => '',
-    'smtp_port' => 25,
+
+    'driver'          => 'smtp',
+    'smtp_host'       => '',
+    'smtp_port'       => 25,
     'smtp_encryption' => '', // 'ssl', 'tls' or empty
-    'smtp_username' => '',
-    'smtp_password' => '',
-    'from' => ['address' => 'no-reply@example.com', 'name' => 'Phwoolcon'],
+    'smtp_username'   => '',
+    'smtp_password'   => '',
+    'from'            => ['address' => 'no-reply@example.com', 'name' => 'Phwoolcon'],
 
     /**
      *--------------------------------------------------------------------------
@@ -33,5 +35,6 @@ return [
      * See "async_email_sending" settings in config file queue.php
      *
      */
+
     'async' => false,
 ];
