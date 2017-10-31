@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\Tests\Integration;
 
 use Phwoolcon\Db;
@@ -29,8 +30,8 @@ class UserModelTest extends TestCase
             $user = $tmp;
         } else {
             $user->setData([
-                'username' => 'Test',
-                'password' => '123456',
+                'username'  => 'Test',
+                'password'  => '123456',
                 'confirmed' => '1',
             ]);
             $user->save();
@@ -51,8 +52,8 @@ class UserModelTest extends TestCase
     {
         $user = $this->getUserModelInstance();
         $user->setData([
-            'username' => 'Test',
-            'password' => '123456',
+            'username'  => 'Test',
+            'password'  => '123456',
             'confirmed' => '1',
         ]);
         $this->assertTrue($user->save());
@@ -95,5 +96,14 @@ class UserModelTest extends TestCase
         $avatarPath = $profile->getAvatar();
         $this->assertNotEmpty($avatarPath);
         $this->assertEquals(url($avatarPath), $avatarUrl);
+    }
+
+    public function testResetPasswordToken()
+    {
+        $user = $this->getTestUser();
+        $profile = $user->getUserProfile();
+        $token = $profile->generateResetPasswordToken();
+        $this->assertNotEmpty($token);
+        $this->assertEquals($token, $profile->getResetPasswordToken());
     }
 }

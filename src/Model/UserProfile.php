@@ -1,13 +1,17 @@
 <?php
+
 namespace Phwoolcon\Model;
 
 use Phwoolcon\Model;
+use Phwoolcon\Text;
 
 /**
  * Class UserProfile
+ *
  * @package Phwoolcon\Model
  *
  * @method string getAvatar()
+ * @method int getUserId()
  */
 class UserProfile extends Model
 {
@@ -25,9 +29,22 @@ class UserProfile extends Model
         return $url;
     }
 
+    public function generateResetPasswordToken()
+    {
+        $token = $this->getUserId() . '-' . Text::token();
+        $this->setExtraData('reset_password_token', $token);
+        $this->save();
+        return $token;
+    }
+
     public function getExtraData($key = null, $default = null)
     {
         return $key === null ? $this->extra_data : fnGet($this->extra_data, $key, $default);
+    }
+
+    public function getResetPasswordToken()
+    {
+        return $this->getExtraData('reset_password_token');
     }
 
     public function initialize()
