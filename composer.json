@@ -32,7 +32,8 @@
         "phwoolcon/skeleton": "dev-master"
     },
     "suggest": {
-        "ext-swoole": "~1.8"
+        "ext-swoole": "~1.8",
+        "phwoolcon/mail-renderer": "~1.0"
     },
     "autoload": {
         "psr-4": {
