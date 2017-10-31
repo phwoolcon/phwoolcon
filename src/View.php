@@ -34,6 +34,8 @@ class View extends PhalconView implements ServiceAwareInterface
     protected $_loadedThemes = [];
     protected $_viewsDir;
     protected $_assetsCdnPrefix = '';
+    protected $_fillResponse = true;
+    protected $_templateExtensions = [];
     /**
      * @var Manager
      */
@@ -54,6 +56,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_layout = $config['default_layout'];
         $this->config = $config;
         $this->registerEngines($config['engines']);
+        $this->_templateExtensions = array_keys($config['engines']);
         $this->_assetsCdnPrefix = trim(url($config['options']['assets_options']['cdn_prefix']), '/');
 
         $basePath = $this->config['options']['assets_options']['base_path'];
@@ -146,7 +149,15 @@ class View extends PhalconView implements ServiceAwareInterface
     public function getAbsoluteViewPath($view)
     {
         $path = $this->_viewsDir . $this->_theme . '/' . $view;
-        return is_file($path) ? $path : $this->_viewsDir . $this->_defaultTheme . '/' . $view;
+        if (is_file($path)) {
+            return $path;
+        }
+        foreach ($this->_registeredEngines as $ext => $engine) {
+            if (is_file($path . $ext)) {
+                return $path;
+            }
+        }
+        return $this->_viewsDir . $this->_defaultTheme . '/' . $view;
     }
 
     public static function getConfig($key = null)
@@ -356,7 +367,7 @@ class View extends PhalconView implements ServiceAwareInterface
             $this->start();
             $result = parent::render($controllerName, $actionName);
             $this->finish();
-            $this->response->setContent($this->getContent());
+            $this->_fillResponse and $this->response->setContent($this->getContent());
             return $result;
         } // @codeCoverageIgnoreStart
         catch (ViewException $e) {
@@ -383,6 +394,7 @@ class View extends PhalconView implements ServiceAwareInterface
         $this->_templatesAfter = [];
         $this->_viewParams = [];
         $this->_mainView = $this->config['top_level'];
+        $this->_fillResponse = true;
         return $this;
     }
 
