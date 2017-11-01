@@ -129,8 +129,10 @@ class Mailer
         $dir = dirname($logFile = storagePath('mail/' . date('Ymd-His') . '.' . $firstTo . $fileExt));
         is_dir($dir) or mkdir($dir, 0777, true);
         $bodyText = is_array($body) ? $body['body'] : $body;
-        $additionalInfo = json_encode(compact('to', 'subject', 'cc'),
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $additionalInfo = json_encode(
+            compact('to', 'subject', 'cc'),
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        );
         $isHtml and $additionalInfo = "<pre>{$additionalInfo}</pre>";
         file_put_contents($logFile, $bodyText . "\n\n" . $additionalInfo);
     }
