@@ -1,5 +1,15 @@
 # Phwoolcon Change Logs
 
+## [v1.1.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.8) (2017-11-xx)
+#### Features:
+* **View**: Add reset item `$this->_mainView`
+* Add `UserProfile::generateResetPasswordToken()`
+* **Mailer**: Log email content
+* **Composer**: Suggest `phwoolcon/mail-renderer`
+
+#### Bug Fixes:
+* **View**: Theme fallback detection
+
 ## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-29)
 #### Features:
 * **View**:
