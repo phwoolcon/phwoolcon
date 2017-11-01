@@ -31,7 +31,7 @@ class UserProfile extends Model
 
     public function generateResetPasswordToken()
     {
-        $token = $this->getUserId() . '-' . Text::token();
+        $token = $this->getUserId() . '-' . Text::random();
         $this->setExtraData('reset_password_token', $token);
         $this->save();
         return $token;
