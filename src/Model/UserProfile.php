@@ -33,6 +33,7 @@ class UserProfile extends Model
     {
         $token = $this->getUserId() . '-' . Text::random();
         $this->setExtraData('reset_password_token', $token);
+        $this->setExtraData('reset_password_token_created_at', time());
         $this->save();
         return $token;
     }
@@ -45,6 +46,11 @@ class UserProfile extends Model
     public function getResetPasswordToken()
     {
         return $this->getExtraData('reset_password_token');
+    }
+
+    public function getResetPasswordTokenCreatedAt()
+    {
+        return $this->getExtraData('reset_password_token_created_at');
     }
 
     public function initialize()
