@@ -24,7 +24,7 @@ return [
     'smtp_encryption' => '', // 'ssl', 'tls' or empty
     'smtp_username'   => '',
     'smtp_password'   => '',
-    'from'            => ['address' => 'no-reply@example.com', 'name' => 'Phwoolcon'],
+    'sender'          => ['address' => 'no-reply@example.com', 'name' => 'Phwoolcon'],
 
     /**
      *--------------------------------------------------------------------------

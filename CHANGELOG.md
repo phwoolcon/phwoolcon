@@ -12,6 +12,10 @@
   - Theme fallback detection
   - Renew expiration when calling CSRF token widget
 * **Assets**: Allow `$p.ajax.post()` to post empty data
+* **Mailer**:
+  - Config key `from` should be `sender`  
+  > `Swift_RfcComplianceException: Address in mailbox given [] does not comply with RFC 2822, 3.6.2`
+
 
 ## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-29)
 #### Features:
