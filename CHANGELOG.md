@@ -11,6 +11,7 @@
 * **View**:
   - Theme fallback detection
   - Renew expiration when calling CSRF token widget
+* **Assets**: Allow `$p.ajax.post()` to post empty data
 
 ## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-29)
 #### Features:

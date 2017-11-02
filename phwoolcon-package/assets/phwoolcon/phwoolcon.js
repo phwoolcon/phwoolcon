@@ -49,7 +49,7 @@
                 return fetch(url, {
                     method: "POST",
                     headers: headers,
-                    body: $p.jsonToFormUrlEncoded(data),
+                    body: data ? $p.jsonToFormUrlEncoded(data) : '',
                     credentials: "same-origin"
                 })
             }
