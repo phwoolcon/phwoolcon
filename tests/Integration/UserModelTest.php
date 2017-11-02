@@ -106,5 +106,9 @@ class UserModelTest extends TestCase
         $this->assertNotEmpty($token);
         $this->assertEquals($token, $profile->getResetPasswordToken());
         $this->assertNotEmpty($profile->getResetPasswordTokenCreatedAt());
+
+        $profile->removeResetPasswordToken();
+        $this->assertEmpty($profile->getResetPasswordToken());
+        $this->assertEmpty($profile->getResetPasswordTokenCreatedAt());
     }
 }

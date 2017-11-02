@@ -3,7 +3,7 @@
 ## [v1.1.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.8) (2017-11-xx)
 #### Features:
 * **View**: Add reset item `$this->_mainView`
-* Add `UserProfile::generateResetPasswordToken()`
+* Add `UserProfile::generateResetPasswordToken()` and `UserProfile::removeResetPasswordToken()`
 * **Mailer**: Log email content
 * **Composer**: Suggest `phwoolcon/mail-renderer`
 

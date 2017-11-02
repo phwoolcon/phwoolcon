@@ -66,6 +66,13 @@ class UserProfile extends Model
         parent::prepareSave();
     }
 
+    public function removeResetPasswordToken()
+    {
+        $this->setExtraData('reset_password_token');
+        $this->setExtraData('reset_password_token_created_at');
+        $this->save();
+    }
+
     public function setExtraData($key, $value = null)
     {
         is_array($key) ? $this->extra_data = $key : array_set($this->extra_data, $key, $value);
