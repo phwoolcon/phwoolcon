@@ -54,7 +54,7 @@ class Widget
 
     protected static function builtInCsrfTokenField()
     {
-        $token = Session::getCsrfToken();
+        $token = Session::getCsrfToken(true);
         return <<<TAG
 <input type="hidden" name="_token" value="{$token}" autocomplete="off">
 TAG;

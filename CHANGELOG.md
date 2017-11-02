@@ -8,7 +8,9 @@
 * **Composer**: Suggest `phwoolcon/mail-renderer`
 
 #### Bug Fixes:
-* **View**: Theme fallback detection
+* **View**:
+  - Theme fallback detection
+  - Renew expiration when calling CSRF token widget
 
 ## [v1.1.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.7) (2017-10-29)
 #### Features:
