@@ -22,6 +22,7 @@
         "ext-phalcon": "~3.0",
         "phwoolcon/fsm": "~1.0",
         "phwoolcon/js-polyfills": "~1.0",
+        "phwoolcon/mail-renderer": "~1.0",
         "symfony/console": "~3.0",
         "pda/pheanstalk": "~3.1",
         "swiftmailer/swiftmailer": "~5.4|~6.0",
@@ -33,8 +34,7 @@
         "phwoolcon/skeleton": "dev-master"
     },
     "suggest": {
-        "ext-swoole": "~1.8",
-        "phwoolcon/mail-renderer": "~1.0"
+        "ext-swoole": "~1.8"
     },
     "autoload": {
         "psr-4": {

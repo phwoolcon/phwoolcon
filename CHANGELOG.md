@@ -6,6 +6,7 @@
     > `'url' => [Controller::class, 'method']`
 
 * Update [Phwoolcon skeleton](https://github.com/phwoolcon/skeleton/compare/1b14a09e2ec760719c51bf86c0e52250a29ea9ce...c28615fbf0310f9edd0529a3a970b9f694c67696)
+* **Composer**: Require `phwoolcon/mail-renderer`
 
 #### Refactor:
 * **Assets**: Migrate `assets/phwoolcon/ie/` to a separate package `phwoolcon/js-polyfills`
