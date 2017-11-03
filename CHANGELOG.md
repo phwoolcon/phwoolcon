@@ -1,10 +1,15 @@
 # Phwoolcon Change Logs
 
 ## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-xx)
+#### Features:
+* **Router**: Support for callable routes
+    > `'url' => [Controller::class, 'method']`
+
+* Update [Phwoolcon skeleton](https://github.com/phwoolcon/skeleton/compare/1b14a09e2ec760719c51bf86c0e52250a29ea9ce...c28615fbf0310f9edd0529a3a970b9f694c67696)
+
 #### Refactor:
 * **Assets**: Migrate `assets/phwoolcon/ie/` to a separate package `phwoolcon/js-polyfills`
 * **Resource Updater**: Support `package.php`
-
 
 ## [v1.1.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.8) (2017-11-3)
 #### Features:
