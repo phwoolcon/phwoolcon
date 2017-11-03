@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\Tests\Unit;
 
 use Exception;
@@ -149,6 +150,14 @@ class RouterTest extends TestCase
         $this->assertFalse($this->getView()->isAdmin());
     }
 
+    public function testCallableRoutes()
+    {
+        $response = $this->dispatch('/prefix/test-callable-route');
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContains('Test Prefixed Route Content', $response->getContent());
+        $this->assertFalse($this->getView()->isAdmin());
+    }
+
     public function testAdminRoutes()
     {
         $response = $this->dispatch('/admin/test-route');
@@ -171,8 +180,8 @@ class RouterTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
         $content = $response->getContent();
         $this->assertContains(json_encode([
-            'id' => 1,
-            'type' => 'entity',
+            'id'         => 1,
+            'type'       => 'entity',
             'attributes' => [
                 'foo' => 'bar',
             ],
@@ -188,7 +197,7 @@ class RouterTest extends TestCase
         $content = $response->getContent();
         $this->assertContains(json_encode([
             [
-                'code' => 'foo',
+                'code'  => 'foo',
                 'title' => 'bar',
             ],
         ]), $content);
@@ -215,8 +224,8 @@ class RouterTest extends TestCase
         $content = $response->toResponse()->getContent();
         $this->assertContains(json_encode([
             'status' => 404,
-            'code' => 404,
-            'title' => '404 Not Found',
+            'code'   => 404,
+            'title'  => '404 Not Found',
         ]), $content);
         $this->assertContains('jsonapi', $content);
         $this->assertFalse($this->getView()->isAdmin());

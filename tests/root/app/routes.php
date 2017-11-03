@@ -7,6 +7,7 @@ use Phwoolcon\Tests\Helper\Filter\AlwaysFail as AlwaysFailFilter;
 $this->prefix('/prefix', [
     'GET' => [
         'test-route' => 'Phwoolcon\Tests\Helper\TestController::getTestPrefixedRoute',
+        'test-callable-route' => [Phwoolcon\Tests\Helper\TestController::class, 'getTestPrefixedRoute'],
     ],
 ])->prefix('/api', [
     'GET' => [

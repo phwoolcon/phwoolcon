@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon;
 
 use Closure;
@@ -7,7 +8,6 @@ use Phalcon\Di;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Router as PhalconRouter;
-use Phalcon\Mvc\Router\Exception;
 use Phalcon\Mvc\Router\Route;
 use Phwoolcon\Daemon\ServiceAwareInterface;
 use Phwoolcon\Exception\Http\CsrfException;
@@ -16,6 +16,7 @@ use Phwoolcon\Exception\HttpException;
 
 /**
  * Class Router
+ *
  * @package Phwoolcon
  *
  * @property Route[] $_routes
@@ -381,6 +382,12 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             if (!$filter && isset($handler['filter'])) {
                 $filter = $handler['filter'];
                 unset($handler['filter']);
+            }
+            // Support for callable: ['Class', 'method']
+            if (isset($handler[0]) && isset($handler[1])) {
+                $handler['controller'] = $handler[0];
+                $handler['action'] = $handler[1];
+                unset($handler[0], $handler[1]);
             }
             empty($handler['controller']) and $handler = reset($handler);
         }
