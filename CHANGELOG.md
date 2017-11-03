@@ -3,6 +3,8 @@
 ## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-xx)
 #### Refactor:
 * **Assets**: Migrate `assets/phwoolcon/ie/` to a separate package `phwoolcon/js-polyfills`
+* **Resource Updater**: Support `package.php`
+
 
 ## [v1.1.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.8) (2017-11-3)
 #### Features:
