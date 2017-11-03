@@ -1,4 +1,5 @@
 <?php
+
 use Phalcon\Di;
 use Phalcon\Text;
 use Phwoolcon\Config;
@@ -176,7 +177,7 @@ function copyDirReplace($source, $destination)
 function detectPhwoolconPackageFiles($vendorDir = null)
 {
     $vendorDir or $vendorDir = $_SERVER['PHWOOLCON_ROOT_PATH'] . '/vendor';
-    $packageFiles = glob($vendorDir . '/*/*/phwoolcon-package/phwoolcon-package-*.php');
+    $packageFiles = glob($vendorDir . '/*/*/phwoolcon-package/*package*.php');
     return $packageFiles;
 }
 
