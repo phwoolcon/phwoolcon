@@ -14,6 +14,7 @@
 
 #### Documents:
 * Update Phalcon IDE helper to 3.2.5
+* Update Swoole IDE helper
 
 ## [v1.1.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.8) (2017-11-3)
 #### Features:
