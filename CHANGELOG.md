@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-xx)
+## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-4)
 #### Features:
 * **Router**: Support for callable routes
     > `'url' => [Controller::class, 'method']`
@@ -15,6 +15,7 @@
 #### Documents:
 * Update Phalcon IDE helper to 3.2.5
 * Update Swoole IDE helper
+* Add {assets|config|views}/README.md
 
 ## [v1.1.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.1.8) (2017-11-3)
 #### Features:
