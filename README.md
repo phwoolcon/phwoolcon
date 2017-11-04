@@ -76,6 +76,17 @@ tests/root/storage/coverage/
 ```
 To read the report, please open `index.html` in a web browser.
 
+## Configuration
+See [phwoolcon-package/config/](phwoolcon-package/config/)
+## Templates
+See [phwoolcon-package/views/](phwoolcon-package/views/)
+## Assets
+See [phwoolcon-package/assets/](phwoolcon-package/assets/)
+## Locale
+See [phwoolcon-package/locale/](phwoolcon-package/locale/)
+## Dependency Injection
+See [phwoolcon-package/di.php](phwoolcon-package/di.php)
+
 # Spirits
 * Aimed at performance
 * Aimed at scalability

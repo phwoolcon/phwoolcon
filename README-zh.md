@@ -69,6 +69,17 @@ tests/root/storage/coverage/
 ```
 用浏览器打开 `index.html` 即可阅读报告。
 
+## 配置
+请见 [phwoolcon-package/config/](phwoolcon-package/config/)
+## 模板
+See [phwoolcon-package/views/](phwoolcon-package/views/)
+## 静态资源
+See [phwoolcon-package/assets/](phwoolcon-package/assets/)
+## 翻译/语言
+See [phwoolcon-package/locale/](phwoolcon-package/locale/)
+## 依赖注入
+See [phwoolcon-package/di.php](phwoolcon-package/di.php)
+
 # 主旨
 * 关注性能
 * 关注可伸缩性
