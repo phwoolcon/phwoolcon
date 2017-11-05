@@ -1,5 +1,9 @@
 # Phwoolcon Change Logs
 
+## [v1.2.1](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.1) (2017-11-xx)
+#### Features:
+* **Cache**: Add `Backend\Redis::getRedis()`
+
 ## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-4)
 #### Features:
 * **Router**: Support for callable routes

@@ -10,7 +10,7 @@ return [
     ],
     'debug' => false,
     'name' => 'Phwoolcon',
-    'version' => '1.2.0',
+    'version' => '1.2.1',
     'cache_config' => true,
     'cache_routes' => false,
     'enable_https' => false,

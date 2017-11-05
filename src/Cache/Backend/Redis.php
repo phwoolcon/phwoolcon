@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\Cache\Backend;
 
 use Phalcon\Cache\Backend\Redis as PhalconRedis;
@@ -7,10 +8,11 @@ use Phalcon\Cache\FrontendInterface;
 
 /**
  * Class Redis
+ *
  * @package Phwoolcon\Cache\Backend\Adapter
  *
  * @property FrontendInterface $_frontend
- * @property \Redis $_redis
+ * @property \Redis            $_redis
  */
 class Redis extends PhalconRedis
 {
@@ -184,6 +186,15 @@ class Redis extends PhalconRedis
             return null;
         }
         return $this->afterRetrieve($content);
+    }
+
+    /**
+     * @return \Redis
+     * @codeCoverageIgnore
+     */
+    public function getRedis()
+    {
+        return $this->_redis;
     }
 
     public function increment($keyName = null, $value = null)
