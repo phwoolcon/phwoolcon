@@ -3,6 +3,8 @@
 ## [v1.2.1](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.1) (2017-11-xx)
 #### Features:
 * **Cache**: Add `Backend\Redis::getRedis()`
+#### Bug Fixes:
+* **Router**: Run `Session::start()` after `Controller::initialize()`
 
 ## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-4)
 #### Features:
