@@ -455,9 +455,9 @@ class FunctionsTest extends TestCase
 
     public function testDetectPhwoolconPackageFiles()
     {
-        $vendorDir = dirname(dirname(dirname(dirname(__DIR__))));
-        $packageFiles = detectPhwoolconPackageFiles($vendorDir);
-        $target = $vendorDir . '/phwoolcon/phwoolcon/phwoolcon-package/package.php';
+        $baseDir = dirname(dirname(dirname(__DIR__)));
+        $packageFiles = detectPhwoolconPackageFiles(dirname($baseDir));
+        $target = $baseDir . '/phwoolcon/phwoolcon-package/package.php';
         $this->assertContains($target, $packageFiles);
     }
 
