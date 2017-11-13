@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 mkdir tmp-techpivot-phalcon
 cd tmp-techpivot-phalcon
+
 composer require techpivot/phalcon-ci-installer -n
+composer require phwoolcon/ci-pecl-cacher -n
+
+# Install imagick to pass Phalcon compiling
+vendor/bin/ci-pecl-install imagick skip-update
 vendor/bin/install-phalcon.sh
 cd ..
 rm -rf tmp-techpivot-phalcon

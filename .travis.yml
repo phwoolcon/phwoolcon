@@ -46,15 +46,13 @@ before_install:
   # Update composer
   - composer self-update
   - pecl channel-update pecl.php.net
-  # Install imagick to pass Phalcon compiling
-  - vendor/bin/ci-pecl-install imagick skip-update
-  # Install Swoole
-  - vendor/bin/ci-pecl-install swoole
   - phpenv config-add tests/travis/php-ext.ini
   # Install Phalcon
   - bin/ci-install-phalcon
   # Install Phwoolcon
   - composer install --prefer-source --no-interaction
+  # Install Swoole
+  - vendor/bin/ci-pecl-install swoole
   - phpenv rehash
 
 before_script:
