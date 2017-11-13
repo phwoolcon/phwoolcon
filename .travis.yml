@@ -28,6 +28,7 @@ cache:
     - vendor
     - $HOME/.composer/cache
     - $HOME/cphalcon
+    - $HOME/pecl_cache
 
 before_install:
   - sudo apt-get update -qq
@@ -46,9 +47,9 @@ before_install:
   - composer self-update
   - pecl channel-update pecl.php.net
   # Install imagick to pass Phalcon compiling
-  - printf "\n" | pecl install imagick
+  - vendor/bin/ci-pecl-install imagick skip-update
   # Install Swoole
-  - pecl install swoole
+  - vendor/bin/ci-pecl-install swoole
   - phpenv config-add tests/travis/php-ext.ini
   # Install Phalcon
   - bin/ci-install-phalcon
