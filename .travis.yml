@@ -53,7 +53,6 @@ before_install:
   - composer install --prefer-source --no-interaction
   # Install Swoole
   - vendor/bin/ci-pecl-install swoole
-  - phpenv rehash
 
 before_script:
   # Update dependencies
