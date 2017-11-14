@@ -5,6 +5,8 @@ filter:
         - '*.min.js'
         - 'src/Cli/Output/Stream.php'
         - 'src/Protocol/StreamWrapperTrait.php'
+        - 'phwoolcon-package/assets/phwoolcon/simpleStorage-0.2.1.js'
+        - 'phwoolcon-package/assets/phwoolcon/js-cookie-2.1.4.js'
 
 checks:
     php:
