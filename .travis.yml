@@ -39,9 +39,6 @@ before_install:
   # Use test mail server
   - sudo service postfix stop
   - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
-  # Disable sendmail
-  - echo -e '#!/usr/bin/env bash\nexit 0' | sudo tee /usr/sbin/sendmail
-  - echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' > $(php --ini|grep -m 1 "ini files in:"|cut -d ":" -f 2)/sendmail.ini
   - sudo service beanstalkd restart
   # Update composer
   - composer self-update
@@ -69,7 +66,6 @@ script:
 
 after_success:
   # Collect code coverage
-  - bash <(curl -s https://codecov.io/bash)
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
