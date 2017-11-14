@@ -68,11 +68,13 @@ script:
   # Check code style
   - vendor/bin/phpcs
   # Running unit test
-  - vendor/bin/phpunit --stderr --verbose --coverage-clover=coverage.xml
+  - vendor/bin/phpunit --stderr --verbose --coverage-clover=coverage.xml --coverage-clover=coverage.clover
 
 after_success:
   # Collect code coverage
   - bash <(curl -s https://codecov.io/bash)
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 branches:
   #Don't build tags
