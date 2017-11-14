@@ -1,8 +1,8 @@
 # Phwoolcon
 
 [![Build Status](https://img.shields.io/travis/phwoolcon/phwoolcon/master.svg?style=flat-square)](https://travis-ci.org/phwoolcon/phwoolcon)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/?branch=master)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/code-structure/master/code-coverage)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/reports/)
 [![Gitter](https://img.shields.io/gitter/room/phwoolcon/phwoolcon.svg?style=flat-square)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Supported PHP versions](https://img.shields.io/badge/php-5.5%20~%207.2-blue.svg?style=flat-square)](https://secure.php.net/)
 [![Supported Phalcon versions](https://img.shields.io/badge/Phalcon-%E2%89%A5%203.0-blue.svg?style=flat-square)](https://phalconphp.com/)
