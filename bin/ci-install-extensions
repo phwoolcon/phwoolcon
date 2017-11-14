@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkdir tmp-ci-install-extensions
-cd tmp-techpivot-phalcon
+cd tmp-ci-install-extensions
 
 composer require techpivot/phalcon-ci-installer -n
 composer require phwoolcon/ci-pecl-cacher -n
