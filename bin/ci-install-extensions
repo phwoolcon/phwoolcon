@@ -3,8 +3,7 @@
 mkdir tmp-ci-install-extensions
 cd tmp-ci-install-extensions
 
-composer require techpivot/phalcon-ci-installer -n
-composer require phwoolcon/ci-pecl-cacher -n
+composer require techpivot/phalcon-ci-installer phwoolcon/ci-pecl-cacher -n
 
 # Install imagick to pass Phalcon compiling
 vendor/bin/ci-pecl-install imagick skip-update

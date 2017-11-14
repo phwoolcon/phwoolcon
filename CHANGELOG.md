@@ -2,7 +2,9 @@
 
 ## [v1.2.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.2) (2017-11-xx)
 #### Tests:
-* **Travis**: Upload code coverage for php 7.1 only
+* **Travis**:
+  - Upload code coverage for php 7.1 only
+  - Combine `composer require` commands to save time
 
 ## [v1.2.1](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.1) (2017-11-14)
 #### Features:
