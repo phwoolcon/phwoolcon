@@ -47,12 +47,9 @@ before_install:
   - composer self-update
   - pecl channel-update pecl.php.net
   - phpenv config-add tests/travis/php-ext.ini
-  # Install Phalcon
-  - bin/ci-install-phalcon
-  # Install Phwoolcon
+  # Install Extensions
+  - bin/ci-install-extensions
   - composer install --prefer-source --no-interaction
-  # Install Swoole
-  - vendor/bin/ci-pecl-install swoole
 
 before_script:
   # Update dependencies
