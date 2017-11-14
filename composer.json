@@ -31,8 +31,7 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "~3.0",
         "phpunit/phpunit": "~4.0|~5.0|~6.0",
-        "phwoolcon/skeleton": "dev-master",
-        "phwoolcon/ci-pecl-cacher": "~1.0"
+        "phwoolcon/skeleton": "dev-master"
     },
     "suggest": {
         "ext-swoole": "~1.8|~2.0"
