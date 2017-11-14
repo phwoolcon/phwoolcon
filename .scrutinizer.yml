@@ -1,5 +1,10 @@
 filter:
-    excluded_paths: [tests/* src/Cli/Output/Stream.php src/Protocol/StreamWrapperTrait.php]
+    excluded_paths:
+        - 'tests/*'
+        - 'bin/*'
+        - '*.min.js'
+        - 'src/Cli/Output/Stream.php'
+        - 'src/Protocol/StreamWrapperTrait.php'
 
 checks:
     php:
@@ -16,6 +21,8 @@ checks:
         fix_line_ending: true
         fix_identation_4spaces: true
         fix_doc_comments: true
+
+build: false
 
 tools:
     external_code_coverage:

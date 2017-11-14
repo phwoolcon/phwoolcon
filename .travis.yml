@@ -25,7 +25,6 @@ mysql:
 
 cache:
   directories:
-    - vendor
     - $HOME/.composer/cache
     - $HOME/cphalcon
     - $HOME/pecl_cache
