@@ -1,11 +1,12 @@
 # Phwoolcon
 
-[![Build Status](https://travis-ci.org/phwoolcon/phwoolcon.svg?branch=master)](https://travis-ci.org/phwoolcon/phwoolcon)
-[![Code Coverage](https://codecov.io/gh/phwoolcon/phwoolcon/branch/master/graph/badge.svg)](https://codecov.io/gh/phwoolcon/phwoolcon)
-[![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-![Supported PHP versions: 5.5 .. 7.2](https://img.shields.io/badge/php-5.5%20~%207.2-blue.svg)
-![Supported Phalcon versions: >= 3.0](https://img.shields.io/badge/Phalcon-%E2%89%A5%203.0-blue.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://img.shields.io/travis/phwoolcon/phwoolcon/master.svg?style=flat-square)](https://travis-ci.org/phwoolcon/phwoolcon)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon)
+[![Gitter](https://img.shields.io/gitter/room/phwoolcon/phwoolcon.svg?style=flat-square)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Supported PHP versions](https://img.shields.io/badge/php-5.5%20~%207.2-blue.svg?style=flat-square)](https://secure.php.net/)
+[![Supported Phalcon versions](https://img.shields.io/badge/Phalcon-%E2%89%A5%203.0-blue.svg?style=flat-square)](https://phalconphp.com/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 
 Phalcon + Swoole
 
@@ -33,13 +34,6 @@ composer require phwoolcon/phwoolcon
 
 ## 代码风格检查
 
-### 系统要求
-代码风格检查依赖于 `phpcs`。如果你还没有安装 `phpcs`，请运行：
-```
-pear install PHP_CodeSniffer
-```
-
-### 进行检查
 请运行以下脚本：
 ```
 tests/phpcs
@@ -51,14 +45,6 @@ tests/root/storage/phpcs.txt
 
 ## 测试
 
-### 系统要求
-测试依赖于 `phpunit`。如果你还没有安装 `phpunit`，请运行：
-```
-wget https://phar.phpunit.de/phpunit.phar -O /usr/local/bin/phpunit
-chmod +x /usr/local/bin/phpunit
-```
-
-### 进行测试
 请运行以下脚本：
 ```
 tests/phpunit

@@ -1,11 +1,12 @@
 # Phwoolcon
 
-[![Build Status](https://travis-ci.org/phwoolcon/phwoolcon.svg?branch=master)](https://travis-ci.org/phwoolcon/phwoolcon)
-[![Code Coverage](https://codecov.io/gh/phwoolcon/phwoolcon/branch/master/graph/badge.svg)](https://codecov.io/gh/phwoolcon/phwoolcon)
-[![Gitter](https://badges.gitter.im/phwoolcon/phwoolcon.svg)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-![Supported PHP versions: 5.5 .. 7.2](https://img.shields.io/badge/php-5.5%20~%207.2-blue.svg)
-![Supported Phalcon versions: >= 3.0](https://img.shields.io/badge/Phalcon-%E2%89%A5%203.0-blue.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://img.shields.io/travis/phwoolcon/phwoolcon/master.svg?style=flat-square)](https://travis-ci.org/phwoolcon/phwoolcon)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon)
+[![Gitter](https://img.shields.io/gitter/room/phwoolcon/phwoolcon.svg?style=flat-square)](https://gitter.im/phwoolcon/phwoolcon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Supported PHP versions](https://img.shields.io/badge/php-5.5%20~%207.2-blue.svg?style=flat-square)](https://secure.php.net/)
+[![Supported Phalcon versions](https://img.shields.io/badge/Phalcon-%E2%89%A5%203.0-blue.svg?style=flat-square)](https://phalconphp.com/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 
 Phalcon + Swoole
 
@@ -38,14 +39,6 @@ composer require phwoolcon/phwoolcon
 
 ## Code Style Checking
 
-### Requirements
-Code style checking depends on `phpcs`.  
-If you don't have `phpcs` installed, please run:
-```
-pear install PHP_CodeSniffer
-```
-
-### Run Checking
 Please run the following script:
 ```
 tests/phpcs
@@ -57,15 +50,6 @@ tests/root/storage/phpcs.txt
 
 ## Testing
 
-### Requirements
-Testings depends on `phpunit`.  
-If you don't have `phpunit` installed, please run:
-```
-wget https://phar.phpunit.de/phpunit.phar -O /usr/local/bin/phpunit
-chmod +x /usr/local/bin/phpunit
-```
-
-### Run Testings
 Please run the following script:
 ```
 tests/phpunit
