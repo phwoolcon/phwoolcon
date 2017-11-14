@@ -41,7 +41,7 @@ before_install:
   - pecl channel-update pecl.php.net
   - phpenv config-add tests/travis/php-ext.ini
   # Install Extensions
-  - bin/ci-install-extensions
+  - bash bin/ci-install-extensions
   - composer install --prefer-source --no-interaction
 
 before_script:
