@@ -6,9 +6,7 @@
 #### Bug Fixes:
 * **Router**: Run `Session::start()` after `Controller::initialize()`
 #### Tests:
-* **Travis**:
-  - Use `ci-pecl-cacher` to install PECL extensions
-  - Don't cache `vendor`
+* **Travis**: Use `ci-pecl-cacher` to install PECL extensions
 * Add `scrutinizer` support
 
 ## [v1.2.0](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.0) (2017-11-4)
