@@ -32,16 +32,12 @@ cache:
 
 before_install:
   - sudo apt-get update -qq
-  # Install Beanstalkd (Queue support)
-  - sudo apt-get install -qq beanstalkd
-  # Install Postfix (SMTP mailer support)
-  - sudo apt-get install -y -qq postfix
+  # Install Beanstalkd (Queue support) and Postfix (SMTP mailer support)
+  - sudo apt-get install -qq beanstalkd postfix
   # Use test mail server
   - sudo service postfix stop
   - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
   - sudo service beanstalkd restart
-  # Update composer
-  - composer self-update
   - pecl channel-update pecl.php.net
   - phpenv config-add tests/travis/php-ext.ini
   # Install Extensions
@@ -49,8 +45,6 @@ before_install:
   - composer install --prefer-source --no-interaction
 
 before_script:
-  # Update dependencies
-  - composer update --no-interaction --prefer-source
   # Create database
   - mysql -uroot -e 'CREATE DATABASE `phwoolcon_test` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;'
   - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'%';";
@@ -62,7 +56,7 @@ script:
   # Check code style
   - vendor/bin/phpcs
   # Running unit test
-  - vendor/bin/phpunit --stderr --verbose --coverage-clover=coverage.xml --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --stderr --verbose --coverage-clover=coverage.clover
 
 after_success:
   # Collect code coverage
