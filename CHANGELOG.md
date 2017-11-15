@@ -6,6 +6,7 @@
   - Introduce `phwoolcon/test-starter`
   - Update `CHANGELOG.md`
   - Run `git init` after place target directory
+  - **Composer**: `minimum-stability` = `dev` and `prefer-stable` = `true`
 #### Tests:
 * **Travis**:
   - Upload code coverage for php 7.1 only
