@@ -1,6 +1,10 @@
 # Phwoolcon Change Logs
 
 ## [v1.2.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.2) (2017-11-xx)
+#### Features:
+* Update Phwoolcon skeleton:
+  - Introduce `phwoolcon/test-starter`
+  - Update `CHANGELOG.md`
 #### Tests:
 * **Travis**:
   - Upload code coverage for php 7.1 only

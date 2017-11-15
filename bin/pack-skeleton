@@ -6,7 +6,7 @@ echo Working directory: `pwd`
 echo
 
 # Run composer update
-composer update
+composer update phwoolcon/skeleton
 
 echo Copying skeleton from composer...
 rm -rf ignore/skeleton
