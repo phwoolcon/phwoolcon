@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.2.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.2) (2017-11-xx)
+## [v1.2.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.2) (2017-11-17)
 #### Features:
 * Update Phwoolcon skeleton:
   - Introduce `phwoolcon/test-starter`
