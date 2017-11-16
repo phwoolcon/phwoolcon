@@ -5,4 +5,5 @@
 /tests/root/bin/migrations/
 /tests/root/public/static/
 /tests/root/storage/
+/tests/root/vendor/
 /composer.lock
