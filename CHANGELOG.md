@@ -7,6 +7,9 @@
   - Update `CHANGELOG.md`
   - Run `git init` after place target directory
   - **Composer**: `minimum-stability` = `dev` and `prefer-stable` = `true`
+  - Update `.gitignore`
+  - Update travis ci for `Phwoolcon` support
+  - Update code coverage link in `README.md`
 #### Tests:
 * **Travis**:
   - Upload code coverage for php 7.1 only
