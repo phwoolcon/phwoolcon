@@ -10,6 +10,7 @@
   - Update `.gitignore`
   - Update travis ci for `Phwoolcon` support
   - Update code coverage link in `README.md`
+  - **Session**: Start session on get/set/remove
 #### Tests:
 * **Travis**:
   - Upload code coverage for php 7.1 only

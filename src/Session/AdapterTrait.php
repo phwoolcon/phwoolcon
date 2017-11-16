@@ -19,6 +19,7 @@ trait AdapterTrait
 
     public function clear()
     {
+        $this->_started or $this->start();
         $this->cookieRenewedAt = 0;
         $_SESSION = [];
     }
@@ -51,6 +52,7 @@ trait AdapterTrait
 
     public function get($index, $defaultValue = null, $remove = false)
     {
+        $this->_started or $this->start();
         $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
         $value = fnGet($_SESSION, $index, $defaultValue, '.');
         $remove and array_forget($_SESSION, $index);
@@ -103,12 +105,14 @@ trait AdapterTrait
 
     public function remove($index)
     {
+        $this->_started or $this->start();
         $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
         array_forget($_SESSION, $index);
     }
 
     public function set($index, $value)
     {
+        $this->_started or $this->start();
         $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
         array_set($_SESSION, $index, $value);
     }
