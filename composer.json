@@ -29,8 +29,7 @@
         "opis/closure": "3.0.1"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "~3.0",
-        "phpunit/phpunit": "~4.0|~5.0|~6.0",
+        "phwoolcon/test-starter": "~1.0",
         "phwoolcon/skeleton": "dev-master"
     },
     "suggest": {

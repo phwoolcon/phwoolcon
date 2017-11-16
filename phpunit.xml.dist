@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="tests/start.php"
+<phpunit bootstrap="vendor/phwoolcon/test-starter/start.php"
          backupGlobals="false"
          backupStaticAttributes="false"
          verbose="true"

@@ -15,6 +15,7 @@
   - Upload code coverage for php 7.1 only
   - Combine `composer require` commands to save time
 * Run `phpcs` from `vendor/bin`
+* Migrate `start.php` and `TestCase` to a separate package `phwoolcon/test-starter`
 
 ## [v1.2.1](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.1) (2017-11-14)
 #### Features:

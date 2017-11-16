@@ -18,7 +18,7 @@
     <exclude-pattern>src/Protocol/StreamWrapperInterface.php</exclude-pattern>
     <exclude-pattern>*.min.js</exclude-pattern>
     <exclude-pattern>*.min.css</exclude-pattern>
-    <exclude-pattern>tests/start.php</exclude-pattern>
+    <exclude-pattern>tests/root/vendor</exclude-pattern>
     <exclude-pattern>tests/root/storage</exclude-pattern>
 
     <arg value="sp"/>
