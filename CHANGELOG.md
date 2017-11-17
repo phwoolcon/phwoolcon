@@ -2,6 +2,7 @@
 
 ## [v1.2.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.3) (2017-11-17)
 #### Tests:
+* Use `Config::$preloadConfig` to load package configs
 * Migrate common test config files to `phwoolcon/test-starter`
 * Try to speed up extension installation
 
