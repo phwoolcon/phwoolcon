@@ -12,7 +12,7 @@ class DbTest extends TestCase
     {
         parent::setUp();
         Db::connection()->dropTable('config');
-        Config::register($this->di);
+        $this->reloadConfig();
     }
 
     public function testGetDefaultTableCharset()

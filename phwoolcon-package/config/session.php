@@ -45,6 +45,7 @@ return [
         'memcached' => [
             'adapter' => 'Phwoolcon\Session\Adapter\Memcached',
             'options' => [
+                'statsKey' => '_PHCM',
             ],
         ],
     ],

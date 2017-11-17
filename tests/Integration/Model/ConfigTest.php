@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\Tests\Integration\Model;
 
 use Phwoolcon\Config;
@@ -15,7 +16,7 @@ class ConfigTest extends TestCase
         $subKey = $key . '.foo';
         $value = ['foo' => $subValue = 'bar'];
         ConfigModel::saveConfig($key, $value);
-        Config::register($this->di);
+        $this->reloadConfig();
         $this->assertEquals($value, Config::get($key));
 
         // Test save null value
@@ -24,13 +25,13 @@ class ConfigTest extends TestCase
 
         // Test save a non-existing sub key
         ConfigModel::saveConfig($subKey, $subValue);
-        Config::register($this->di);
+        $this->reloadConfig();
         $this->assertEquals($subValue, Config::get($subKey));
 
         // Test save a existing sub key
         $subValue = 'baz';
         ConfigModel::saveConfig($subKey, $subValue);
-        Config::register($this->di);
+        $this->reloadConfig();
         $this->assertEquals($subValue, Config::get($subKey));
     }
 }

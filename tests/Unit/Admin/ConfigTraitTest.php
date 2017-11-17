@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon\Tests\Unit\Admin;
 
 use Exception;
@@ -129,12 +130,12 @@ class ConfigTraitTest extends TestCase
         // hello should be removed because it is not in white list
         $this->assertNotEquals(fnGet($submittedData, 'hello'), fnGet($data, 'hello'));
         // Check foo value after submit
-        Config::register($this->di);
+        $this->reloadConfig();
         $this->assertEquals('baz', Config::get($fooKey));
         // Test remove db config
         $this->addTestConfigs();
         $this->configTrait->submitConfig($key, '');
-        Config::register($this->di);
+        $this->reloadConfig();
         $this->assertEquals(null, Config::get($fooKey));
 
         // Reset

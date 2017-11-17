@@ -40,4 +40,7 @@
             </exclude>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" target="tests/root/storage/coverage" charset="UTF-8" yui="true" highlight="true"/>
+    </logging>
 </phpunit>

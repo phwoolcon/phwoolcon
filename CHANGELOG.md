@@ -1,5 +1,9 @@
 # Phwoolcon Change Logs
 
+## [v1.2.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.3) (2017-11-17)
+#### Tests:
+* Migrate common test config files to `phwoolcon/test-starter`
+
 ## [v1.2.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.2) (2017-11-17)
 #### Features:
 * Update Phwoolcon skeleton:

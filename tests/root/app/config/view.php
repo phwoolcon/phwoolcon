@@ -1,13 +1,6 @@
 <?php
 
 return [
-    'debug' => false,
-    'path' => TEST_ROOT_PATH . '/app/views/',
-    'theme' => 'default',
-    'top_level' => 'html',
-    'default_layout' => 'default',
-    'title_separator' => ' - ',
-    'title_suffix' => 'Phwoolcon',
     'assets' => [
         'head-css' => [
             'css/test.css',
@@ -55,15 +48,7 @@ return [
     ],
     'options' => [
         'assets_options' => [
-            'base_path' => TEST_ROOT_PATH . '/public',
-            'assets_dir' => 'assets',
-            'compiled_dir' => 'static',
-            'cache_assets' => true,
-            'apply_filter' => true,
             'cdn_prefix' => 'https://cdn.example.com',
         ],
-    ],
-    'engines' => [
-        '.phtml' => 'Phwoolcon\View\Engine\Php',
     ],
 ];

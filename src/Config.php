@@ -1,4 +1,5 @@
 <?php
+
 namespace Phwoolcon;
 
 use Phalcon\Config as PhalconConfig;
@@ -7,6 +8,7 @@ use Phalcon\Di;
 class Config
 {
     protected static $config;
+    protected static $preloadConfig = [];
 
     public static function clearCache()
     {
@@ -64,9 +66,12 @@ class Config
         }
         // @codeCoverageIgnoreEnd
 
+        // Load preload files (for unit testing)
+        $config = new PhalconConfig(static::$preloadConfig);
+
         // Load default configs
         $defaultFiles = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/*.php');
-        $config = new PhalconConfig(static::loadFiles($defaultFiles));
+        $config->merge(new PhalconConfig(static::loadFiles($defaultFiles)));
 
         // Load override configs
         $overrideDirs = glob($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/override-*/');
