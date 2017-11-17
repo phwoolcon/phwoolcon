@@ -3,6 +3,7 @@
 ## [v1.2.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.3) (2017-11-17)
 #### Tests:
 * Migrate common test config files to `phwoolcon/test-starter`
+* Try to speed up extension installation
 
 ## [v1.2.2](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.2) (2017-11-17)
 #### Features:

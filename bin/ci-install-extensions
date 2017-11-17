@@ -3,7 +3,10 @@
 mkdir tmp-ci-install-extensions
 cd tmp-ci-install-extensions
 
-composer require techpivot/phalcon-ci-installer phwoolcon/ci-pecl-cacher -n
+echo $(date +%H:%M:%S) Prepare installers...
+echo '{"require":{"techpivot/phalcon-ci-installer":"~1.0","phwoolcon/ci-pecl-cacher":"~1.0"}}' > composer.json
+composer install --prefer-source --no-interaction
+echo $(date +%H:%M:%S) Installers ready
 
 # Install imagick to pass Phalcon compiling
 vendor/bin/ci-pecl-install imagick skip-update
