@@ -8,10 +8,6 @@ use Phwoolcon\Db;
 
 class FailedLoggerDb
 {
-    /**
-     * @var \Phalcon\Db\Adapter\Pdo|Db\Adapter\Pdo\Mysql
-     */
-    protected $db;
     protected $table;
     protected $options = [
         'connection' => '',
@@ -22,9 +18,9 @@ class FailedLoggerDb
     {
         $this->options = $options;
         $this->table = $options['table'];
-        $this->db = Db::connection($options['connection']);
-        $this->db->tableExists($this->table) or $this->createTable();
-        Config::runningUnitTest() and $this->db->delete($this->table);
+        $db = $this->getDb();
+        $db->tableExists($this->table) or $this->createTable();
+        Config::runningUnitTest() and $db->delete($this->table);
     }
 
     /**
@@ -32,7 +28,7 @@ class FailedLoggerDb
      */
     protected function createTable()
     {
-        $this->db->createTable($this->table, null, [
+        $this->getDb()->createTable($this->table, null, [
             'columns' => [
                 new Column('id', [
                     'type' => Column::TYPE_BIGINTEGER,
@@ -68,6 +64,11 @@ class FailedLoggerDb
         ]);
     }
 
+    protected function getDb()
+    {
+        return Db::connection($this->options['connection']);
+    }
+
     /**
      * Log a failed job into storage.
      *
@@ -79,6 +80,6 @@ class FailedLoggerDb
     public function log($connection, $queue, $payload)
     {
         $failed_at = date(DateTime::MYSQL_DATETIME);
-        $this->db->insertAsDict($this->table, compact('connection', 'queue', 'payload', 'failed_at'));
+        $this->getDb()->insertAsDict($this->table, compact('connection', 'queue', 'payload', 'failed_at'));
     }
 }

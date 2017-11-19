@@ -475,6 +475,7 @@ class Service
             return false;
         }
         // @codeCoverageIgnoreEnd
+        Db::reconnect();
         $this->prepareServiceAwareComponents();
         $this->debug and $this->prepareDebugObservers();
         if (!$dryRun) {

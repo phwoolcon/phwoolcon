@@ -4,6 +4,8 @@
 #### Tests:
 * Mark `bin/ci-install-extensions` as executable
 * Use new test root mechanism
+#### Bug Fixes:
+* **Service Mode**: Reconnect DB before start
 
 ## [v1.2.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.3) (2017-11-17)
 #### Tests:
