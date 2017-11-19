@@ -2,7 +2,8 @@
 
 ## [v1.2.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.4) (2017-11-xx)
 #### Tests:
-Mark `bin/ci-install-extensions` as executable
+* Mark `bin/ci-install-extensions` as executable
+* Use new test root mechanism
 
 ## [v1.2.3](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.3) (2017-11-17)
 #### Tests:

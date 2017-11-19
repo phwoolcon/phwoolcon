@@ -1,9 +1,6 @@
 /.idea/
 /vendor/
 /ignore/
-/tests/root/app/config/testing/
-/tests/root/bin/migrations/
-/tests/root/public/static/
-/tests/root/storage/
-/tests/root/vendor/
+/tests/resource/app/config/testing/
+/tests/root/
 /composer.lock
