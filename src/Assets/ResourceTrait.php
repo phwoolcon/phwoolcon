@@ -18,6 +18,9 @@ trait ResourceTrait
     public static $runningUnitTest = false;
     protected $content;
 
+    /**
+     * @param string $previousHash
+     */
     public function concatenateHash($previousHash)
     {
         $hash = dechex(crc32($previousHash . $this->getContent(ResourceTrait::$basePath)));
@@ -59,6 +62,9 @@ trait ResourceTrait
         ResourceTrait::$basePath = $path;
     }
 
+    /**
+     * @param boolean $flag
+     */
     public static function setRunningUnitTests($flag)
     {
         ResourceTrait::$runningUnitTest = $flag;

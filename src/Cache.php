@@ -44,6 +44,9 @@ class Cache
         return call_user_func_array([static::$cache, $name], $arguments);
     }
 
+    /**
+     * @param string $key
+     */
     public static function delete($key)
     {
         static::$cache === null and static::$cache = static::$di->getShared('cache');
@@ -56,6 +59,9 @@ class Cache
         return static::$cache->flush();
     }
 
+    /**
+     * @param string $key
+     */
     public static function get($key, $default = null)
     {
         static::$cache === null and static::$cache = static::$di->getShared('cache');
@@ -90,6 +96,9 @@ class Cache
         });
     }
 
+    /**
+     * @param string $key
+     */
     public static function set($key, $value, $ttl = null)
     {
         static::$cache === null and static::$cache = static::$di->getShared('cache');

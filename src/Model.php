@@ -128,6 +128,8 @@ abstract class Model extends PhalconModel
     /**
      * @inheritdoc
      * @codeCoverageIgnore
+     * @param string $fields
+     * @param string $referencedFields
      */
     protected function belongsTo($fields, $referenceModel, $referencedFields, $options = null)
     {
@@ -243,6 +245,8 @@ abstract class Model extends PhalconModel
     /**
      * @inheritdoc
      * @codeCoverageIgnore
+     * @param string $fields
+     * @param string $referencedFields
      */
     protected function hasOne($fields, $referenceModel, $referencedFields, $options = null)
     {
@@ -322,6 +326,9 @@ abstract class Model extends PhalconModel
         return $this;
     }
 
+    /**
+     * @param string $id
+     */
     public function setId($id)
     {
         $this->{$this->_pk} = $id;

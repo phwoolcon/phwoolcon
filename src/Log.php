@@ -20,6 +20,9 @@ class Log extends Logger
         static::log(static::DEBUG, $message, $context);
     }
 
+    /**
+     * @param string $message
+     */
     public static function error($message = null, array $context = [])
     {
         static::log(static::ERROR, $message, $context);

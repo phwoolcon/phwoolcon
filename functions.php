@@ -314,6 +314,9 @@ function price($amount, $currency = 'CNY')
     return I18n::formatPrice($amount, $currency);
 }
 
+/**
+ * @param string $dir
+ */
 function removeDir($dir)
 {
     if (is_dir($dir)) {
@@ -459,6 +462,9 @@ function symlinkRelative($source, $destination)
     return (bool)$result;
 }
 
+/**
+ * @return string
+ */
 function url($path, array $queries = [], $secure = null)
 {
     // Store the variables which are almost unchanged between invocations as static
