@@ -88,5 +88,9 @@ trait AdapterTrait
         return $this->pushRaw($this->createPayload($worker, $data), $queue, $options);
     }
 
+    /**
+     * @param string $payload
+     * @param string $queue
+     */
     abstract public function pushRaw($payload, $queue = null, array $options = []);
 }

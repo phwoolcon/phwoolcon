@@ -118,6 +118,10 @@ class Connection extends Model
     {
     }
 
+    /**
+     * @param string $queue
+     * @param string $payload
+     */
     public function push($queue, $payload, array $options = [])
     {
         $item = clone $this;
@@ -156,6 +160,9 @@ class Connection extends Model
         }
     }
 
+    /**
+     * @param string $queue
+     */
     public function reserve($queue)
     {
         $this->releaseTimeoutJobs($queue);

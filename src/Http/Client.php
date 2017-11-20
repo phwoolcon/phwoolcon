@@ -219,6 +219,9 @@ class Client
         return $this;
     }
 
+    /**
+     * @param string $url
+     */
     protected function sendRequest($url, $data = '', $method = 'GET', $headers = [])
     {
         $method = strtoupper($method);

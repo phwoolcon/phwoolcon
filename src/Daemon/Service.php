@@ -110,6 +110,9 @@ class Service
         return $previousPort;
     }
 
+    /**
+     * @param string $type
+     */
     protected function cliOutput($type, $message)
     {
         $this->cliCommand and $this->cliCommand->{$type}($message);
@@ -542,6 +545,9 @@ class Service
         $this->cliOutput('info', 'Service stopped.');
     }
 
+    /**
+     * @param string $key
+     */
     protected function updateServiceInfo($key, $data = null)
     {
         $info = $this->getServiceInfo();

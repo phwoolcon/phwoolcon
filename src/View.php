@@ -74,6 +74,9 @@ class View extends PhalconView implements ServiceAwareInterface
         parent::_engineRender($engines, $viewPath, $silence, $mustClean, $cache);
     }
 
+    /**
+     * @param string $collectionName
+     */
     public static function assets($collectionName)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
@@ -146,6 +149,9 @@ class View extends PhalconView implements ServiceAwareInterface
         return static::assets('ie-hack-body-js');
     }
 
+    /**
+     * @param string $view
+     */
     public function getAbsoluteViewPath($view)
     {
         $path = $this->_viewsDir . $this->_theme . '/' . $view;
@@ -160,6 +166,9 @@ class View extends PhalconView implements ServiceAwareInterface
         return $this->_viewsDir . $this->_defaultTheme . '/' . $view;
     }
 
+    /**
+     * @param string $key
+     */
     public static function getConfig($key = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');
@@ -210,6 +219,9 @@ class View extends PhalconView implements ServiceAwareInterface
         return $title;
     }
 
+    /**
+     * @param string $key
+     */
     public static function getParam($key, $default = null)
     {
         static::$instance or static::$instance = static::$di->getShared('view');

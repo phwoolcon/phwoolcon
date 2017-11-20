@@ -181,6 +181,10 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         }
     }
 
+    /**
+     * @param string $template
+     * @param string $pateTitle
+     */
     public static function generateErrorPage($template, $pateTitle)
     {
         return View::make('errors', $template, ['page_title' => $pateTitle]);
@@ -464,6 +468,9 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         static::$router->reset();
     }
 
+    /**
+     * @param string $content
+     */
     public static function throw404Exception($content = null, $contentType = 'text/html')
     {
         !$content && static::$runningUnitTest and $content = '404 NOT FOUND';

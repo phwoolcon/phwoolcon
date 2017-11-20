@@ -13,7 +13,7 @@ class Listener
     /**
      * Log a failed job into storage.
      *
-     * @param  JobInterface|JobTrait $job
+     * @param  JobInterface $job
      */
     protected function fail($job)
     {
@@ -46,7 +46,7 @@ class Listener
     /**
      * Process a given job from the queue.
      *
-     * @param  JobInterface|JobTrait $job
+     * @param  JobInterface $job
      * @param  int                   $maxTries
      * @param  int                   $delay
      * @return Result

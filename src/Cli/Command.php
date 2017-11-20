@@ -48,6 +48,7 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     * @param string $question
      */
     public function confirm($question, $default = true)
     {

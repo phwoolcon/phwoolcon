@@ -50,7 +50,7 @@ class Job implements JobInterface
     /**
      * Get the job identifier.
      *
-     * @return string
+     * @return integer
      */
     public function getJobId()
     {

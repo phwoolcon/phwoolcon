@@ -50,6 +50,9 @@ trait AdapterTrait
         return $token;
     }
 
+    /**
+     * @param string $index
+     */
     public function get($index, $defaultValue = null, $remove = false)
     {
         $this->_started or $this->start();
@@ -103,6 +106,9 @@ trait AdapterTrait
         $this->set('form_data.' . $key, $data);
     }
 
+    /**
+     * @param string $index
+     */
     public function remove($index)
     {
         $this->_started or $this->start();
@@ -110,6 +116,9 @@ trait AdapterTrait
         array_forget($_SESSION, $index);
     }
 
+    /**
+     * @param string $index
+     */
     public function set($index, $value)
     {
         $this->_started or $this->start();
