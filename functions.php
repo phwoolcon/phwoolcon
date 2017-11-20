@@ -463,6 +463,9 @@ function symlinkRelative($source, $destination)
 }
 
 /**
+ * @param string $path
+ * @param array  $queries
+ * @param bool   $secure
  * @return string
  */
 function url($path, array $queries = [], $secure = null)

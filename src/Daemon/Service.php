@@ -112,6 +112,7 @@ class Service
 
     /**
      * @param string $type
+     * @param string $message
      */
     protected function cliOutput($type, $message)
     {
@@ -547,6 +548,8 @@ class Service
 
     /**
      * @param string $key
+     * @param mixed  $data
+     * @return $this
      */
     protected function updateServiceInfo($key, $data = null)
     {

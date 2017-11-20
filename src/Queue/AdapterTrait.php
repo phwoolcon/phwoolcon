@@ -91,6 +91,7 @@ trait AdapterTrait
     /**
      * @param string $payload
      * @param string $queue
+     * @param array  $options
      */
     abstract public function pushRaw($payload, $queue = null, array $options = []);
 }

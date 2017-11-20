@@ -220,7 +220,12 @@ class Client
     }
 
     /**
-     * @param string $url
+     * @param string       $url
+     * @param array|string $data
+     * @param string       $method
+     * @param array        $headers
+     * @return string
+     * @throws HttpClientException
      */
     protected function sendRequest($url, $data = '', $method = 'GET', $headers = [])
     {

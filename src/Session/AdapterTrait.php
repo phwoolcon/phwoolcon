@@ -52,13 +52,16 @@ trait AdapterTrait
 
     /**
      * @param string $index
+     * @param mixed  $defaultValue
+     * @param bool   $remove
+     * @return mixed
      */
     public function get($index, $defaultValue = null, $remove = false)
     {
         $this->_started or $this->start();
-        $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
+        $this->_uniqueId && $index = $this->_uniqueId . '#' . $index;
         $value = fnGet($_SESSION, $index, $defaultValue, '.');
-        $remove and array_forget($_SESSION, $index);
+        $remove && array_forget($_SESSION, $index);
         return $value;
     }
 
@@ -67,7 +70,7 @@ trait AdapterTrait
         $result = ($this->get('csrf_token_expire') > ($now = time()) && $token = $this->get('csrf_token')) ?
             $token :
             $this->generateCsrfToken();
-        $renew and $this->set('csrf_token_expire', $now + $this->_options['csrf_token_lifetime']);
+        $renew && $this->set('csrf_token_expire', $now + $this->_options['csrf_token_lifetime']);
         return $result;
     }
 
@@ -87,7 +90,7 @@ trait AdapterTrait
             $this->isValidSid($sid = Cookies::get($this->getName())->useEncryption(false)->getValue()) ?
                 $this->setId($sid) : $this->regenerateId();
             session_start();
-            $this->_options['cookie_lazy_renew_interval'] and $this->cookieRenewedAt = $this->get('_cookie_renewed_at');
+            $this->_options['cookie_lazy_renew_interval'] && $this->cookieRenewedAt = $this->get('_cookie_renewed_at');
             $this->_started = true;
             return true;
         }
@@ -112,17 +115,18 @@ trait AdapterTrait
     public function remove($index)
     {
         $this->_started or $this->start();
-        $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
+        $this->_uniqueId && $index = $this->_uniqueId . '#' . $index;
         array_forget($_SESSION, $index);
     }
 
     /**
      * @param string $index
+     * @param mixed  $value
      */
     public function set($index, $value)
     {
         $this->_started or $this->start();
-        $this->_uniqueId and $index = $this->_uniqueId . '#' . $index;
+        $this->_uniqueId && $index = $this->_uniqueId . '#' . $index;
         array_set($_SESSION, $index, $value);
     }
 

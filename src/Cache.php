@@ -46,6 +46,7 @@ class Cache
 
     /**
      * @param string $key
+     * @return bool
      */
     public static function delete($key)
     {
@@ -53,6 +54,9 @@ class Cache
         return static::$cache->delete($key);
     }
 
+    /**
+     * @return bool
+     */
     public static function flush()
     {
         static::$cache === null and static::$cache = static::$di->getShared('cache');
@@ -61,6 +65,7 @@ class Cache
 
     /**
      * @param string $key
+     * @return mixed
      */
     public static function get($key, $default = null)
     {

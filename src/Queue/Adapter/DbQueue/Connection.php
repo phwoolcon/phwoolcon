@@ -121,6 +121,8 @@ class Connection extends Model
     /**
      * @param string $queue
      * @param string $payload
+     * @param array  $options
+     * @return string
      */
     public function push($queue, $payload, array $options = [])
     {
@@ -147,6 +149,7 @@ class Connection extends Model
 
     /**
      * @codeCoverageIgnore
+     * @param string $queue
      */
     protected function releaseTimeoutJobs($queue)
     {
@@ -162,6 +165,7 @@ class Connection extends Model
 
     /**
      * @param string $queue
+     * @return $this|null
      */
     public function reserve($queue)
     {

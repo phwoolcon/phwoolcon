@@ -76,6 +76,7 @@ class View extends PhalconView implements ServiceAwareInterface
 
     /**
      * @param string $collectionName
+     * @return string
      */
     public static function assets($collectionName)
     {
@@ -151,6 +152,7 @@ class View extends PhalconView implements ServiceAwareInterface
 
     /**
      * @param string $view
+     * @return string
      */
     public function getAbsoluteViewPath($view)
     {
@@ -168,6 +170,7 @@ class View extends PhalconView implements ServiceAwareInterface
 
     /**
      * @param string $key
+     * @return mixed
      */
     public static function getConfig($key = null)
     {
@@ -221,6 +224,8 @@ class View extends PhalconView implements ServiceAwareInterface
 
     /**
      * @param string $key
+     * @param mixed  $default
+     * @return mixed
      */
     public static function getParam($key, $default = null)
     {

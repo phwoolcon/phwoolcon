@@ -20,6 +20,7 @@ trait ResourceTrait
 
     /**
      * @param string $previousHash
+     * @return string
      */
     public function concatenateHash($previousHash)
     {

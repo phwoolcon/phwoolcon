@@ -184,6 +184,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     /**
      * @param string $template
      * @param string $pateTitle
+     * @return string
      */
     public static function generateErrorPage($template, $pateTitle)
     {
@@ -470,6 +471,8 @@ class Router extends PhalconRouter implements ServiceAwareInterface
 
     /**
      * @param string $content
+     * @param string $contentType
+     * @throws NotFoundException
      */
     public static function throw404Exception($content = null, $contentType = 'text/html')
     {
@@ -478,6 +481,11 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         throw new NotFoundException($content, ['content-type' => $contentType]);
     }
 
+    /**
+     * @param string $content
+     * @param string $contentType
+     * @throws CsrfException
+     */
     public static function throwCsrfException($content = null, $contentType = 'text/html')
     {
         !$content && static::$runningUnitTest and $content = '403 FORBIDDEN';
@@ -487,6 +495,8 @@ class Router extends PhalconRouter implements ServiceAwareInterface
 
     /**
      * @codeCoverageIgnore
+     * @param bool $flag
+     * @return bool
      */
     public static function useLiteHandler($flag = null)
     {

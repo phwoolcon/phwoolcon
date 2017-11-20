@@ -1,11 +1,13 @@
 <?php
+
 namespace Phwoolcon\Queue;
 
-use Throwable;
+use Exception;
 use Phwoolcon\Queue;
 use Phwoolcon\Queue\Adapter\JobInterface;
 use Phwoolcon\Queue\Adapter\JobTrait;
 use Phwoolcon\Queue\Listener\Result;
+use Throwable;
 
 class Listener
 {
@@ -13,7 +15,7 @@ class Listener
     /**
      * Log a failed job into storage.
      *
-     * @param  JobInterface $job
+     * @param JobInterface|JobTrait $job
      */
     protected function fail($job)
     {
@@ -46,12 +48,12 @@ class Listener
     /**
      * Process a given job from the queue.
      *
-     * @param  JobInterface $job
-     * @param  int                   $maxTries
-     * @param  int                   $delay
+     * @param JobInterface|JobTrait $job
+     * @param int                   $maxTries
+     * @param int                   $delay
      * @return Result
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function process(JobInterface $job, $maxTries = 0, $delay = 0)
     {
@@ -63,7 +65,7 @@ class Listener
         try {
             $job->fire();
             return Result::success($job);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // If we catch an exception, we will attempt to release the job back onto
             // the queue so it is not lost. This will let is be retried at a later
             // time by another listener (or the same one). We will do that here.

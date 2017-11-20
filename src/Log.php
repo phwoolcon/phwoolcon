@@ -15,6 +15,10 @@ class Log extends Logger
     protected static $logger;
     protected static $hostname;
 
+    /**
+     * @param string $message
+     * @param array  $context
+     */
     public static function debug($message = null, array $context = [])
     {
         static::log(static::DEBUG, $message, $context);
@@ -22,6 +26,7 @@ class Log extends Logger
 
     /**
      * @param string $message
+     * @param array  $context
      */
     public static function error($message = null, array $context = [])
     {
@@ -38,11 +43,20 @@ class Log extends Logger
         static::error($message);
     }
 
+    /**
+     * @param string $message
+     * @param array  $context
+     */
     public static function info($message = null, array $context = [])
     {
         static::log(static::INFO, $message, $context);
     }
 
+    /**
+     * @param string $type
+     * @param string $message
+     * @param array  $context
+     */
     public static function log($type, $message = null, array $context = [])
     {
         static::$logger or static::$logger = Di::getDefault()->getShared('log');

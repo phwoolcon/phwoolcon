@@ -40,6 +40,9 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     * @param string $question
+     * @param mixed  $default
+     * @return string
      */
     public function ask($question, $default = null)
     {
@@ -49,6 +52,8 @@ abstract class Command extends SymfonyCommand
     /**
      * @codeCoverageIgnore
      * @param string $question
+     * @param bool   $default
+     * @return string
      */
     public function confirm($question, $default = true)
     {
@@ -106,6 +111,7 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     * @param string $message
      */
     public function debug($message)
     {
@@ -137,6 +143,7 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     * @param string $message
      */
     public function verbose($message)
     {
@@ -145,6 +152,7 @@ abstract class Command extends SymfonyCommand
 
     /**
      * @codeCoverageIgnore
+     * @param string $message
      */
     public function veryVerbose($message)
     {
