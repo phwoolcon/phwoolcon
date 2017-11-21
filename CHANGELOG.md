@@ -1,6 +1,9 @@
 # Phwoolcon Change Logs
 
 ## [v1.2.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.4) (2017-11-xx)
+#### Features:
+* Update Phwoolcon skeleton:
+  - Update test dir structure
 #### Tests:
 * Mark `bin/ci-install-extensions` as executable
 * Use new test root mechanism
