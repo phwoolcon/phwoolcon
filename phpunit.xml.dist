@@ -4,6 +4,7 @@
          backupStaticAttributes="false"
          verbose="true"
          colors="true"
+         stderr="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"

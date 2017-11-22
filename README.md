@@ -1,6 +1,6 @@
 # Phwoolcon
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/phwoolcon/phwoolcon.svg?style=flat-square)](https://packagist.org/packages/phwoolcon/phwoolcon)
+[![Latest Version on Packagist](https://img.shields.io/github/release/phwoolcon/phwoolcon.svg?style=flat-square)](https://packagist.org/packages/phwoolcon/phwoolcon)
 [![Build Status](https://img.shields.io/travis/phwoolcon/phwoolcon/master.svg?style=flat-square)](https://travis-ci.org/phwoolcon/phwoolcon)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/code-structure/master/code-coverage)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/phwoolcon/phwoolcon.svg?style=flat-square)](https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/)

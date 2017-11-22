@@ -56,7 +56,7 @@ script:
   # Check code style
   - vendor/bin/phpcs
   # Running unit test
-  - vendor/bin/phpunit --stderr --verbose --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-clover=coverage.clover
 
 after_success:
   # Collect code coverage
