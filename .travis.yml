@@ -64,7 +64,7 @@ after_success:
   # If need cache, check ETAG
   # ETAG=( $(curl -IL https://scrutinizer-ci.com/ocular.phar 2>/dev/null | grep -i etag) ); echo ${ETAG[1]}
   - |
-    if [[ "$TRAVIS_PHP_VERSION" == '7.2' ]]; then
+    if [[ "$TRAVIS_PHP_VERSION" == '7.1' ]]; then
       wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi
