@@ -8,6 +8,8 @@
         <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
         <!-- Disable rule: Method name should not be prefixed with an underscore -->
         <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+        <!-- Disable this rule for `@codeCoverageIgnore` tags -->
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
     </rule>
 
     <file>src</file>
