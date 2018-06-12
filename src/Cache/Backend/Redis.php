@@ -153,7 +153,7 @@ class Redis extends PhalconRedis
                 $redis = $this->_redis;
             }
             // @codeCoverageIgnoreEnd
-            return $redis->exists($lastKey);
+            return (bool)$redis->exists($lastKey);
         }
         // @codeCoverageIgnoreStart
         return false;
