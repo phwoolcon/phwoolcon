@@ -15,6 +15,7 @@
     > code coverage on php 7.2 have [bug with `case` statements](
 https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/inspections/4fbedf24-47a9-40f2-8094-b561f9caa7d3/code-structure/class/Phwoolcon%5CHttp%5CClient?expandCoverage=1)
   - Add php 7.3 env
+  - Install swoole 1.x version for php5
 #### Code styles:
 * Update `phpcs.xml`
     > Ignore rule `Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace`  

@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+function getPhpMajorVersion()
+{
+    php -r '$ver = explode(".", PHP_VERSION); echo $ver[0], PHP_EOL;'
+}
+
+PHP_VER=$(getPhpMajorVersion)
+SWOOLE_VERSION=""
+if [[ ${PHP_VER} -lt 7 ]]; then
+    # Install 1.x version for php5
+    SWOOLE_VERSION="-1.10.5"
+fi
+
 mkdir tmp-ci-install-extensions
 cd tmp-ci-install-extensions
 
@@ -12,7 +24,7 @@ echo $(date +%H:%M:%S) Installers ready
 vendor/bin/ci-pecl-install imagick skip-update
 
 # Install Swoole
-vendor/bin/ci-pecl-install swoole
+vendor/bin/ci-pecl-install swoole${SWOOLE_VERSION}
 
 # Install Phalcon
 vendor/bin/install-phalcon.sh
