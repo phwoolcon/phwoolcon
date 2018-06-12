@@ -1,5 +1,26 @@
 # Phwoolcon Change Logs
 
+## [v1.2.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.5) (2018-6-xx)
+
+#### Bug Fixes:
+* **Cache**: Compatible with [new redis version](https://redis.io/commands/exists)
+    > `Since Redis 3.0.3 it is possible to specify multiple keys instead of a single one. In such a case, it returns the total number of keys existing`
+    > 
+    > Multiple key existence is completely meaningless in Phwoolcon
+
+#### Tests:
+* **Travis**:
+  - Collect code coverage on php 7.1
+
+    > code coverage on php 7.2 have [bug with `case` statements](
+https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/inspections/4fbedf24-47a9-40f2-8094-b561f9caa7d3/code-structure/class/Phwoolcon%5CHttp%5CClient?expandCoverage=1)
+  - test(travis): add php 7.3 env
+#### Code styles:
+* Update `phpcs.xml`
+    > Ignore rule `Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace`
+    > for `@codeCoverageIgnore` tags
+
+
 ## [v1.2.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.4) (2017-11-23)
 #### Features:
 * Update Phwoolcon skeleton:
