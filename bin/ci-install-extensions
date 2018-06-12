@@ -24,7 +24,7 @@ echo $(date +%H:%M:%S) Installers ready
 vendor/bin/ci-pecl-install imagick skip-update
 
 # Install Swoole
-vendor/bin/ci-pecl-install swoole${SWOOLE_VERSION}
+vendor/bin/ci-pecl-install swoole${SWOOLE_VERSION} swoole
 
 # Install Phalcon
 vendor/bin/install-phalcon.sh
