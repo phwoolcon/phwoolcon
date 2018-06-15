@@ -20,7 +20,12 @@ class TestModel extends Model
     protected $_table = 'test_model';
     protected $_pk = 'key';
     protected $_jsonFields = ['value'];
+    protected $_readConnection = 'mysql';
+    protected $_writeConnection = 'mysql';
 
+    /**
+     * @throws \Phalcon\Db\Exception
+     */
     protected function createTable()
     {
         $db = Db::connection();

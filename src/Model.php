@@ -34,6 +34,8 @@ abstract class Model extends PhalconModel
         PhalconDb\Column::TYPE_INTEGER => true,
         PhalconDb\Column::TYPE_BIGINTEGER => true,
     ];
+    protected $_readConnection;
+    protected $_writeConnection;
 
     public function __call($method, $arguments)
     {
@@ -257,11 +259,30 @@ abstract class Model extends PhalconModel
 
     /**
      * Runs once, only when the model instance is created at the first time
+     * @throws PhalconDb\Exception
      */
     public function initialize()
     {
+        $this->initializeConnections();
         $this->_table and $this->setSource($this->_table);
         $this->keepSnapshots(true);
+    }
+
+    /**
+     * @throws PhalconDb\Exception
+     */
+    protected function initializeConnections()
+    {
+        if ($this->_readConnection) {
+            // To register `$di->getShared($connectionService)`
+            Db::connection($this->_readConnection);
+            $this->setConnectionService(Db::resolveConnectionService($this->_readConnection));
+        }
+        if ($this->_writeConnection) {
+            // To register `$di->getShared($writeConnectionService)`
+            Db::connection($this->_writeConnection);
+            $this->setWriteConnectionService(Db::resolveConnectionService($this->_writeConnection));
+        }
     }
 
     public function isNew()
