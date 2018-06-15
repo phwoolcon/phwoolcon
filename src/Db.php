@@ -68,6 +68,11 @@ class Db extends PhalconDb
      */
     protected function connect($name)
     {
+        // @codeCoverageIgnoreStart
+        if (!isset($this->config['connections'][$name])) {
+            throw new InvalidConfigException("Connection '{$name}' not found in config file database.php");
+        }
+        // @codeCoverageIgnoreEnd
         $connection = $this->config['connections'][$name];
         $class = $connection['adapter'];
         isset($connection['charset']) and static::$defaultTableCharset[$name] = $connection['charset'];
@@ -80,12 +85,25 @@ class Db extends PhalconDb
             throw new InvalidConfigException("Invalid db adapter {$class}, please check config file database.php");
         }
         // @codeCoverageIgnoreEnd
+        $dsnParts = [];
+        $skipKeys = array_flip(['table_prefix', 'username', 'password', 'options', 'persistent', 'dialectClass']);
+        foreach ($connection as $k => $v) {
+            if (isset($skipKeys[$k])) {
+                continue;
+            }
+            $dsnParts[] = "{$k}={$v}";
+        }
+        $connection['dsn'] = implode(';', $dsnParts);
         $adapter = new $class($connection);
         // @codeCoverageIgnoreStart
         if (!$adapter instanceof Adapter) {
             throw new InvalidConfigException("Db adapter {$class} should extend " . Adapter::class);
         }
         // @codeCoverageIgnoreEnd
+        $di = static::$di;
+        $connectionServiceName = static::resolveConnectionService($name);
+        $di->remove($connectionServiceName);
+        $di->setShared($connectionServiceName, $adapter);
         return $adapter;
     }
 
@@ -112,6 +130,11 @@ class Db extends PhalconDb
         return $db->connections[$name];
     }
 
+    /**
+     * @param string $name
+     * @return Adapter|Db\Adapter\Pdo\Mysql
+     * @throws PhalconDb\Exception
+     */
     public static function reconnect($name = null)
     {
         static::$instance === null and static::$instance = static::$di->getShared('dbManager');
@@ -147,5 +170,15 @@ class Db extends PhalconDb
         $di->setShared('db', function () {
             return static::connection();
         });
+    }
+
+    /**
+     * Convert DB connection $name into $serviceName which is used in model manager: `$di->getShared($serviceName)`
+     * @param string $name
+     * @return string
+     */
+    public static function resolveConnectionService($name)
+    {
+        return $name ? 'db_' . $name : 'db';
     }
 }
