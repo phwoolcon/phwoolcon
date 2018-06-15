@@ -2,9 +2,9 @@
 
 namespace Phwoolcon\Db\Adapter\Pdo;
 
-use Phalcon\Db\Dialect\Mysql;
+use Phalcon\Db\Dialect\Mysql as PhalconMysqlDialect;
 
-class MysqlDialect extends Mysql implements DialectTablePrefixInterface
+class MysqlDialect extends PhalconMysqlDialect implements DialectTablePrefixInterface
 {
     use DialectTablePrefixTrait;
 }
