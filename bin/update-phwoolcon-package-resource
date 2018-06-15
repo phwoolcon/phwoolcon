@@ -249,6 +249,10 @@ FIND;
         $db = Db::connection();
         foreach ($db->listTables() as $table) {
             $traitName = Text::camelize($table) . 'ModelTrait';
+            $lowerTraitName = strtolower($traitName);
+            if (isset($traits[$lowerTraitName])) {
+                continue;
+            }
             $properties = [];
             $methods = [];
             /* @var \Phalcon\Db\Index $index */
@@ -261,13 +265,19 @@ FIND;
             /* @var \Phalcon\Db\Column $column */
             foreach ($db->describeColumns($table) as $column) {
                 $propertyName = $column->getName();
-                $properties[] = str_replace('property', $propertyName, $propertiesTemplate);
-                $methods[] = str_replace($methodsSearch = [
+                $lowerPropertyName = strtolower($propertyName);
+                $properties[$lowerPropertyName] = str_replace('property', $propertyName, $propertiesTemplate);
+                $methodName = Text::camelize($propertyName);
+                $lowerMethodName = strtolower($methodName);
+                if (isset($methods[$lowerMethodName])) {
+                    continue;
+                }
+                $methods[$lowerMethodName] = str_replace($methodsSearch = [
                     'Method',
                     'property',
                     'value',
                 ], $methodsReplacement = [
-                    $methodName = Text::camelize($propertyName),
+                    $methodName,
                     $propertyName,
                     lcfirst($methodName),
                 ], $methodsTemplate);
@@ -276,7 +286,7 @@ FIND;
                     $methods[] = str_replace($methodsSearch, $methodsReplacement, $findMethodsTemplate);
                 }
             }
-            $traits[] = str_replace([
+            $traits[$lowerTraitName] = str_replace([
                 'table_name',
                 'TraitName',
                 'properties',
