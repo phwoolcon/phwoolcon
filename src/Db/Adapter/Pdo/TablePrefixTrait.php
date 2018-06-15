@@ -14,6 +14,12 @@ trait TablePrefixTrait
     {
         isset($descriptor['table_prefix']) and $this->tablePrefix = $descriptor['table_prefix'];
         parent::__construct($descriptor);
+        $this->_dialect instanceof DialectTablePrefixInterface and $this->_dialect->setConnection($this);
+    }
+
+    public function prefixTable($table)
+    {
+        return $this->tablePrefix . $table;
     }
 
     public function addColumn($tableName, $schemaName, ColumnInterface $column)
