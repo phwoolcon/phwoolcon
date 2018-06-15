@@ -6,7 +6,7 @@ function getPhpMajorVersion()
 }
 
 PHP_VER=$(getPhpMajorVersion)
-SWOOLE_VERSION=""
+SWOOLE_VERSION="-2.2.0"
 if [[ ${PHP_VER} -lt 7 ]]; then
     # Install 1.x version for php5
     SWOOLE_VERSION="-1.10.5"
