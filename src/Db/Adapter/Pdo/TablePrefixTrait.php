@@ -6,6 +6,11 @@ use Phalcon\Db\ColumnInterface;
 use Phalcon\Db\IndexInterface;
 use Phalcon\Db\ReferenceInterface;
 
+/**
+ * Trait TablePrefixTrait
+ * @package Phwoolcon\Db\Adapter\Pdo
+ * @codeCoverageIgnore
+ */
 trait TablePrefixTrait
 {
     protected $tablePrefix = '';

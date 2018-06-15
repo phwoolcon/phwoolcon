@@ -2,6 +2,11 @@
 
 namespace Phwoolcon\Db\Adapter\Pdo;
 
+/**
+ * Trait DialectTablePrefixTrait
+ * @package Phwoolcon\Db\Adapter\Pdo
+ * @codeCoverageIgnore
+ */
 trait DialectTablePrefixTrait
 {
     /**
