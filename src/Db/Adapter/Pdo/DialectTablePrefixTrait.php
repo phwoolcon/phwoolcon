@@ -25,6 +25,9 @@ trait DialectTablePrefixTrait
         if (isset($definition['joins'])) {
             $definition['joins'] = $this->prefixJoins($definition['joins']);
         }
+        if (isset($definition['where'])) {
+            $definition['where'] = $this->prefixWhere($definition['where']);
+        }
         return parent::select($definition);
     }
 
@@ -53,6 +56,20 @@ trait DialectTablePrefixTrait
         }
         unset($join);
         return $joins;
+    }
+
+    protected function prefixWhere($where)
+    {
+        if (isset($where['left'])) {
+            $where['left'] = $this->prefixWhere($where['left']);
+        }
+        if (isset($where['right'])) {
+            $where['right'] = $this->prefixWhere($where['right']);
+        }
+        if (isset($where['domain'])) {
+            $where['domain'] = $this->connection->prefixTable($where['domain']);
+        }
+        return $where;
     }
 
     public function setConnection($connection)
