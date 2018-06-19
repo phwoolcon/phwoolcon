@@ -10,7 +10,7 @@ class Aliases
     {
         if ($aliases = Config::get('app.class_aliases')) {
             foreach ($aliases as $alias => $class) {
-                class_exists($alias, false) or class_alias($class, $alias);
+                $class && !class_exists($alias, false) and class_alias($class, $alias);
             }
         }
     }
