@@ -14,108 +14,114 @@ use Phalcon\Db\ReferenceInterface;
 trait TablePrefixTrait
 {
     protected $tablePrefix = '';
+    protected $tablePrefixLength = 0;
 
     public function __construct(array $descriptor)
     {
-        isset($descriptor['table_prefix']) and $this->tablePrefix = $descriptor['table_prefix'];
+        if (isset($descriptor['table_prefix'])) {
+            $this->tablePrefix = $descriptor['table_prefix'];
+            $this->tablePrefixLength = strlen($this->tablePrefix);
+        }
         parent::__construct($descriptor);
         $this->_dialect instanceof DialectTablePrefixInterface and $this->_dialect->setConnection($this);
     }
 
     public function prefixTable($table)
     {
-        return $this->tablePrefix . $table;
+        if ($this->tablePrefixLength && substr($table, 0, $this->tablePrefixLength) !== $this->tablePrefix) {
+            return $this->tablePrefix . $table;
+        }
+        return $table;
     }
 
     public function addColumn($tableName, $schemaName, ColumnInterface $column)
     {
-        return parent::addColumn($this->tablePrefix . $tableName, $schemaName, $column);
+        return parent::addColumn($this->prefixTable($tableName), $schemaName, $column);
     }
 
     public function addForeignKey($tableName, $schemaName, ReferenceInterface $reference)
     {
-        return parent::addForeignKey($this->tablePrefix . $tableName, $schemaName, $reference);
+        return parent::addForeignKey($this->prefixTable($tableName), $schemaName, $reference);
     }
 
     public function addIndex($tableName, $schemaName, IndexInterface $index)
     {
-        return parent::addIndex($this->tablePrefix . $tableName, $schemaName, $index);
+        return parent::addIndex($this->prefixTable($tableName), $schemaName, $index);
     }
 
     public function addPrimaryKey($tableName, $schemaName, IndexInterface $index)
     {
-        return parent::addPrimaryKey($this->tablePrefix . $tableName, $schemaName, $index);
+        return parent::addPrimaryKey($this->prefixTable($tableName), $schemaName, $index);
     }
 
     public function createTable($tableName, $schemaName, array $definition)
     {
-        return parent::createTable($this->tablePrefix . $tableName, $schemaName, $definition);
+        return parent::createTable($this->prefixTable($tableName), $schemaName, $definition);
     }
 
     public function delete($table, $whereCondition = null, $placeholders = null, $dataTypes = null)
     {
-        return parent::delete($this->tablePrefix . $table, $whereCondition, $placeholders, $dataTypes);
+        return parent::delete($this->prefixTable($table), $whereCondition, $placeholders, $dataTypes);
     }
 
     public function describeColumns($table, $schema = null)
     {
-        return parent::describeColumns($this->tablePrefix . $table, $schema);
+        return parent::describeColumns($this->prefixTable($table), $schema);
     }
 
     public function describeIndexes($table, $schema = null)
     {
-        return parent::describeIndexes($this->tablePrefix . $table, $schema);
+        return parent::describeIndexes($this->prefixTable($table), $schema);
     }
 
     public function describeReferences($table, $schema = null)
     {
-        return parent::describeReferences($this->tablePrefix . $table, $schema);
+        return parent::describeReferences($this->prefixTable($table), $schema);
     }
 
     public function dropColumn($tableName, $schemaName, $columnName)
     {
-        return parent::dropColumn($this->tablePrefix . $tableName, $schemaName, $columnName);
+        return parent::dropColumn($this->prefixTable($tableName), $schemaName, $columnName);
     }
 
     public function dropForeignKey($tableName, $schemaName, $referenceName)
     {
-        return parent::dropForeignKey($this->tablePrefix . $tableName, $schemaName, $referenceName);
+        return parent::dropForeignKey($this->prefixTable($tableName), $schemaName, $referenceName);
     }
 
     public function dropIndex($tableName, $schemaName, $indexName)
     {
-        return parent::dropIndex($this->tablePrefix . $tableName, $schemaName, $indexName);
+        return parent::dropIndex($this->prefixTable($tableName), $schemaName, $indexName);
     }
 
     public function dropPrimaryKey($tableName, $schemaName)
     {
-        return parent::dropPrimaryKey($this->tablePrefix . $tableName, $schemaName);
+        return parent::dropPrimaryKey($this->prefixTable($tableName), $schemaName);
     }
 
     public function dropTable($tableName, $schemaName = null, $ifExists = true)
     {
-        return parent::dropTable($this->tablePrefix . $tableName, $schemaName, $ifExists);
+        return parent::dropTable($this->prefixTable($tableName), $schemaName, $ifExists);
     }
 
     public function insert($table, array $values, $fields = null, $dataTypes = null)
     {
-        return parent::insert($this->tablePrefix . $table, $values, $fields, $dataTypes);
+        return parent::insert($this->prefixTable($table), $values, $fields, $dataTypes);
     }
 
     public function insertAsDict($table, $data, $dataTypes = null)
     {
-        return parent::insertAsDict($this->tablePrefix . $table, $data, $dataTypes);
+        return parent::insertAsDict($this->prefixTable($table), $data, $dataTypes);
     }
 
     public function listTables($schemaName = null)
     {
         $result = parent::listTables($schemaName);
-        if ($this->tablePrefix && $result) {
-            $prefixLength = strlen($this->tablePrefix);
+        if ($this->tablePrefixLength && $result) {
             $newResult = [];
             foreach ($result as $k => $table) {
-                if (substr($table, 0, $prefixLength) == $this->tablePrefix) {
-                    $newResult[$k] = substr($table, $prefixLength);
+                if (substr($table, 0, $this->tablePrefixLength) === $this->tablePrefix) {
+                    $newResult[$k] = substr($table, $this->tablePrefixLength);
                 }
             }
             return $newResult;
@@ -129,26 +135,26 @@ trait TablePrefixTrait
         ColumnInterface $column,
         ColumnInterface $currentColumn = null
     ) {
-        return parent::modifyColumn($this->tablePrefix . $tableName, $schemaName, $column, $currentColumn);
+        return parent::modifyColumn($this->prefixTable($tableName), $schemaName, $column, $currentColumn);
     }
 
     public function tableExists($tableName, $schemaName = null)
     {
-        return parent::tableExists($this->tablePrefix . $tableName, $schemaName);
+        return parent::tableExists($this->prefixTable($tableName), $schemaName);
     }
 
     public function tableOptions($tableName, $schemaName = null)
     {
-        return parent::tableOptions($this->tablePrefix . $tableName, $schemaName);
+        return parent::tableOptions($this->prefixTable($tableName), $schemaName);
     }
 
     public function update($table, $fields, $values, $whereCondition = null, $dataTypes = null)
     {
-        return parent::update($this->tablePrefix . $table, $fields, $values, $whereCondition, $dataTypes);
+        return parent::update($table, $fields, $values, $whereCondition, $dataTypes);
     }
 
     public function updateAsDict($table, $data, $whereCondition = null, $dataTypes = null)
     {
-        return parent::updateAsDict($this->tablePrefix . $table, $data, $whereCondition, $dataTypes);
+        return parent::updateAsDict($this->prefixTable($table), $data, $whereCondition, $dataTypes);
     }
 }

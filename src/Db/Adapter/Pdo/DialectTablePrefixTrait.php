@@ -34,7 +34,7 @@ trait DialectTablePrefixTrait
     protected function prefixColumns($columns)
     {
         foreach ($columns as &$column) {
-            isset($column[1]) and $column[1] = $this->connection->prefixTable($column[1]);
+            is_array($column) && isset($column[1]) and $column[1] = $this->connection->prefixTable($column[1]);
         }
         unset($column);
         return $columns;

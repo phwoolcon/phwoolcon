@@ -1,6 +1,8 @@
 <?php
 
+use Phalcon\Db\Adapter\Pdo\Mysql as PhalconMysql;
 use Phalcon\Db\Adapter\Pdo\Postgresql;
+use Phalcon\Db\Dialect\Mysql as PhalconMysqlDialect;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
 use Phwoolcon\Db\Adapter\Pdo\MysqlDialect;
 
@@ -11,18 +13,18 @@ return [
     'default' => '',
     'connections' => [
         'mysql' => [
-            'adapter'    => Mysql::class,
+            'table_prefix' => $tablePrefix = '',
+            'adapter'    => $tablePrefix ? Mysql::class : PhalconMysql::class,
             'host'       => 'localhost',
             'dbname'     => 'dbname',
             'username'   => 'user',
             'password'   => 'password',
             'charset'    => 'utf8mb4',
             'default_table_charset' => 'utf8_unicode_ci',
-            'table_prefix'          => '',
             'options'               => [
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8mb4" COLLATE "utf8mb4_unicode_ci"',
             ],
-            'dialectClass'          => MysqlDialect::class,
+            'dialectClass'          => $tablePrefix ? MysqlDialect::class : PhalconMysqlDialect::class,
             'persistent' => false,
         ],
 
