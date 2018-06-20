@@ -8,6 +8,7 @@ use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Assets\Manager;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Di;
+use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\View as PhalconView;
 use Phalcon\Mvc\View\Exception as ViewException;
@@ -41,6 +42,10 @@ class View extends PhalconView implements ServiceAwareInterface
      */
     public $assets;
     /**
+     * @var Request
+     */
+    public $request;
+    /**
      * @var Response
      */
     public $response;
@@ -48,6 +53,7 @@ class View extends PhalconView implements ServiceAwareInterface
     public function __construct($config = null)
     {
         parent::__construct($config['options']);
+        $this->request = static::$di->getShared('request');
         $this->response = static::$di->getShared('response');
         $this->setViewsDir($this->_viewsDir = $config['path']);
         $this->_mainView = $config['top_level'];
@@ -82,6 +88,7 @@ class View extends PhalconView implements ServiceAwareInterface
     {
         static::$instance or static::$instance = static::$di->getShared('view');
         $view = static::$instance;
+        $host = $view->request->getServer('HTTP_HOST');
         $useCache = $view->config['options']['assets_options']['cache_assets'];
         if (!$view->assets) {
             $view->assets = static::$di->getShared('assets');
@@ -89,8 +96,8 @@ class View extends PhalconView implements ServiceAwareInterface
         }
         $type = substr($collectionName, strrpos($collectionName, '-') + 1);
         $view->isAdmin() and $collectionName = 'admin-' . $collectionName;
-        if ($useCache && isset(static::$cachedAssets[$collectionName])) {
-            return static::$cachedAssets[$collectionName];
+        if ($useCache && isset(static::$cachedAssets[$host][$collectionName])) {
+            return static::$cachedAssets[$host][$collectionName];
         }
 
         $view->loadAssets($view->config['assets']);
@@ -114,7 +121,7 @@ class View extends PhalconView implements ServiceAwareInterface
         if ($view->config['options']['assets_options']['apply_filter']) {
             $assets = str_replace(['http://', 'https://'], '//', $assets);
         }
-        static::$cachedAssets[$collectionName] = $assets;
+        static::$cachedAssets[$host][$collectionName] = $assets;
         $useCache and Cache::set('assets', static::$cachedAssets);
         return $assets;
     }
