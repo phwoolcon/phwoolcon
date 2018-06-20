@@ -460,7 +460,7 @@ function writeCommands($commands)
 function writeAliases($aliases)
 {
     $target = $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
-    fileSaveArray($target, arraySortedMerge($aliases));
+    fileSaveArray($target, array_filter(arraySortedMerge($aliases)));
 }
 
 function writeMigrationCandidates($migrationCandidates)
