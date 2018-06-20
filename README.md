@@ -106,3 +106,5 @@ See [phwoolcon-package/di.php](phwoolcon-package/di.php)
 
 # Documents
 * [API Reference](docs/ApiIndex.md)
+
+[![PhpStorm](docs/phpstorm.svg)](https://www.jetbrains.com/phpstorm/)
