@@ -6,6 +6,8 @@
 * **DB**:
   - Support for table prefix
   - Be able to specify connection in a model
+* **Assets**: Multiple host support for assets cache
+* **Resource Updater**: Be able to skip defining class alias
 
 #### Bug Fixes:
 * **Cache**: Compatible with [new redis version](https://redis.io/commands/exists)
