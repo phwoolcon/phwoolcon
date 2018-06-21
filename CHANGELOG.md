@@ -27,6 +27,8 @@ https://scrutinizer-ci.com/g/phwoolcon/phwoolcon/inspections/4fbedf24-47a9-40f2-
 * Update `phpcs.xml`
     > Ignore rule `Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace`  
     > for `@codeCoverageIgnore` tags
+#### Documents:
+* Explain how to use proxy in `http-client` config
 
 
 ## [v1.2.4](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.4) (2017-11-23)
