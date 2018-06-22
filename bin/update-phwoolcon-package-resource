@@ -193,7 +193,7 @@ class {$alias} extends {$class}
 function generateModelTraits()
 {
     try {
-        if ($GLOBALS['firstRun'] || !Config::get('database.default')) {
+        if ($GLOBALS['firstRun'] || !$defaultConnectionName = Config::get('database.default')) {
             return;
         }
         $traitTemplate = <<<'TRAIT'
@@ -248,57 +248,66 @@ METHOD;
 FIND;
 
         $traits = [];
-        $db = Db::connection();
-        foreach ($db->listTables() as $table) {
-            $traitName = Text::camelize($table) . 'ModelTrait';
-            $lowerTraitName = strtolower($traitName);
-            if (isset($traits[$lowerTraitName])) {
-                continue;
-            }
-            $properties = [];
-            $methods = [];
-            /* @var \Phalcon\Db\Index $index */
-            $indexedProperties = [];
-            foreach ($db->describeIndexes($table) as $index) {
-                $columns = $index->getColumns();
-                $firstColumn = reset($columns);
-                $indexedProperties[$firstColumn] = $firstColumn;
-            }
-            /* @var \Phalcon\Db\Column $column */
-            foreach ($db->describeColumns($table) as $column) {
-                $propertyName = $column->getName();
-                $lowerPropertyName = strtolower($propertyName);
-                $properties[$lowerPropertyName] = str_replace('property', $propertyName, $propertiesTemplate);
-                $methodName = Text::camelize($propertyName);
-                $lowerMethodName = strtolower($methodName);
-                if (isset($methods[$lowerMethodName])) {
+        $connections = array_keys(array_filter(array_merge(
+            [$defaultConnectionName => true],
+            Config::get('database.dynamic_model_traits.generate_for_connections') ?: []
+        )));
+        foreach ($connections as $connectionName) {
+            $db = Db::connection($connectionName);
+            foreach ($db->listTables() as $table) {
+                $traitName = Text::camelize($table) . 'ModelTrait';
+                $connectionName == $defaultConnectionName or $traitName = Text::camelize($connectionName) . $traitName;
+                $lowerTraitName = strtolower($traitName);
+                if (isset($traits[$lowerTraitName])) {
                     continue;
                 }
-                $methods[$lowerMethodName] = str_replace($methodsSearch = [
-                    'Method',
-                    'property',
-                    'value',
-                ], $methodsReplacement = [
-                    $methodName,
-                    $propertyName,
-                    lcfirst($methodName),
-                ], $methodsTemplate);
-
-                if (isset($indexedProperties[$propertyName])) {
-                    $methods[] = str_replace($methodsSearch, $methodsReplacement, $findMethodsTemplate);
+                $properties = [];
+                $methods = [];
+                /* @var \Phalcon\Db\Index $index */
+                $indexedProperties = [];
+                foreach ($db->describeIndexes($table) as $index) {
+                    $columns = $index->getColumns();
+                    $firstColumn = reset($columns);
+                    $indexedProperties[$firstColumn] = $firstColumn;
                 }
+                /* @var \Phalcon\Db\Column $column */
+                foreach ($db->describeColumns($table) as $column) {
+                    $propertyName = $column->getName();
+                    $lowerPropertyName = strtolower($propertyName);
+                    $properties[$lowerPropertyName] = str_replace('property', $propertyName, $propertiesTemplate);
+                    $methodName = Text::camelize($propertyName);
+                    // Avoid `getData()` and `setData()` methods
+                    $lowerPropertyName == 'data' and $methodName = 'ExtraData';
+                    $lowerMethodName = strtolower($methodName);
+                    if (isset($methods[$lowerMethodName])) {
+                        continue;
+                    }
+                    $methods[$lowerMethodName] = str_replace($methodsSearch = [
+                        'Method',
+                        'property',
+                        'value',
+                    ], $methodsReplacement = [
+                        $methodName,
+                        $propertyName,
+                        lcfirst($methodName),
+                    ], $methodsTemplate);
+
+                    if (isset($indexedProperties[$propertyName])) {
+                        $methods[] = str_replace($methodsSearch, $methodsReplacement, $findMethodsTemplate);
+                    }
+                }
+                $traits[$lowerTraitName] = str_replace([
+                    'table_name',
+                    'TraitName',
+                    'properties',
+                    'methods',
+                ], [
+                    $table,
+                    $traitName,
+                    implode(PHP_EOL, $properties),
+                    implode(PHP_EOL, $methods),
+                ], $traitTemplate);
             }
-            $traits[$lowerTraitName] = str_replace([
-                'table_name',
-                'TraitName',
-                'properties',
-                'methods',
-            ], [
-                $table,
-                $traitName,
-                implode(PHP_EOL, $properties),
-                implode(PHP_EOL, $methods),
-            ], $traitTemplate);
         }
         $content = <<<'CONTENT'
 if (defined('PHWOOLCON_MODELS_TRAIT_LOADED')) {

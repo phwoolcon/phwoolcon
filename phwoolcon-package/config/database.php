@@ -47,4 +47,32 @@ return [
         'exceptionOnFailedSave' => true,
     ],
     'query_log' => false,
+
+    'dynamic_model_traits' => [
+        /**
+         * What are dynamic model traits?
+         * In simple terms, they are ORMs, a table-to-object mapping,
+         * to introduce properties, getters, setters and finders for `Model` classes.
+         *
+         * @see https://github.com/phwoolcon/demo/blob/release/vendor/phwoolcon/model_traits.php
+         * @see generateModelTraits()
+         *
+         * The `model_traits.php` file is generated automatically by `bin/update-phwoolcon-package-resource`
+         */
+        'generate_for_connections' => [
+            /**
+             * The script will generate dynamic model traits for the default connection.
+             * If you want to do this for OTHER connections, please specify them here.
+             *
+             * For example, if you also want dynamic traits for `pgsql`, just add this in your own config:
+             *
+             * 'pgsql' => true,
+             *
+             * The value `true` means to treat this connection, `false` means not to.
+             * This provides you a chance to override it with `false` in another config file
+             *
+             * The DEFAULT connection will always be treated, so don't need to put it here
+             */
+        ],
+    ],
 ];
