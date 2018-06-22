@@ -1,5 +1,10 @@
 # Phwoolcon Change Logs
 
+## [v1.2.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.6) (2018-7-xx)
+
+#### Features:
+* **Resource Updater**: Generate dynamic model traits for multiple connections
+
 ## [v1.2.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.5) (2018-6-22)
 
 #### Features:
