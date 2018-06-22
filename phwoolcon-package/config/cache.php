@@ -25,7 +25,7 @@ return [
                 'servers' => [
                     ['host' => '127.0.0.1', 'port' => 11211, 'weight' => 1],
                 ],
-                'client' => class_exists('Memcached') ? [
+                'client' => class_exists('Memcached', false) ? [
                     Memcached::OPT_HASH => Memcached::HASH_MD5,
                     Memcached::OPT_PREFIX_KEY => 'phwoolcon.',
                 ] : [],

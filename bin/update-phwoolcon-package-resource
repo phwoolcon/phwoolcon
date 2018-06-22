@@ -79,11 +79,11 @@ if (is_file($migrationCandidatesFile = $vendorDir . '/phwoolcon/migrations.php')
 $migrationCandidates['candidates'] = [];
 clearConfigFiles($configPath);
 clearFolders([
-    'Assets' => $assetsPath,
+    'Assets'          => $assetsPath,
     'Compiled assets' => $assetsCompiledPath,
-    'Locales' => $localePath,
-    'Migrations' => $migrationPath,
-    'Views' => $viewPath,
+    'Locales'         => $localePath,
+    'Migrations'      => $migrationPath,
+    'Views'           => $viewPath,
 ]);
 echo PHP_EOL;
 
@@ -160,6 +160,7 @@ try {
         include $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
     }
 } catch (Exception $e) {
+    showDebugMessage($e);
 }
 generateIdeHelper();
 
@@ -173,6 +174,7 @@ function generateIdeHelper()
         try {
             $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
         } catch (Exception $e) {
+            showDebugMessage($e);
         }
         $ideHelperContent .= "
 class {$alias} extends {$class}
@@ -312,6 +314,7 @@ CONTENT;
         file_put_contents($target, '<?php' . PHP_EOL . $content);
         echo 'Dynamic model traits generated', PHP_EOL;
     } catch (Exception $e) {
+        showDebugMessage($e);
         return;
     }
 }
@@ -490,4 +493,12 @@ function spacePad($str, $length = 20)
 {
     $spaces = $length - strlen($str);
     return $spaces > 0 ? str_repeat(' ', $spaces) : ' ';
+}
+
+function showDebugMessage($message)
+{
+    if (empty($_SERVER['PHWOOLCON_DEBUG_PACKAGE_RESOURCE'])) {
+        return;
+    }
+    echo '=========== DEBUG ===========', PHP_EOL, $message, PHP_EOL;
 }
