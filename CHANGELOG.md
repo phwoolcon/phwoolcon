@@ -1,13 +1,17 @@
 # Phwoolcon Change Logs
 
-## [v1.2.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.5) (2018-6-xx)
+## [v1.2.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.5) (2018-6-22)
 
 #### Features:
 * **DB**:
   - Support for table prefix
   - Be able to specify connection in a model
-* **Assets**: Multiple host support for assets cache
-* **Resource Updater**: Be able to skip defining class alias
+* **Assets**:
+  - Multiple host support for assets cache
+  - Add `$p.url()` to phwoolcon.js
+* **Resource Updater**:
+  - Be able to skip defining class alias
+  - Set environment variable `PHWOOLCON_DEBUG_PACKAGE_RESOURCE` to show debug message
 
 #### Bug Fixes:
 * **Cache**: Compatible with [new redis version](https://redis.io/commands/exists)
