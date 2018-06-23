@@ -150,7 +150,7 @@ trait TablePrefixTrait
 
     public function update($table, $fields, $values, $whereCondition = null, $dataTypes = null)
     {
-        return parent::update($table, $fields, $values, $whereCondition, $dataTypes);
+        return parent::update($this->prefixTable($table), $fields, $values, $whereCondition, $dataTypes);
     }
 
     public function updateAsDict($table, $data, $whereCondition = null, $dataTypes = null)
