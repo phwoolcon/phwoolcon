@@ -6,6 +6,7 @@ use Phalcon\Db\AdapterInterface;
 use Phalcon\Di;
 use Phalcon\Mvc\Model as PhalconModel;
 use Phwoolcon\Db\Adapter\Pdo\Mysql;
+use Phwoolcon\Db\Adapter\Pdo\TablePrefixInterface;
 use Phwoolcon\Util\Counter;
 
 /**
@@ -264,7 +265,12 @@ abstract class Model extends PhalconModel
     public function initialize()
     {
         $this->initializeConnections();
-        $this->_table and $this->setSource($this->_table);
+        if ($this->_table) {
+            $table = $this->_table;
+            $connection = $this->getReadConnection();
+            $connection instanceof TablePrefixInterface and $table = $connection->prefixTable($table);
+            $this->setSource($table);
+        }
         $this->keepSnapshots(true);
     }
 
