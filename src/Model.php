@@ -265,12 +265,7 @@ abstract class Model extends PhalconModel
     public function initialize()
     {
         $this->initializeConnections();
-        if ($this->_table) {
-            $table = $this->_table;
-            $connection = $this->getReadConnection();
-            $connection instanceof TablePrefixInterface and $table = $connection->prefixTable($table);
-            $this->setSource($table);
-        }
+        $this->_table and $this->setSource($this->_table);
         $this->keepSnapshots(true);
     }
 
@@ -369,6 +364,13 @@ abstract class Model extends PhalconModel
         $this->_related[$key] = $value;
         $this->_dirtyState = static::DIRTY_STATE_TRANSIENT;
         return $this;
+    }
+
+    public function setSource($source)
+    {
+        $connection = $this->getReadConnection();
+        $connection instanceof TablePrefixInterface and $source = $connection->prefixTable($source);
+        parent::setSource($source);
     }
 
     public static function setup(array $options)
