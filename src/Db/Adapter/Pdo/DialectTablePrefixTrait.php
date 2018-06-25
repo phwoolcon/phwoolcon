@@ -52,7 +52,13 @@ trait DialectTablePrefixTrait
     protected function prefixJoins($joins)
     {
         foreach ($joins as &$join) {
-            isset($join['source']) and $join['source'] = $this->connection->prefixTable($join['source']);
+            if (isset($join['source'])) {
+                if (is_array($join['source'])) {
+                    $join['source'][0] = $this->connection->prefixTable($join['source'][0]);
+                } else {
+                    $join['source'] = $this->connection->prefixTable($join['source']);
+                }
+            }
         }
         unset($join);
         return $joins;
