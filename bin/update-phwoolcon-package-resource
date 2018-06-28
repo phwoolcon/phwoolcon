@@ -276,8 +276,8 @@ FIND;
                     $lowerPropertyName = strtolower($propertyName);
                     $properties[$lowerPropertyName] = str_replace('property', $propertyName, $propertiesTemplate);
                     $methodName = Text::camelize($propertyName);
-                    // Avoid `getData()` and `setData()` methods
-                    $lowerPropertyName == 'data' and $methodName = 'DataValue';
+                    // Avoid `getData()`, `setData()`, `getSource()`, `setSource()` methods
+                    in_array($lowerPropertyName, ['data', 'source']) and $methodName .= 'Value';
                     $lowerMethodName = strtolower($methodName);
                     if (isset($methods[$lowerMethodName])) {
                         continue;
