@@ -98,7 +98,9 @@ class ErrorCodes
         $i18n = static::$di->getShared('i18n');
         $locale or $locale = I18n::getCurrentLocale();
         $locales = $i18n->loadLocale($locale);
-        return fnGet($locales, 'packages.error_codes', []);
+        $errorCodes = fnGet($locales, 'packages.error_codes', []);
+        ksort($errorCodes, SORT_NATURAL);
+        return $errorCodes;
     }
 
     public static function ideHelperGenerator()
