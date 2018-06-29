@@ -8,6 +8,7 @@ use Phalcon\Di;
 use Phwoolcon\Cli\Command;
 use Phwoolcon\Config;
 use Phwoolcon\Db;
+use Phwoolcon\Db\Adapter\Pdo\TablePrefixInterface;
 use Phwoolcon\Log;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,6 +69,9 @@ class Migrate extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->db = Db::connection();
+        if ($this->db instanceof TablePrefixInterface) {
+            $this->table = $this->db->prefixTable($this->table);
+        }
         parent::execute($input, $output);
     }
 
