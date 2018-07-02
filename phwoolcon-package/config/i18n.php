@@ -15,7 +15,7 @@ return [
     'detect_client_locale' => false,
     'verification_patterns' => [
         'CN' => [
-            'mobile' => '/^1[34578]\d{9}$/',
+            'mobile' => '/^1[345789]\d{9}$/',
             'zip_code' => '/^\d{6}$/',
         ],
     ],
