@@ -488,11 +488,11 @@ abstract class Model extends PhalconModel
     }
 
     /**
-     * @param            $conditions
-     * @param array      $bind
-     * @param string     $orderBy
-     * @param string     $columns
-     * @param string|int $limit
+     * @param array|string $conditions
+     * @param array        $bind
+     * @param string       $orderBy
+     * @param string       $columns
+     * @param string|int   $limit
      * @return array
      */
     public static function buildParams($conditions = [], $bind = [], $orderBy = null, $columns = null, $limit = null)
@@ -520,7 +520,9 @@ abstract class Model extends PhalconModel
             if (is_array($conditions)) {
                 $params['conditions'] = "";
                 $params['bind'] = [];
+                $bindKeyCounter = 0;
                 foreach ($conditions as $key => $value) {
+                    ++$bindKeyCounter;
                     if (!is_array($value)) {
                         $operator = '=';
                         $realValue = $value;
@@ -528,11 +530,24 @@ abstract class Model extends PhalconModel
                         $operator = reset($value);
                         $realValue = next($value);
                     }
-                    $bindKey = str_replace(['.'], '_', $key);
+                    $bindKey = str_replace(['.', '/', '\\'], '_', $key) . '_' . $bindKeyCounter;
                     $column = isset($value['column']) ? $value['column'] : $key;
-                    $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
-                        " {$column} {$operator} :{$bindKey}: ";
-                    $params['bind'][$bindKey] = $realValue;
+                    if (!is_array($realValue)) {
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
+                            " {$column} {$operator} :{$bindKey}: ";
+                        $params['bind'][$bindKey] = $realValue;
+                    } elseif (strstr(strtolower($operator), 'in') !== false) {
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
+                            "{$column} {$operator} ({{$bindKey}:array})";
+                        $params['bind'][$bindKey] = $realValue;
+                    } elseif (strtolower($operator) == 'between') {
+                        $bindKeyFrom = $bindKey . '_f';
+                        $bindKeyTo = $bindKey . '_t';
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
+                            "{$column} {$operator} :{$bindKeyFrom}: AND :{$bindKeyTo}:";
+                        $params['bind'][$bindKeyFrom] = reset($realValue);
+                        $params['bind'][$bindKeyTo] = next($realValue);
+                    }
                 }
             } else {
                 $params['conditions'] = $conditions;

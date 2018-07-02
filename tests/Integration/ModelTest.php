@@ -194,4 +194,27 @@ class ModelTest extends TestCase
         $this->assertInstanceOf(ValidationFailed::class, $e);
         $this->assertNotEmpty($model->getStringMessages(), 'Model pre save validation not triggered');
     }
+
+    public function testFindSimpleWithInAndBetween()
+    {
+        $this->getModelInstance()
+            ->setData([
+                'key'   => 'test-in',
+                'value' => 'v1',
+            ])->save();
+        $this->getModelInstance()
+            ->setData([
+                'key'   => 'test-in-and-between',
+                'value' => 'v2',
+            ])->save();
+        $model = $this->getModelInstance();
+        $listIn = $model::findSimple([
+            'key' => ['in', ['test-in', 'test-in-and-between']],
+        ]);
+        $this->assertEquals(2, $listIn->count());
+        $listBetween = $model::findSimple([
+            'key' => ['between', ['test-in', 'test-in-and-between']],
+        ]);
+        $this->assertEquals(2, $listBetween->count());
+    }
 }
