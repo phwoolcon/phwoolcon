@@ -534,7 +534,7 @@ abstract class Model extends PhalconModel
                     $column = isset($value['column']) ? $value['column'] : $key;
                     if (strtolower($operator) == 'is') {
                         $null = strtolower($realValue ?: 'null');
-                        $null != 'null' && $null != 'not null' and $null = 'not null';
+                        $null == 'null' or $null = 'not null';
                         $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
                             " {$column} {$operator} {$null} ";
                     } elseif (!is_array($realValue)) {
