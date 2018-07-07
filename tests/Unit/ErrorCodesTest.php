@@ -63,22 +63,6 @@ class ErrorCodesTest extends TestCase
 //        echo PHP_EOL, $ideHelper, PHP_EOL;
 //        exit;
         $this->assertEquals(<<<'METHOD'
-    public static function getTestError() {
-        return ['test_error', 'Test error message'];
-    }
-
-    public static function genTestError($exception) {
-        return new $exception('Test error message [test_error]', 0);
-    }
-
-    public static function getTestParam($param, $anotherParam) {
-        return ['test_param', 'Test error message with %param% and %another_param%'];
-    }
-
-    public static function genTestParam($exception, $param, $anotherParam) {
-        return new $exception('Test error message with %param% and %another_param% [test_param]', 0);
-    }
-
     public static function get1234() {
         return ['1234', 'Test numeric error code'];
     }
@@ -93,6 +77,22 @@ class ErrorCodesTest extends TestCase
 
     public static function gen2345WithAnnotation($exception) {
         return new $exception('Test numeric error code with annotation', 2345);
+    }
+
+    public static function getTestError() {
+        return ['test_error', 'Test error message'];
+    }
+
+    public static function genTestError($exception) {
+        return new $exception('Test error message [test_error]', 0);
+    }
+
+    public static function getTestParam($param, $anotherParam) {
+        return ['test_param', 'Test error message with %param% and %another_param%'];
+    }
+
+    public static function genTestParam($exception, $param, $anotherParam) {
+        return new $exception('Test error message with %param% and %another_param% [test_param]', 0);
     }
 METHOD
             , $ideHelper);
