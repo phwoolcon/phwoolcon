@@ -532,7 +532,12 @@ abstract class Model extends PhalconModel
                     }
                     $bindKey = str_replace(['.', '/', '\\'], '_', $key) . '_' . $bindKeyCounter;
                     $column = isset($value['column']) ? $value['column'] : $key;
-                    if (!is_array($realValue)) {
+                    if (strtolower($operator) == 'is') {
+                        $null = strtolower($realValue ?: 'null');
+                        $null != 'null' && $null != 'not null' and $null = 'not null';
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
+                            " {$column} {$operator} {$null} ";
+                    } elseif (!is_array($realValue)) {
                         $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
                             " {$column} {$operator} :{$bindKey}: ";
                         $params['bind'][$bindKey] = $realValue;
