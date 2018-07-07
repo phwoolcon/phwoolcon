@@ -217,4 +217,39 @@ class ModelTest extends TestCase
         ]);
         $this->assertEquals(2, $listBetween->count());
     }
+
+    public function testFindSimpleWithIsNull()
+    {
+        $this->getModelInstance()
+            ->setData([
+                'key'   => 'test-is-null',
+                'value' => null,
+            ])->save();
+        $this->getModelInstance()
+            ->setData([
+                'key'   => 'test-is-not-null',
+                'value' => 'has value',
+            ])->save();
+        $model = $this->getModelInstance();
+        $listNull = $model::findSimple([
+            'key'   => 'test-is-null',
+            'value' => ['is', 'null'],
+        ]);
+        $this->assertEquals(1, $listNull->count());
+        $listNull = $model::findSimple([
+            'key'   => 'test-is-null',
+            'value' => ['is', 'not null'],
+        ]);
+        $this->assertEquals(0, $listNull->count());
+        $listNotNull = $model::findSimple([
+            'key'   => 'test-is-not-null',
+            'value' => ['is', 'null'],
+        ]);
+        $this->assertEquals(0, $listNotNull->count());
+        $listNotNull = $model::findSimple([
+            'key'   => 'test-is-not-null',
+            'value' => ['is', 'not null'],
+        ]);
+        $this->assertEquals(1, $listNotNull->count());
+    }
 }
