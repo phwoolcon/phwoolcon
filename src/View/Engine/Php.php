@@ -38,7 +38,8 @@ class Php extends PhpEngine
         if (!is_file($fullPath = $this->_view->getAbsoluteViewPath($path . '.phtml'))) {
             // @codeCoverageIgnoreStart
             if ($this->_debug) {
-                throw new Exception("View file '{$fullPath}' was not found");
+                echo $message = "View file '{$fullPath}' was not found";
+                throw new Exception($message);
             }
             return;
             // @codeCoverageIgnoreEnd
