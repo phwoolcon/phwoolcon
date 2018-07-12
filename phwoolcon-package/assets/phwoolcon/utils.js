@@ -34,6 +34,8 @@ HTMLElement.prototype.toggleClass = function (toggleMe) {
 };
 
 document.on = function (eventName, selector, handler) {
+    var click = 'ontouchstart' in document.documentElement ? 'touchend' : 'click';
+    eventName === 'click' && (eventName = click);
     document.addEventListener(eventName, function (event) {
         for (var target = event.target || event.srcElement; target && target !== this; target = target.parentNode) {
             // loop parent nodes from the target to the delegation node
