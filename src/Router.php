@@ -173,11 +173,12 @@ class Router extends PhalconRouter implements ServiceAwareInterface
                 $response = $controller->response;
             }
             Events::fire('router:after_dispatch', $router, ['response' => $response]);
-            Session::end();
             return $response;
         } catch (HttpException $e) {
             Log::exception($e);
             return static::$runningUnitTest ? $e : $e->toResponse();
+        } finally {
+            Session::end();
         }
     }
 

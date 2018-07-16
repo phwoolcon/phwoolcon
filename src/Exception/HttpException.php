@@ -1,6 +1,8 @@
 <?php
+
 namespace Phwoolcon\Exception;
 
+use Phalcon\Di;
 use Phalcon\Http\Response;
 use RuntimeException;
 
@@ -21,7 +23,11 @@ class HttpException extends RuntimeException
 
     public function toResponse()
     {
-        $response = new Response($this->getMessage(), $this->getCode());
+        /* @var Response $response */
+        $response = Di::getDefault()->getShared('response');
+        $response->resetHeaders()
+            ->setContent($this->getMessage())
+            ->setStatusCode($this->getCode());
         $headers = $this->getHeaders();
         foreach ($headers as $name => $value) {
             if (is_numeric($name)) {
