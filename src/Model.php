@@ -544,7 +544,7 @@ abstract class Model extends PhalconModel
                     } elseif (strstr(strtolower($operator), 'in') !== false) {
                         $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
                             "{$column} {$operator} ({{$bindKey}:array})";
-                        $params['bind'][$bindKey] = $realValue;
+                        $params['bind'][$bindKey] = array_values($realValue);
                     } elseif (strtolower($operator) == 'between') {
                         $bindKeyFrom = $bindKey . '_f';
                         $bindKeyTo = $bindKey . '_t';
