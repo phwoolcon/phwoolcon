@@ -53,7 +53,7 @@ class Text extends PhalconText
      * @return string
      * @codeCoverageIgnore
      */
-    public static function random($type = 0, $length = 8)
+    public static function random($type = self::RANDOM_ALNUM, $length = 8)
     {
         if ($type === static::RANDOM_ALNUM) {
             return substr(str_replace(['+', '/'], '', base64_encode(random_bytes($length * 2))), 0, $length);
