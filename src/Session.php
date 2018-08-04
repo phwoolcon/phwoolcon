@@ -76,7 +76,7 @@ class Session
     public static function __callStatic($name, $arguments)
     {
         static::$session or static::$session = static::$di->getShared('session');
-        return call_user_func_array([static::$session, $name], $arguments);
+        return Router::isSessionDisabled() ? null : call_user_func_array([static::$session, $name], $arguments);
     }
 
     public static function register(Di $di)

@@ -201,6 +201,15 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         return self::$currentUri;
     }
 
+    /**
+     * @codeCoverageIgnore
+     * @return bool
+     */
+    public static function isSessionDisabled()
+    {
+        return static::$disableSession;
+    }
+
     public function liteHandle($uri)
     {
         static::$request or static::$request = static::$di->getShared('request');
