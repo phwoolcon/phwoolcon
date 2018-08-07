@@ -1,9 +1,25 @@
 # Phwoolcon Change Logs
 
-## [v1.2.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.6) (2018-7-xx)
+## [v1.2.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.6) (2018-8-7)
 
 #### Features:
 * **Resource Updater**: Generate dynamic model traits for multiple connections
+* **I18n**: Support `19x` mobile number
+* **Model**: Support `is`, `in` and `between` operator in `findSimple` and `findFirstSimple`
+* **Error Codes**: Sort IDE helper methods in `nature` order
+* **View**: Display `view file not found` in debug mode
+#### Bug Fixes:
+* **DB**: Support for table prefix
+* **Resource Updater**:
+  - Avoid `getData()` and `setData()` methods in model traits
+  - Avoid `getSource()` and `setSource()` methods in model traits
+* **Assets**: Support `document.on('click')` for touch devices
+* **Session**:
+  - End session in http exception
+  - Return null if session disabled
+  - Disable session in CLI mode
+#### Refactor:
+* **Text**: use constant instead of 0 in `Text::random()`
 
 ## [v1.2.5](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.5) (2018-6-22)
 
