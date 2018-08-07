@@ -28,7 +28,6 @@ class Router extends PhalconRouter implements ServiceAwareInterface
      * @var Di
      */
     protected static $di;
-    protected static $disableSession = false;
     protected static $disableCsrfCheck = false;
     protected static $runningUnitTest = false;
     protected static $useLiteHandler = true;
@@ -89,7 +88,6 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         $this->cookies = static::$di->getShared('cookies');
         $this->response = static::$di->getShared('response');
         $this->response->setStatusCode(200);
-        PHP_SAPI == 'cli' && !static::$runningUnitTest and static::disableSession();
     }
 
     public function addRoutes(array $routes, $prefix = null, $filter = null)
@@ -126,7 +124,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
 
     public static function disableSession()
     {
-        static::$disableSession = true;
+        Session::disable();
     }
 
     public static function dispatch($uri = null)
@@ -154,7 +152,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
             $controllerClass = $router->getControllerName();
             $controllerClass instanceof SerializableClosure and $controllerClass = $controllerClass->getClosure();
             if ($controllerClass instanceof Closure) {
-                static::$disableSession or Session::start();
+                Session::start();
                 static::$disableCsrfCheck or static::checkCsrfToken();
                 $response = $controllerClass();
                 if (!$response instanceof Response) {
@@ -167,7 +165,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
                 /* @var Controller $controller */
                 $controller = new $controllerClass;
                 method_exists($controller, 'initialize') and $controller->initialize();
-                static::$disableSession or Session::start();
+                Session::start();
                 static::$disableCsrfCheck or static::checkCsrfToken();
                 method_exists($controller, $method = $router->getActionName()) or static::throw404Exception();
                 $controller->{$method}();
@@ -200,15 +198,6 @@ class Router extends PhalconRouter implements ServiceAwareInterface
     public static function getCurrentUri()
     {
         return self::$currentUri;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * @return bool
-     */
-    public static function isSessionDisabled()
-    {
-        return static::$disableSession;
     }
 
     public function liteHandle($uri)
@@ -436,7 +425,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
 
     public function reset()
     {
-        static::$disableSession = false;
+        Session::enable();
         static::$disableCsrfCheck = false;
         static::$currentUri = null;
         $this->cookies->reset();

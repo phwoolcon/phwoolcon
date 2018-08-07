@@ -72,11 +72,22 @@ class Session
      * @var Adapter|AdapterTrait
      */
     static protected $session;
+    static protected $enabled = true;
 
     public static function __callStatic($name, $arguments)
     {
         static::$session or static::$session = static::$di->getShared('session');
-        return Router::isSessionDisabled() ? null : call_user_func_array([static::$session, $name], $arguments);
+        return static::$enabled ? call_user_func_array([static::$session, $name], $arguments) : null;
+    }
+
+    public static function disable()
+    {
+        static::$enabled = false;
+    }
+
+    public static function enable()
+    {
+        static::$enabled = true;
     }
 
     public static function register(Di $di)
@@ -85,6 +96,7 @@ class Session
         $di->remove('session');
         static::$session = null;
         $di->setShared('session', function () {
+            PHP_SAPI == 'cli' && !Config::runningUnitTest() and static::disable();
             $default = Config::get('session.default');
             $config = Config::get('session.drivers.' . $default);
             $class = $config['adapter'];
