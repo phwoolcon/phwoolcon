@@ -69,9 +69,11 @@ class Migrate extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->db = Db::connection();
+        // @codeCoverageIgnoreStart
         if ($this->db instanceof TablePrefixInterface) {
             $this->table = $this->db->prefixTable($this->table);
         }
+        // @codeCoverageIgnoreEnd
         parent::execute($input, $output);
     }
 
