@@ -24,7 +24,7 @@ class ClientTest extends TestCase
     {
         $client = $this->client;
 
-        $url = 'https://api.github.com/users/Fishdrowned/orgs';
+        $url = 'https://phwoolcon.org/';
         $response = Client::get($url);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($headers = $client->getLastResponseHeaders());
@@ -33,7 +33,7 @@ class ClientTest extends TestCase
         $this->assertEquals($url, $client->getLastRequest()['url']);
         $this->assertEquals($response, $client->getLastResponse());
 
-        $url = 'https://api.github.com/repos/phwoolcon/phwoolcon/issues';
+        $url = 'https://phwoolcon.org/catalog';
         $response = Client::get($url, ['state' => 'closed']);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($headers = $client->getLastResponseHeaders());
@@ -47,7 +47,7 @@ class ClientTest extends TestCase
     {
         $client = $this->client;
 
-        $url = 'https://api.github.com/users/Fishdrowned/orgs';
+        $url = 'https://phwoolcon.org/';
         $response = Client::head($url);
         $this->assertEmpty($response);
         $this->assertNotEmpty($headers = $client->getLastResponseHeaders());
@@ -61,12 +61,12 @@ class ClientTest extends TestCase
     {
         $client = $this->client;
 
-        $url = 'https://api.github.com/authorizations';
+        $url = 'https://phwoolcon.org/account/login';
         $response = Client::post($url, '{"scopes":["public_repo"]}');
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($headers = $client->getLastResponseHeaders());
         $this->assertArrayHasKey('content-type', $headers);
-        $this->assertEquals(401, $client->getLastResponseCode());
+        $this->assertEquals(403, $client->getLastResponseCode());
         $this->assertEquals($url, $client->getLastRequest()['url']);
         $this->assertEquals($response, $client->getLastResponse());
     }
@@ -75,7 +75,7 @@ class ClientTest extends TestCase
     {
         $client = $this->client;
 
-        $url = 'https://api.github.com/some-thing-that-not-exists';
+        $url = 'https://phwoolcon.org/some-thing-that-not-exists';
         $response = Client::request($url, '', 'DELETE');
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($headers = $client->getLastResponseHeaders());
