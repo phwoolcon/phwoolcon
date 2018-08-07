@@ -89,6 +89,7 @@ class Router extends PhalconRouter implements ServiceAwareInterface
         $this->cookies = static::$di->getShared('cookies');
         $this->response = static::$di->getShared('response');
         $this->response->setStatusCode(200);
+        PHP_SAPI == 'cli' && !static::$runningUnitTest and static::disableSession();
     }
 
     public function addRoutes(array $routes, $prefix = null, $filter = null)
