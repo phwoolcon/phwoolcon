@@ -9,6 +9,7 @@ echo
 composer update phwoolcon/skeleton
 
 echo Copying skeleton from composer...
+mkdir -p ignore
 rm -rf ignore/skeleton
 cp -r vendor/phwoolcon/skeleton/ ignore/skeleton
 

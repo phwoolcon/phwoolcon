@@ -391,7 +391,7 @@ function installLocale($package, $path, $viewPath)
 
 function installMigrations($package, $path, $migrationPath)
 {
-    if ($items = glob($path . '/phwoolcon-package/migrations/*')) {
+    if ($items = glob($path . '/phwoolcon-package/migrations/*.php')) {
         foreach ($items as $source) {
             $destination = $migrationPath . basename($source);
             is_file($destination) and unlink($destination);
