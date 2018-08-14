@@ -1,5 +1,10 @@
 # Phwoolcon Change Logs
 
+## [v1.2.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.7) (2018-x-xx)
+
+#### Features:
+* Update [Phwoolcon skeleton](https://github.com/phwoolcon/skeleton/compare/a64c9c529d9ea00561135708f1e5a51e1da03742...1f9e4cae21d8c764adeb295d273006bb7fa852e5)
+
 ## [v1.2.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.6) (2018-8-7)
 
 #### Features:
