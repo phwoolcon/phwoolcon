@@ -23,10 +23,10 @@ class Redis extends PhalconRedis
         $options = $this->_options;
         $redis = new \Redis;
         // @codeCoverageIgnoreStart
-        if (empty($options['host']) ||
-            empty($options['port']) ||
-            empty($options['persistent']) ||
-            empty($options['index'])
+        if (!isset($options['host']) ||
+            !isset($options['port']) ||
+            !isset($options['persistent']) ||
+            !isset($options['index'])
         ) {
             throw new Exception('Unexpected inconsistency in options');
         }
