@@ -1,9 +1,14 @@
 # Phwoolcon Change Logs
 
-## [v1.2.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.7) (2018-x-xx)
+## [v1.2.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.7) (2018-8-20)
 
 #### Features:
 * Update [Phwoolcon skeleton](https://github.com/phwoolcon/skeleton/compare/a64c9c529d9ea00561135708f1e5a51e1da03742...1f9e4cae21d8c764adeb295d273006bb7fa852e5)
+
+#### Bug Fixes:
+* **Cache**:
+  - Check Redis config by `isset` instead of `empty`
+  - Use `$lifetime = 0` to disallow expiration when calling `Redis::save()`
 
 ## [v1.2.6](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.6) (2018-8-7)
 
