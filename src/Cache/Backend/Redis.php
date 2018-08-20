@@ -257,7 +257,7 @@ class Redis extends PhalconRedis
         if ($lifetime === null) {
             $ttl = $this->_lastLifetime ?: $frontend->getLifetime();
         } else {
-            $ttl = $lifetime;
+            $ttl = $lifetime === 0 ? null : $lifetime;
         }
         $success = $redis->set($lastKey, $preparedContent, $ttl);
         // @codeCoverageIgnoreStart
