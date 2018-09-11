@@ -285,11 +285,11 @@ FIND;
                     $methods[$lowerMethodName] = str_replace($methodsSearch = [
                         'Method',
                         'property',
-                        'value',
+                        '$value',
                     ], $methodsReplacement = [
                         $methodName,
                         $propertyName,
-                        lcfirst($methodName),
+                        '$'.lcfirst($methodName),
                     ], $methodsTemplate);
 
                     if (isset($indexedProperties[$propertyName])) {
