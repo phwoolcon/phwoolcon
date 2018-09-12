@@ -289,7 +289,7 @@ FIND;
                     ], $methodsReplacement = [
                         $methodName,
                         $propertyName,
-                        '$'.lcfirst($methodName),
+                        '$' . lcfirst($methodName),
                     ], $methodsTemplate);
 
                     if (isset($indexedProperties[$propertyName])) {
