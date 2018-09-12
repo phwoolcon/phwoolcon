@@ -1,5 +1,10 @@
 # Phwoolcon Change Logs
 
+## [v1.2.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.8) (2018-x-xx)
+#### Bug Fixes:
+* Always ask where to create the migration
+* **Resource Updater**: Fix a bug in model trait generator, when a column name containing string `value`
+
 ## [v1.2.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.7) (2018-8-20)
 
 #### Features:
