@@ -537,6 +537,10 @@ abstract class Model extends PhalconModel
                         $null == 'null' or $null = 'not null';
                         $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
                             " {$column} {$operator} {$null} ";
+                    } elseif (strtolower($operator) == 'like') {
+                        $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
+                            "{$column} {$operator} :{$bindKey}:";
+                        $params['bind'][$bindKey] = '%' . $realValue . '%';
                     } elseif (!is_array($realValue)) {
                         $params['conditions'] .= ($params['conditions'] == "" ? "" : " AND ") .
                             " {$column} {$operator} :{$bindKey}: ";
