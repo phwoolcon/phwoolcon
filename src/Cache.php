@@ -1,9 +1,9 @@
 <?php
 namespace Phwoolcon;
 
-use Phalcon\Di;
-use Phalcon\Cache\Frontend\Data;
 use Phalcon\Cache\Backend;
+use Phalcon\Cache\Frontend\Data;
+use Phalcon\Di;
 use Phwoolcon\Cache\Backend\Redis;
 use Phwoolcon\Exception\InvalidConfigException;
 
@@ -65,12 +65,14 @@ class Cache
 
     /**
      * @param string $key
+     * @param mixed $default
+     * @param int $ttl
      * @return mixed
      */
-    public static function get($key, $default = null)
+    public static function get($key, $default = null, $ttl = null)
     {
         static::$cache === null and static::$cache = static::$di->getShared('cache');
-        return (null === $value = static::$cache->get($key)) ? $default : $value;
+        return (null === $value = static::$cache->get($key, $ttl)) ? $default : $value;
     }
 
     public static function register(Di $di)
