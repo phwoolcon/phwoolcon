@@ -4,6 +4,7 @@
 #### Features:
 * **Cache**:
   - Add parameter `$ttl` for `Cache::get()`
+* Add method `Migrate::createTableOn()`
 
 #### Bug Fixes:
 * Always ask where to create the migration

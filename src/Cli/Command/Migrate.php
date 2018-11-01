@@ -3,8 +3,9 @@
 namespace Phwoolcon\Cli\Command;
 
 use Exception;
+use Phalcon\Db\Adapter;
 use Phalcon\Db\Column;
-use Phalcon\Di;
+use Phalcon\Db\Index;
 use Phwoolcon\Cli\Command;
 use Phwoolcon\Config;
 use Phwoolcon\Db;
@@ -27,23 +28,11 @@ class Migrate extends Command
     protected function checkMigrationsTable()
     {
         $db = $this->db;
-        $db->tableExists($this->table) or $db->createTable($this->table, null, [
-            'columns' => [
-                new Column('file', [
-                    'type' => Column::TYPE_VARCHAR,
-                    'size' => 255,
-                    'notNull' => true,
-                    'primary' => true,
-                ]),
-                new Column('run_at', [
-                    'type' => Column::TYPE_TIMESTAMP,
-                    'notNull' => true,
-                    'default' => 'CURRENT_TIMESTAMP',
-                ]),
-            ],
-            'options' => [
-                'TABLE_COLLATION' => 'utf8_unicode_ci',
-            ],
+        $db->tableExists($this->table) or $this->createTableOn($db, $this->table, [
+            'file'   => ['type' => Column::TYPE_VARCHAR, 'size' => 255, 'notNull' => true, 'primary' => true],
+            'run_at' => ['type' => Column::TYPE_TIMESTAMP, 'notNull' => true, 'default' => 'CURRENT_TIMESTAMP'],
+        ], [], [
+            'TABLE_COLLATION' => 'utf8_unicode_ci',
         ]);
         return $this;
     }
@@ -172,6 +161,35 @@ class Migrate extends Command
     {
         $this->migrated = [];
         $this->rawMigrated = [];
+        return $this;
+    }
+
+    public function createTableOn(
+        Adapter $db,
+        $table,
+        array $columns,
+        array $indexes = [],
+        array $options = [],
+        array $extraOptions = []
+    ) {
+        $db->createTable($table, null, array_merge([
+            'columns' => array_map(function ($name, $definition) {
+                return $definition instanceof Column ? $definition : new Column($name, $definition);
+            }, array_keys($columns), $columns),
+            'indexes' => array_map(function ($name, $columns) {
+                // @codeCoverageIgnoreStart
+                if ($columns instanceof Index) {
+                    return $columns;
+                }
+                // @codeCoverageIgnoreEnd
+                $columns = (array)$columns;
+                $type = isset($columns['type']) ? $columns['type'] : null;
+                unset($columns['type']);
+                is_numeric($name) and $name = reset($columns);
+                return new Index($name, $columns, $type);
+            }, array_keys($indexes), $indexes),
+            'options' => $options,
+        ], $extraOptions));
         return $this;
     }
 }
