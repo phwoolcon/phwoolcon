@@ -37,13 +37,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Phwoolcon\\": "src",
-            "Phwoolcon\\Tests\\": "tests"
+            "Phwoolcon\\": "src"
         },
         "exclude-from-classmap": [
             "/tests/"
         ],
         "files": ["functions.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Phwoolcon\\Tests\\": "tests"
+        }
     },
     "bin": [
         "bin/update-phwoolcon-package-resource",
