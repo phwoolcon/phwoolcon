@@ -4,6 +4,7 @@ namespace Phwoolcon\Tests\Helper;
 use Phalcon\Db\Column;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\StringLength;
+use Phwoolcon\Cli\Command\Migrate;
 use Phwoolcon\Db;
 use Phwoolcon\Model;
 
@@ -28,36 +29,16 @@ class TestModel extends Model
      */
     protected function createTable()
     {
-        $db = Db::connection();
-        $db->createTable($this->_table, null, [
-            'columns' => [
-                new Column('key', [
-                    'type' => Column::TYPE_VARCHAR,
-                    'size' => 32,
-                    'notNull' => true,
-                    'primary' => true,
-                ]),
-                new Column('value', [
-                    'type' => Column::TYPE_TEXT,
-                ]),
-                new Column('default_value', [
-                    'type' => Column::TYPE_VARCHAR,
-                    'notNull' => true,
-                    'default' => '',
-                ]),
-                new Column('created_at', [
-                    'type' => Column::TYPE_BIGINTEGER,
-                    'size' => 20,
-                    'unsigned' => true,
-                    'notNull' => false,
-                ]),
-                new Column('updated_at', [
-                    'type' => Column::TYPE_BIGINTEGER,
-                    'size' => 20,
-                    'unsigned' => true,
-                    'notNull' => false,
-                ]),
-            ],
+        $migrate = new Migrate('migrate', $this->_dependencyInjector);
+        $varChar = Column::TYPE_VARCHAR;
+        $bigInt = Column::TYPE_BIGINTEGER;
+        $text = Column::TYPE_TEXT;
+        $migrate->createTableOn(Db::connection(), $this->_table, [
+            'key'           => ['type' => $varChar, 'size' => 32, 'notNull' => true, 'primary' => true],
+            'value'         => ['type' => $text],
+            'default_value' => ['type' => $varChar, 'notNull' => true, 'default' => ''],
+            'created_at'    => ['type' => $bigInt, 'size' => 20, 'unsigned' => true, 'notNull' => false],
+            'updated_at'    => ['type' => $bigInt, 'size' => 20, 'unsigned' => true, 'notNull' => false],
         ]);
     }
 
