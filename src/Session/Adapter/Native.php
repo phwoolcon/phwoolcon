@@ -16,7 +16,9 @@ class Native extends Files implements AdapterInterface
         parent::__construct($options);
         $sessionPath = $options['save_path'];
         is_dir($sessionPath) or mkdir($sessionPath, 0755, true);
-        session_save_path($sessionPath);
+        if (empty($_SERVER['PHWOOLCON_SKIP_SESSION_SETTINGS'])) {
+            session_save_path($sessionPath);
+        }
     }
 
     public function flush()

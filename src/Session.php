@@ -103,7 +103,9 @@ class Session
             $options = $config['options'];
             $options += Config::get('session.options');
             $options['cookies'] += Config::get('cookies');
-            session_name($options['cookies']['name']);
+            if (empty($_SERVER['PHWOOLCON_SKIP_SESSION_SETTINGS'])) {
+                session_name($options['cookies']['name']);
+            }
             // @codeCoverageIgnoreStart
             if (!$class || !class_exists($class)) {
                 $errorMessage = "Invalid session adapter {$class}, please check config file session.php";
