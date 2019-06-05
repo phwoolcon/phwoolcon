@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.2.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.8) (2018-x-xx)
+## [v1.2.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.8) (2019-x-xx)
 #### Features:
 * **Cache**:
   - Add parameter `$ttl` for `Cache::get()`
@@ -8,7 +8,12 @@
 
 #### Bug Fixes:
 * Always ask where to create the migration
-* **Resource Updater**: Fix a bug in model trait generator, when a column name containing string `value`
+* **Resource Updater**:
+  - Fix a bug in model trait generator, when a column name containing string `value`
+  - Skip session settings for resource update script
+
+#### Tests:
+* Moved autoload for tests to `autoload-dev`
 
 ## [v1.2.7](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.7) (2018-8-20)
 
