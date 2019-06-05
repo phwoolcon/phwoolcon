@@ -21,6 +21,7 @@ if (!is_dir($baseDir . '/vendor/phwoolcon')) {
 }
 $vendorDir = $baseDir . '/vendor';
 
+$_SERVER['PHWOOLCON_SKIP_SESSION_SETTINGS'] = true;
 ob_start();
 try {
     include $baseDir . '/bootstrap/start.php';
