@@ -1,6 +1,6 @@
 # Phwoolcon Change Logs
 
-## [v1.2.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.8) (2019-x-xx)
+## [v1.2.8](https://github.com/phwoolcon/phwoolcon/releases/tag/v1.2.8) (2019-6-14)
 #### Features:
 * **Cache**:
   - Add parameter `$ttl` for `Cache::get()`
